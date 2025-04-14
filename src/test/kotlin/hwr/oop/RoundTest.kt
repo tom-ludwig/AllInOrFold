@@ -9,7 +9,7 @@ class RoundTest: AnnotationSpec() {
     fun `Round number is 0 at start`() {
         val round = Round()
 
-        val roundNum = round.round()
+        val roundNum = round.round
 
         assertThat(roundNum).isEqualTo(0)
     }
@@ -19,7 +19,7 @@ class RoundTest: AnnotationSpec() {
         val round = Round()
 
         round.nextRound()
-        val roundNum = round.round()
+        val roundNum = round.round
 
         assertThat(roundNum).isEqualTo(1)
     }
@@ -30,7 +30,7 @@ class RoundTest: AnnotationSpec() {
         val card = Card(CardRank.FIVE, CardSuit.SPADES)
 
         round.addCommunityCard(card)
-        val roundHasCard = round.communityCards().contains(card)
+        val roundHasCard = round.communityCards.contains(card)
 
         assertThat(roundHasCard).isTrue()
     }
@@ -40,7 +40,7 @@ class RoundTest: AnnotationSpec() {
         val round = Round()
 
         round.addToPot(25)
-        val pot = round.pot()
+        val pot = round.pot
 
         assertThat(pot).isEqualTo(25)
     }

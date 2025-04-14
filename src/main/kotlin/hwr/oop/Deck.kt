@@ -1,27 +1,22 @@
 package hwr.oop
 
 class Deck {
-    private var deck = ArrayList<Card>()
+    var cards = emptyList<Card>().toMutableList()
+        private set
 
     fun resetDeck() {
-        deck.clear()
+        cards.clear()
         for(suit in CardSuit.entries){
             for (rank in CardRank.entries){
-                deck += Card(rank, suit)
+                cards += Card(rank, suit)
             }
         }
         shuffleDeck()
     }
 
-    fun deck(): List<Card> {
-        return deck
-    }
-
-    fun drawCard(): Card {
-        return deck.removeAt(0)
-    }
+    fun draw(): Card = cards.removeAt(0)
 
     fun shuffleDeck() {
-        deck.shuffle()
+        cards.shuffle()
     }
 }

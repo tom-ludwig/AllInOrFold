@@ -1,11 +1,8 @@
 package hwr.oop
 
-class Card (private val cardRank: CardRank, private val cardSuit: CardSuit){
-    fun rank(): CardRank {
-        return cardRank
-    }
-
-    fun suit(): CardSuit {
-        return cardSuit
-    }
+class Card (rank: CardRank, suit: CardSuit){
+    var rank = rank
+        private set
+    var suit = suit
+        private set
 }

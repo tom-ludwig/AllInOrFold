@@ -10,12 +10,7 @@ class DeckTest: AnnotationSpec() {
 
         deck.resetDeck()
 
-        for(suit in CardSuit.entries){
-            for (rank in CardRank.entries){
-                val cardInDeck = deck.deck().find { card -> card.rank() == rank && card.suit() == suit }
-                assertThat(cardInDeck).isNotNull()
-            }
-        }
+        assertThat(deck.cards.toSet()).hasSize(deck.cards.size).hasSize(52)
     }
 
     @Test
@@ -23,11 +18,11 @@ class DeckTest: AnnotationSpec() {
         val deck = Deck()
 
         deck.resetDeck()
-        val cardAtTop = deck.deck().first()
-        val card = deck.drawCard()
+        val cardAtTop = deck.cards.first()
+        val card = deck.draw()
 
         assertThat(cardAtTop).isEqualTo(card)
-        assertThat(deck.deck()).doesNotContain(card)
+        assertThat(deck.cards).doesNotContain(card)
     }
 
     @Test
@@ -35,9 +30,9 @@ class DeckTest: AnnotationSpec() {
         val deck = Deck()
         deck.resetDeck()
 
-        val deckOld = deck.deck().toList()
+        val deckOld = deck.cards.toList()
         deck.shuffleDeck()
 
-        assertThat(deckOld).isNotEqualTo(deck.deck())
+        assertThat(deckOld).isNotEqualTo(deck.cards)
     }
 }

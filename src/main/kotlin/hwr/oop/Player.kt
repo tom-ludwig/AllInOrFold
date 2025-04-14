@@ -1,25 +1,18 @@
 package hwr.oop
 
-class Player (private var name: String, private var money: Int = 0){
-    private var hand = ArrayList<Card>()
-
-    fun name(): String{
-        return name
-    }
+class Player (name: String, money: Int = 0){
+    var name = name
+        private set
+    var money = money
+        private set
+    var hand = emptyList<Card>().toMutableList()
+        private set
 
     fun addCard(card: Card){
         hand += card
     }
 
-    fun hand(): List<Card> {
-        return hand
-    }
-
     fun addMoney(money: Int) {
         this.money += money
-    }
-
-    fun money(): Int {
-        return money
     }
 }

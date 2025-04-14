@@ -9,8 +9,8 @@ class CardTest: AnnotationSpec() {
     fun `Card King of Diamonds has suit and rank`(){
         val card = Card(CardRank.KING, CardSuit.DIAMONDS)
 
-        val rank = card.rank()
-        val suit = card.suit()
+        val rank = card.rank
+        val suit = card.suit
 
         assertThat(rank).isEqualTo(CardRank.KING)
         assertThat(suit).isEqualTo(CardSuit.DIAMONDS)

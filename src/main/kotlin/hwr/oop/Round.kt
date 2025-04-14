@@ -1,21 +1,17 @@
 package hwr.oop
 
 class Round {
-    private var deck: Deck = Deck()
-    private var communityCards = ArrayList<Card>()
-    private var round: Int = 0
-    private var pot: Int = 0
+    var deck = Deck()
+        private set
+    var communityCards = emptyList<Card>().toMutableList()
+        private set
+    var round = 0
+        private set
+    var pot = 0
+        private set
 
     fun addCommunityCard(card: Card) {
         this.communityCards += card
-    }
-
-    fun communityCards(): List<Card> {
-        return communityCards
-    }
-
-    fun round(): Int {
-        return round
     }
 
     fun nextRound() {
@@ -24,9 +20,5 @@ class Round {
 
     fun addToPot(money: Int) {
         pot += money
-    }
-
-    fun pot(): Int{
-        return pot
     }
 }

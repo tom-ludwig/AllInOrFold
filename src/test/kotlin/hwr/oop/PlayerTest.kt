@@ -9,7 +9,7 @@ class PlayerTest: AnnotationSpec() {
     fun `Player Max has name Max`() {
         val player = Player("Max")
 
-        val name = player.name()
+        val name = player.name
 
         assertThat(name).isEqualTo("Max")
     }
@@ -21,7 +21,7 @@ class PlayerTest: AnnotationSpec() {
 
         player.addCard(card)
 
-        assertThat(player.hand()).contains(card)
+        assertThat(player.hand).contains(card)
     }
 
     @Test
@@ -29,7 +29,7 @@ class PlayerTest: AnnotationSpec() {
         val player = Player("Max")
 
         player.addMoney(10)
-        val playerMoney = player.money()
+        val playerMoney = player.money
 
         assertThat(playerMoney).isEqualTo(10)
     }

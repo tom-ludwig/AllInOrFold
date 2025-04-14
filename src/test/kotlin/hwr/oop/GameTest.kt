@@ -11,7 +11,7 @@ class GameTest: AnnotationSpec() {
         val player = Player("Max")
 
         game.addPlayer(player)
-        val players = game.players()
+        val players = game.players
 
         assertThat(players).contains(player)
     }
@@ -23,7 +23,7 @@ class GameTest: AnnotationSpec() {
         game.addPlayer(Player("Ben"))
 
         game.newRound()
-        val dealer = game.dealer()
+        val dealer = game.dealer
 
         assertThat(dealer).isEqualTo(1)
     }
