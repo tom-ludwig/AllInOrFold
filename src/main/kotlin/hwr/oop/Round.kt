@@ -6,12 +6,12 @@ class Round {
     private var round: Int = 0
     private var pot: Int = 0
 
-    fun addCard(card: Card) {
-        this.cards += card
+    fun addCommunityCard(card: Card) {
+        this.communityCards += card
     }
 
-    fun cards(): List<Card> {
-        return cards
+    fun communityCards(): List<Card> {
+        return communityCards
     }
 
     fun round(): Int {

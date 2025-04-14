@@ -29,8 +29,8 @@ class RoundTest: AnnotationSpec() {
         val round = Round()
         val card = Card(CardRank.FIVE, CardSuit.SPADES)
 
-        round.addCard(card)
-        val roundHasCard = round.cards().contains(card)
+        round.addCommunityCard(card)
+        val roundHasCard = round.communityCards().contains(card)
 
         assertThat(roundHasCard).isTrue()
     }
