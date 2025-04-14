@@ -2,7 +2,7 @@ package hwr.oop
 
 class Round {
     private var deck: Deck = Deck()
-    private var cards = ArrayList<Card>()
+    private var communityCards = ArrayList<Card>()
     private var round: Int = 0
     private var pot: Int = 0
 
