@@ -6,22 +6,38 @@ import org.assertj.core.api.Assertions.assertThat
 class RoundTest: AnnotationSpec() {
 
     @Test
-    fun `Round number is 0 at start`() {
+    fun `stage is 0 at start`() {
         val round = Round()
 
-        val roundNum = round.round
+        val stage = round.stage
 
-        assertThat(roundNum).isEqualTo(0)
+        assertThat(stage).isEqualTo(0)
     }
 
     @Test
-    fun `Round number is 1 after next Round`() {
+    fun `stage is 1 after next Stage`() {
         val round = Round()
 
-        round.nextRound()
-        val roundNum = round.round
+        round.nextStage()
+        val stage = round.stage
 
-        assertThat(roundNum).isEqualTo(1)
+        assertThat(stage).isEqualTo(1)
+    }
+
+    @Test
+    fun `correct amount of community cards in stages`() {
+        val round = Round()
+
+        assertThat(round.communityCards.size).isEqualTo(0)
+
+        round.nextStage()
+        assertThat(round.communityCards.size).isEqualTo(3)
+
+        round.nextStage()
+        assertThat(round.communityCards.size).isEqualTo(4)
+
+        round.nextStage()
+        assertThat(round.communityCards.size).isEqualTo(5)
     }
 
     @Test
