@@ -25,19 +25,25 @@ class RoundTest: AnnotationSpec() {
     }
 
     @Test
-    fun `correct amount of community cards in stages`() {
+    fun `There are 5 community cards at the start`(){
+        val round = Round()
+        assertThat(round.communityCards.size).isEqualTo(5)
+    }
+
+    @Test
+    fun `correct amount of revealed community cards in stages`() {
         val round = Round()
 
-        assertThat(round.communityCards.size).isEqualTo(0)
+        assertThat(round.getRevealedCommunityCards().size).isEqualTo(0)
 
         round.nextStage()
-        assertThat(round.communityCards.size).isEqualTo(3)
+        assertThat(round.getRevealedCommunityCards().size).isEqualTo(3)
 
         round.nextStage()
-        assertThat(round.communityCards.size).isEqualTo(4)
+        assertThat(round.getRevealedCommunityCards().size).isEqualTo(4)
 
         round.nextStage()
-        assertThat(round.communityCards.size).isEqualTo(5)
+        assertThat(round.getRevealedCommunityCards().size).isEqualTo(5)
     }
 
     @Test

@@ -5,6 +5,7 @@ class Round {
         private set
     var communityCards = emptyList<Card>().toMutableList()
         private set
+    private var revealedCommunityCardCount = 0
     var stage = 0
         private set
     var pot = 0
@@ -12,6 +13,9 @@ class Round {
 
     init {
         deck.resetDeck()
+        for(i in 1..5) {
+            addCommunityCard(deck.draw())
+        }
     }
 
     fun addCommunityCard(card: Card) {
@@ -21,12 +25,14 @@ class Round {
     fun nextStage() {
         stage++
         if(stage == 1){
-            for(i in 1..3){
-                addCommunityCard(deck.draw())
-            }
+            revealedCommunityCardCount = 3
         }else if(stage <= 3){
-            addCommunityCard(deck.draw())
+            revealedCommunityCardCount++
         }
+    }
+
+    fun getRevealedCommunityCards(): List<Card> {
+        return this.communityCards.take(revealedCommunityCardCount)
     }
 
     fun addToPot(money: Int) {
