@@ -25,12 +25,19 @@ class DeckTest: AnnotationSpec() {
     fun `Drawing draws top card and removes it`() {
         val deck = Deck()
 
-        val cards = getCards(deck)
-        val cardAtTop = cards.first()
-        val card = deck.draw()
+        val initialCards = getCards(deck)
+        val expectedTopCard = initialCards.first()
+        val drawnCard = deck.draw()
 
-        assertThat(cardAtTop).isEqualTo(card)
-        assertThat(cards).doesNotContain(card)
+        val remainingCards = getCards(deck)
+
+        assertThat(drawnCard)
+            .describedAs("The drawn card should be the top card of the deck")
+            .isEqualTo(expectedTopCard)
+
+        assertThat(remainingCards)
+            .describedAs("The deck should no longer contain the drawn card")
+            .doesNotContain(drawnCard)
     }
 
     @Test
