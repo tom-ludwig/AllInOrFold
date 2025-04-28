@@ -1,4 +1,4 @@
-package hwr.oop
+package hwr.oop.group1.poker
 
 class Game {
     var round = Round()
