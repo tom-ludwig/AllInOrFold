@@ -1,8 +1,7 @@
-package hwr.oop
+package hwr.oop.group1.poker
 
 class Deck {
-    var cards = emptyList<Card>().toMutableList()
-        private set
+    private val cards = emptyList<Card>().toMutableList()
 
     fun resetDeck() {
         cards.clear()
