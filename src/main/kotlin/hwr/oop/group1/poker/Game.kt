@@ -1,23 +1,25 @@
 package hwr.oop.group1.poker
 
 class Game {
-    var round = Round()
-        private set
+    private var round = Round()
     var players = emptyList<Player>().toMutableList()
         private set
-    var dealer = 0
-        private set
+    private var dealerPosition = 0
 
     fun addPlayer(player: Player) {
         players += player
     }
 
-    fun nextDealer() {
-        dealer = (dealer + 1) % players.size
+    private fun nextDealer() {
+        dealerPosition = (dealerPosition + 1) % players.size
     }
 
     fun newRound() {
         nextDealer()
         round = Round()
+    }
+
+    fun dealer(): Player {
+        return players[dealerPosition]
     }
 }
