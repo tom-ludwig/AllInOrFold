@@ -1,4 +1,4 @@
-package hwr.oop
+package hwr.oop.group1.poker
 
 import io.kotest.core.spec.style.AnnotationSpec
 import org.assertj.core.api.Assertions.assertThat

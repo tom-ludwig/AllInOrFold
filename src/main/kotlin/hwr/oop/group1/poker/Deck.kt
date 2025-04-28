@@ -1,22 +1,17 @@
-package hwr.oop
+package hwr.oop.group1.poker
 
 class Deck {
-    var cards = emptyList<Card>().toMutableList()
-        private set
+    private val cards = mutableListOf<Card>()
 
-    fun resetDeck() {
+    init {
         cards.clear()
         for(suit in CardSuit.entries){
             for (rank in CardRank.entries){
                 cards += Card(rank, suit)
             }
         }
-        shuffleDeck()
+        cards.shuffle()
     }
 
     fun draw(): Card = cards.removeAt(0)
-
-    fun shuffleDeck() {
-        cards.shuffle()
-    }
 }

@@ -1,4 +1,4 @@
-package hwr.oop
+package hwr.oop.group1.poker
 
 enum class CardRank(val value: Int){
     TWO(2),

@@ -1,4 +1,4 @@
-package hwr.oop
+package hwr.oop.group1.poker
 
 class Player (name: String, money: Int = 0){
     var name = name
