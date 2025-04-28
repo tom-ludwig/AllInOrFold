@@ -46,8 +46,11 @@ fun evaluateFiveCardHand(cards: List<Card>): HandRank {
 
     return when {
         isFlush && straightRanks != null -> {
-            if (straightRanks.first() == CardRank.ACE) HandRank(HandType.ROYAL_FLUSH, listOf(CardRank.ACE))
-            else HandRank(HandType.STRAIGHT_FLUSH, straightRanks)
+            if (straightRanks == listOf(CardRank.ACE, CardRank.KING, CardRank.QUEEN, CardRank.JACK, CardRank.TEN)) {
+                HandRank(HandType.ROYAL_FLUSH, straightRanks)
+            } else {
+                HandRank(HandType.STRAIGHT_FLUSH, straightRanks)
+            }
         }
         rankGroups[0].second == 4 -> {
             HandRank(HandType.FOUR_OF_A_KIND, listOf(rankGroups[0].first, rankGroups[1].first))
