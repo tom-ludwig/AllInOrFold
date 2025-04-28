@@ -12,7 +12,6 @@ class Round {
         private set
 
     init {
-        deck.resetDeck()
         for(i in 1..5) {
             addCommunityCard(deck.draw())
         }
