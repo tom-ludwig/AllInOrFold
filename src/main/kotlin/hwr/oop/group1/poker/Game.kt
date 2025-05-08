@@ -5,7 +5,7 @@ import hwr.oop.group1.poker.cli.StateSerializable
 class Game : StateSerializable {
     private val _players = mutableListOf<Player>()
     val players: List<Player> get() = _players
-    var round = Round()
+    var round = Round(deck = Deck())
         private set
     var dealer = 0
         private set
@@ -130,7 +130,8 @@ class Game : StateSerializable {
         _currentPosition = (bigBlindPosition + 1) % players.size
         
         // Reset round state
-        round = Round()
+        val deck = Deck()
+        round = Round(deck = deck)
         
         // Post blinds
         val smallBlindPlayer = players[smallBlindPosition]
@@ -149,6 +150,13 @@ class Game : StateSerializable {
             bigBlindPlayer.addMoney(-bigBlindAmount)
             round.addToPot(bigBlindAmount)
             _currentBet = bigBlindAmount
+        }
+
+        for (player in players) {
+            // assign cards to players
+            (0..1).forEach {
+                _ -> player.addCard(deck.draw())
+            }
         }
     }
 
@@ -228,7 +236,7 @@ class Game : StateSerializable {
 
         @Suppress("UNCHECKED_CAST")
         val roundState = state["round"] as Map<String, Any>
-        val newRound = Round()
+        val newRound = Round(deck = Deck())
         newRound.fromState(roundState)
         round = newRound
 

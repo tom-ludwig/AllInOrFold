@@ -68,15 +68,6 @@ class GameStateManagerTest : AnnotationSpec() {
     fun `saveState and loadState should preserve round state`() {
         val game = createTestGame()
         
-        // Set up round state
-        val cards = listOf(
-            Card(CardRank.ACE, CardSuit.HEARTS),
-            Card(CardRank.KING, CardSuit.HEARTS),
-            Card(CardRank.QUEEN, CardSuit.HEARTS),
-            Card(CardRank.JACK, CardSuit.HEARTS),
-            Card(CardRank.TEN, CardSuit.HEARTS)
-        )
-        cards.forEach { game.round.addCommunityCard(it) }
         game.round.setPot(500)
         game.round.nextStage() // Stage 1 - should reveal 3 cards
         

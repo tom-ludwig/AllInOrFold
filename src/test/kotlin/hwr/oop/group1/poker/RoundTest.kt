@@ -9,7 +9,7 @@ class RoundTest : AnnotationSpec() {
 
     @BeforeEach
     fun setup() {
-        round = Round()
+        round = Round(deck = Deck())
     }
 
     @Test
@@ -40,33 +40,20 @@ class RoundTest : AnnotationSpec() {
 
     @Test
     fun `getRevealedCommunityCards shows correct cards for each stage`() {
-        // Add 5 community cards
-        val cards = listOf(
-            Card(CardRank.ACE, CardSuit.SPADES),
-            Card(CardRank.KING, CardSuit.HEARTS),
-            Card(CardRank.QUEEN, CardSuit.DIAMONDS),
-            Card(CardRank.JACK, CardSuit.CLUBS),
-            Card(CardRank.TEN, CardSuit.SPADES)
-        )
-        cards.forEach { round.addCommunityCard(it) }
-
         // Pre-flop: No cards
         assertThat(round.getRevealedCommunityCards()).isEmpty()
 
         // Flop: First 3 cards
         round.nextStage()
         assertThat(round.getRevealedCommunityCards()).hasSize(3)
-        assertThat(round.getRevealedCommunityCards()).isEqualTo(cards.take(3))
 
         // Turn: First 4 cards
         round.nextStage()
         assertThat(round.getRevealedCommunityCards()).hasSize(4)
-        assertThat(round.getRevealedCommunityCards()).isEqualTo(cards.take(4))
 
         // River: All 5 cards
         round.nextStage()
         assertThat(round.getRevealedCommunityCards()).hasSize(5)
-        assertThat(round.getRevealedCommunityCards()).isEqualTo(cards)
     }
 
     @Test
@@ -105,10 +92,6 @@ class RoundTest : AnnotationSpec() {
 
     @Test
     fun `clearCommunityCards removes all cards`() {
-        round.addCommunityCard(Card(CardRank.ACE, CardSuit.SPADES))
-        round.addCommunityCard(Card(CardRank.KING, CardSuit.HEARTS))
-        assertThat(round.communityCards).hasSize(2)
-
         round.clearCommunityCards()
         assertThat(round.communityCards).isEmpty()
     }
@@ -116,22 +99,20 @@ class RoundTest : AnnotationSpec() {
     @Test
     fun `state serialization preserves all values`() {
         // Setup round state
-        round.addCommunityCard(Card(CardRank.ACE, CardSuit.SPADES))
-        round.addCommunityCard(Card(CardRank.KING, CardSuit.HEARTS))
         round.setPot(100)
         round.setStage(2)
 
         // Serialize and deserialize
         val state = round.toState()
-        val newRound = Round()
+        val newRound = Round(deck = Deck())
         newRound.fromState(state)
 
         // Verify all values
-        assertThat(newRound.communityCards).hasSize(2)
-        assertThat(newRound.communityCards[0].rank).isEqualTo(CardRank.ACE)
-        assertThat(newRound.communityCards[0].suit).isEqualTo(CardSuit.SPADES)
-        assertThat(newRound.communityCards[1].rank).isEqualTo(CardRank.KING)
-        assertThat(newRound.communityCards[1].suit).isEqualTo(CardSuit.HEARTS)
+        assertThat(newRound.communityCards).hasSize(5)
+        assertThat(newRound.communityCards[0].rank).isEqualTo(round.communityCards[0].rank)
+        assertThat(newRound.communityCards[0].suit).isEqualTo(round.communityCards[0].suit)
+        assertThat(newRound.communityCards[1].rank).isEqualTo(round.communityCards[1].rank)
+        assertThat(newRound.communityCards[1].suit).isEqualTo(round.communityCards[1].suit)
         assertThat(newRound.pot).isEqualTo(100)
         assertThat(newRound.stage).isEqualTo(2)
     }

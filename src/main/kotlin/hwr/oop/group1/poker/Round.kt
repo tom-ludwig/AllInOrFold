@@ -2,9 +2,7 @@ package hwr.oop.group1.poker
 
 import hwr.oop.group1.poker.cli.StateSerializable
 
-class Round : StateSerializable {
-    var deck = Deck()
-        private set
+class Round(val deck: Deck) : StateSerializable {
     var communityCards = emptyList<Card>().toMutableList()
         private set
     
@@ -21,12 +19,8 @@ class Round : StateSerializable {
     var pot = 0
         private set
 
-    /**
-     * Adds a card to the community cards.
-     * This is used when dealing the flop, turn, and river.
-     */
-    fun addCommunityCard(card: Card) {
-        communityCards += card
+    init {
+        communityCards = (0..4).map { deck.draw() } as MutableList<Card>
     }
 
     /**
@@ -103,14 +97,12 @@ class Round : StateSerializable {
         @Suppress("UNCHECKED_CAST")
         val cardsState = state["communityCards"] as List<Map<String, String>>
         clearCommunityCards()
-        cardsState.forEach { cardState ->
-            addCommunityCard(
-                Card(
-                    CardRank.valueOf(cardState["rank"]!!),
-                    CardSuit.valueOf(cardState["suit"]!!)
-                )
+        communityCards = cardsState.map { cardState ->
+            Card(
+                CardRank.valueOf(cardState["rank"]!!),
+                CardSuit.valueOf(cardState["suit"]!!)
             )
-        }
+        } as MutableList<Card>
         
         pot = (state["pot"] as Number).toInt()
         stage = (state["stage"] as Number).toInt()

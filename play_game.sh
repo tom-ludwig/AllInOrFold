@@ -68,4 +68,4 @@ run_cmd --show-community-cards
 run_cmd --show-pot
 run_cmd --show-current-bet
 
-echo "Game complete!" 
+echo "Game complete!"
