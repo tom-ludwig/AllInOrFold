@@ -24,6 +24,8 @@ class Game {
       }
       players[smbIndex].addMoney(-SMALL_BLIND)
       players[bbIndex].addMoney(-BIG_BLIND)
+
+      round.addToPot(SMALL_BLIND + BIG_BLIND)
     }
     fun addPlayer(player: Player) {
         players += player
