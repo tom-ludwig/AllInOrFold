@@ -7,6 +7,8 @@ class Player (name: String, money: Int = 0){
         private set
     var hand = emptyList<Card>().toMutableList()
         private set
+    var hasFolded = false
+        private set
 
     fun addCard(card: Card){
         hand += card
@@ -14,5 +16,13 @@ class Player (name: String, money: Int = 0){
 
     fun addMoney(money: Int) {
         this.money += money
+    }
+    fun fold() {
+        hasFolded = true
+    }
+
+    fun resetFold(){
+        hasFolded = false
+        hand.clear()
     }
 }
