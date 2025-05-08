@@ -11,10 +11,10 @@ class Game : StateSerializable {
         private set
     
     // Game setup properties
-    private var _smallBlind = 1
+    private var _smallBlind = 0
     val smallBlind: Int get() = _smallBlind
     
-    private var _bigBlind = 2
+    private var _bigBlind = 0
     val bigBlind: Int get() = _bigBlind
     
     private var _startingMoney = 100

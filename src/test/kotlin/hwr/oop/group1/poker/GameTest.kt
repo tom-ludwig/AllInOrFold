@@ -14,8 +14,8 @@ class GameTest : AnnotationSpec() {
 
     @Test
     fun `default values are set correctly`() {
-        assertThat(game.smallBlind).isEqualTo(1)
-        assertThat(game.bigBlind).isEqualTo(2)
+        assertThat(game.smallBlind).isEqualTo(0)
+        assertThat(game.bigBlind).isEqualTo(0)
         assertThat(game.startingMoney).isEqualTo(100)
         assertThat(game.isGameStarted).isFalse
     }
@@ -37,17 +37,19 @@ class GameTest : AnnotationSpec() {
 
     @Test
     fun `setBigBlind validates amount`() {
-        assertThatThrownBy { game.setBigBlind(1) }
+        game.setSmallBlind(10)
+        assertThatThrownBy { game.setBigBlind(5) }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Big blind must be greater than small blind")
 
-        game.setBigBlind(4)
-        assertThat(game.bigBlind).isEqualTo(4)
+        game.setBigBlind(15)
+        assertThat(game.bigBlind).isEqualTo(15)
     }
 
     @Test
     fun `setStartingMoney validates amount`() {
-        assertThatThrownBy { game.setStartingMoney(1) }
+        game.setBigBlind(10)
+        assertThatThrownBy { game.setStartingMoney(5) }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Starting money must be greater than big blind")
 
