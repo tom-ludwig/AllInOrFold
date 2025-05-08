@@ -13,6 +13,9 @@ class Player(
     private var _hand = emptyList<Card>()
     val hand: List<Card> get() = _hand
 
+    private var _isActive = true
+    val isActive: Boolean get() = _isActive
+
     fun addCard(card: Card) {
         _hand = _hand + card
     }
@@ -25,11 +28,38 @@ class Player(
         _hand = newHand
     }
 
+    /**
+     * Folds the player's hand.
+     * This marks the player as inactive for the current hand.
+     */
+    fun fold() {
+        _isActive = false
+    }
+
+    /**
+     * Resets the player's state for a new hand.
+     * This clears the hand and marks the player as active.
+     */
+    fun resetForNewHand() {
+        _hand = emptyList()
+        _isActive = true
+    }
+
+    /**
+     * Evaluates the player's hand strength using the community cards.
+     * Returns a HandRank object that can be used to compare hands.
+     */
+    fun evaluatePlayerHand(communityCards: List<Card>): HandRank {
+        val allCards = _hand + communityCards
+        return evaluateHand(allCards)
+    }
+
     override fun toState(): Map<String, Any> {
         return mapOf(
             "name" to name,
             "money" to money,
-            "hand" to hand.map { it.toState() }
+            "hand" to hand.map { it.toState() },
+            "isActive" to _isActive
         )
     }
 
@@ -45,5 +75,6 @@ class Player(
                 CardSuit.valueOf(cardState["suit"]!!)
             )
         }
+        _isActive = state["isActive"] as Boolean
     }
 }

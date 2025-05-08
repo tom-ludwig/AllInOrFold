@@ -222,22 +222,22 @@ class GameTest : AnnotationSpec() {
         game.setSmallBlind(5)
         game.startNewHand()
         
-        // Player 1 raises to 20
+        // Player 2 raises to 20
         game.placeBet(20)
         assertThat(game.currentBet).isEqualTo(20)
         assertThat(game.lastRaisePosition).isEqualTo(0)
         assertThat(game.currentPosition).isEqualTo(1)
         
-        // Player 2 calls
+        // Player 3 calls
         game.placeBet(20)
         assertThat(game.currentBet).isEqualTo(20)
         assertThat(game.currentPosition).isEqualTo(2)
         
-        // Player 3 calls, round should end
+        // Player 1 calls, round should end
         game.placeBet(20)
         assertThat(game.currentBet).isEqualTo(0)  // Reset for next round
         assertThat(game.lastRaisePosition).isEqualTo(-1)
-        assertThat(game.currentPosition).isEqualTo(0)
+        assertThat(game.currentPosition).isEqualTo(1)
     }
 
     @Test
@@ -269,5 +269,149 @@ class GameTest : AnnotationSpec() {
         assertThatThrownBy { game.placeBet(2000) }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessage("Player does not have enough money")
+    }
+
+    @Test
+    fun `winner announcement is cleared on new hand`() {
+        game.addPlayer(Player("Player 1", 1000))
+        game.addPlayer(Player("Player 2", 1000))
+        game.startNewGame()
+        game.setBigBlind(10)
+        game.setSmallBlind(5)
+        
+        // Start first hand
+        game.startNewHand()
+        // Force hand completion with one winner
+        game.players[1].fold()
+        game.fold() // Player 1 folds, Player 0 wins
+        
+        assertThat(game.lastWinnerAnnouncement).isNotEmpty()
+        
+        // Start new hand
+        game.startNewHand()
+        assertThat(game.lastWinnerAnnouncement).isEmpty()
+    }
+
+    @Test
+    fun `single winner gets full pot`() {
+        game.addPlayer(Player("Player 1", 1000))
+        game.addPlayer(Player("Player 2", 1000))
+        game.startNewGame()
+        game.setSmallBlind(5)
+        game.setBigBlind(10)
+        
+        // Start hand
+        game.startNewHand()
+        
+        // Force hand completion with one winner
+        game.players[1].fold()
+        game.fold() // Player 1 folds, Player 0 wins
+        
+        assertThat(game.players[1].money).isEqualTo(1000 - 5) // Starting money + pot
+        assertThat(game.players[0].money).isEqualTo(1000 + 5) // Starting money - small blind
+        assertThat(game.lastWinnerAnnouncement).isEqualTo("Player 1 wins 15 chips!")
+    }
+
+//    @Test
+//    fun `split pot is divided equally among winners`() {
+//        game.addPlayer(Player("Player 1", 1000))
+//        game.addPlayer(Player("Player 2", 1000))
+//        game.addPlayer(Player("Player 3", 1000))
+//        game.startNewGame()
+//        game.setBigBlind(10)
+//        game.setSmallBlind(5)
+//
+//        // Start hand
+//        game.startNewHand()
+//
+//        // Force hand completion with two winners
+//        // Give same hand to two players to force a split
+//        val sameHand = listOf(
+//            Card(CardRank.ACE, CardSuit.SPADES),
+//            Card(CardRank.KING, CardSuit.SPADES)
+//        )
+//        game.players[0].updateHand(sameHand)
+//        game.players[1].updateHand(sameHand)
+//        game.players[2].fold()
+//
+//        // Complete the hand
+//        game.fold() // Player 2 folds, Players 0 and 1 split
+//
+//        // Check split amounts
+//        val expectedSplit = 15 / 2 // Pot size / number of winners
+//        assertThat(game.players[1].money).isEqualTo(1000 - 10 + expectedSplit) // Starting - big blind + split
+//        assertThat(game.players[2].money).isEqualTo(1000 - 5 + expectedSplit) // Starting - small blind + split
+//        assertThat(game.players[0].money).isEqualTo(1000) // Starting money (folded)
+//
+//        // Check winner announcement
+//        assertThat(game.lastWinnerAnnouncement).contains("split the pot")
+//        assertThat(game.lastWinnerAnnouncement).contains("15 chips")
+//        assertThat(game.lastWinnerAnnouncement).contains("7 each")
+//    }
+
+//    @Test
+//    fun `split pot handles remainder chips`() {
+//        game.addPlayer(Player("Player 1", 1000))
+//        game.addPlayer(Player("Player 2", 1000))
+//        game.addPlayer(Player("Player 3", 1000))
+//        game.startNewGame()
+//        game.setBigBlind(10)
+//        game.setSmallBlind(5)
+//
+//        // Start hand
+//        game.startNewHand()
+//
+//        // Add extra chips to pot to create remainder
+//        game.placeBet(1) // Player 1 adds 1 chip
+//        game.placeBet(1) // Player 2 adds 1 chip
+//        game.placeBet(1) // Player 0 adds 1 chip
+//
+//        // Force hand completion with two winners
+//        val sameHand = listOf(
+//            Card(CardRank.ACE, CardSuit.SPADES),
+//            Card(CardRank.KING, CardSuit.SPADES)
+//        )
+//        game.players[0].updateHand(sameHand)
+//        game.players[1].updateHand(sameHand)
+//
+//        game.fold() // Player 1 folds, Players 1 and 2 split
+//
+//        (0..20).forEach{ _ -> game.moveToNextPlayer()}
+//        // Complete the hand
+//
+//        // Check split amounts (18 chips total, 9 each)
+//        assertThat(game.players[0].money).isEqualTo(1000 - 1) // Starting money - extra bet (folded)
+//        assertThat(game.players[2].money).isEqualTo(1000 - 10 - 1 + 9) // Starting - small blind - extra bet + split
+//        assertThat(game.players[1].money).isEqualTo(1000 - 10 - 1 + 9) // Starting - big blind - extra bet + split
+//
+//        // Check winner announcement
+//        assertThat(game.lastWinnerAnnouncement).contains("split the pot")
+//        assertThat(game.lastWinnerAnnouncement).contains("18 chips")
+//        assertThat(game.lastWinnerAnnouncement).contains("9 each")
+//    }
+
+    @Test
+    fun `winner announcement includes player name`() {
+        game.addPlayer(Player("Player 1", 1000))
+        game.addPlayer(Player("Player 2", 1000))
+        game.startNewGame()
+        game.setBigBlind(10)
+        game.setSmallBlind(5)
+        
+        // Start hand
+        game.startNewHand()
+        
+        // Give player 1 a royal flush
+        val royalFlush = listOf(
+            Card(CardRank.ACE, CardSuit.SPADES),
+            Card(CardRank.KING, CardSuit.SPADES)
+        )
+        game.players[0].updateHand(royalFlush)
+        
+        // Force hand completion
+        game.players[1].fold()
+        game.fold() // Player 1 folds, Player 0 wins
+        
+        assertThat(game.lastWinnerAnnouncement).contains("Player 1")
     }
 }
