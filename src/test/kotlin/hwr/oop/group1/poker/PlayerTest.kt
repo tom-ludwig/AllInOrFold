@@ -3,34 +3,37 @@ package hwr.oop.group1.poker
 import io.kotest.core.spec.style.AnnotationSpec
 import org.assertj.core.api.Assertions.assertThat
 
-class PlayerTest: AnnotationSpec() {
-
+class PlayerTest : AnnotationSpec() {
     @Test
-    fun `Player Max has name Max`() {
-        val player = Player("Max")
-
-        val name = player.name
-
-        assertThat(name).isEqualTo("Max")
+    fun `player name should match constructor parameter`() {
+        val player = Player("Test Player", 1000)
+        assertThat(player.name).isEqualTo("Test Player")
     }
 
     @Test
-    fun `Player has added Card`() {
-        val player = Player("Max")
-        val card = Card(CardRank.FIVE, CardSuit.SPADES)
-
+    fun `addCard should add a card to player's hand`() {
+        val player = Player("Test Player", 1000)
+        val card = Card(CardRank.ACE, CardSuit.HEARTS)
         player.addCard(card)
-
-        assertThat(player.hand).contains(card)
+        assertThat(player.hand).hasSize(1)
+        assertThat(player.hand.first()).isEqualTo(card)
     }
 
     @Test
-    fun `Player Money is 10 after adding 10`() {
-        val player = Player("Max")
+    fun `addMoney should increase player's money`() {
+        val player = Player("Test Player", 1000)
+        player.addMoney(500)
+        assertThat(player.money).isEqualTo(1500)
+    }
 
-        player.addMoney(10)
-        val playerMoney = player.money
-
-        assertThat(playerMoney).isEqualTo(10)
+    @Test
+    fun `updateHand should replace player's hand`() {
+        val player = Player("Test Player", 1000)
+        val hand = listOf(
+            Card(CardRank.ACE, CardSuit.HEARTS),
+            Card(CardRank.KING, CardSuit.SPADES)
+        )
+        player.updateHand(hand)
+        assertThat(player.hand).isEqualTo(hand)
     }
 }
