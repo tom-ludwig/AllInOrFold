@@ -9,7 +9,7 @@ rm -f poker_state.json
 mvn clean package -DskipTests
 
 # Find the JAR file
-JAR_PATH=$(find target -name "project-*.jar" ! -name "*original*" -type f)
+JAR_PATH=$(find target -name "com.group1.allinorfold-*.jar" ! -name "*original*" -type f)
 if [ -z "$JAR_PATH" ]; then
     echo "Error: Could not find JAR file"
     exit 1
@@ -33,7 +33,6 @@ run_cmd --add-player "Bob" 1000
 run_cmd --add-player "Charlie" 1000
 
 echo "Setting up game parameters..."
-run_cmd --set-starting-money 1000
 run_cmd --set-small-blind 10
 run_cmd --set-big-blind 20
 

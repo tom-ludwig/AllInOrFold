@@ -6,14 +6,12 @@
 
   <groupId>hwr.oop.projects</groupId>
 
-  <!-- TODO Change name and description according to your project -->
-  <artifactId>project</artifactId>
+  <artifactId>com.group1.allinorfold</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.0.1</version>
 
-  <!-- TODO Change name and description according to your project -->
-  <name>project</name>
-  <description>project-description</description>
+  <name>AllInOrFold</name>
+  <description>A poker cli game</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
