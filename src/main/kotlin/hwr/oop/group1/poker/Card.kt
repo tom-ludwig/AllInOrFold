@@ -15,7 +15,6 @@ class Card(
 
     override fun fromState(state: Map<String, Any>) {
         // Cards are immutable, so we don't need to implement this
-        // The state is used when creating new cards
     }
 
     override fun toString(): String {

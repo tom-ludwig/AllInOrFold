@@ -16,7 +16,6 @@ class GameTest : AnnotationSpec() {
     fun `default values are set correctly`() {
         assertThat(game.smallBlind).isEqualTo(0)
         assertThat(game.bigBlind).isEqualTo(0)
-        assertThat(game.startingMoney).isEqualTo(100)
         assertThat(game.isGameStarted).isFalse
     }
 
@@ -44,17 +43,6 @@ class GameTest : AnnotationSpec() {
 
         game.setBigBlind(15)
         assertThat(game.bigBlind).isEqualTo(15)
-    }
-
-    @Test
-    fun `setStartingMoney validates amount`() {
-        game.setBigBlind(10)
-        assertThatThrownBy { game.setStartingMoney(5) }
-            .isInstanceOf(IllegalArgumentException::class.java)
-            .hasMessage("Starting money must be greater than big blind")
-
-        game.setStartingMoney(200)
-        assertThat(game.startingMoney).isEqualTo(200)
     }
 
     @Test
@@ -125,7 +113,6 @@ class GameTest : AnnotationSpec() {
         // Setup game state
         game.setBigBlind(10)
         game.setSmallBlind(5)
-        game.setStartingMoney(1000)
         game.addPlayer(Player("Player 1", 1000))
         game.addPlayer(Player("Player 2", 1000))
         game.updateDealer(1)
@@ -139,7 +126,6 @@ class GameTest : AnnotationSpec() {
         // Verify all values
         assertThat(newGame.smallBlind).isEqualTo(5)
         assertThat(newGame.bigBlind).isEqualTo(10)
-        assertThat(newGame.startingMoney).isEqualTo(1000)
         assertThat(newGame.isGameStarted).isTrue()
         assertThat(newGame.players).hasSize(2)
         assertThat(newGame.dealer).isEqualTo(1)

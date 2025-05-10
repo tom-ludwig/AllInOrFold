@@ -17,9 +17,6 @@ class Game : StateSerializable {
     private var _bigBlind = 0
     val bigBlind: Int get() = _bigBlind
     
-    private var _startingMoney = 100
-    val startingMoney: Int get() = _startingMoney
-    
     private var _isGameStarted = false
     val isGameStarted: Boolean get() = _isGameStarted
 
@@ -46,25 +43,6 @@ class Game : StateSerializable {
     val smallBlindPosition: Int get() = (dealer + 1) % players.size
     val bigBlindPosition: Int get() = (dealer + 2) % players.size
 
-    // TODO: Add game state tracking
-    // - current betting round (pre-flop, flop, turn, river)
-    // - current bet amount
-    // - active players in current hand
-    // - side pots for all-in situations
-
-    // TODO: Add automatic game flow methods
-    // - startNewHand(): Deal cards, post blinds, start first betting round
-    // - nextBettingRound(): Move to next round when betting is complete
-    // - dealCommunityCards(): Deal flop/turn/river when round is complete
-    // - determineWinner(): Compare hands and award pot
-    // - moveDealerButton(): Move dealer position after hand
-    // - handlePlayerElimination(): Remove players with no chips
-
-    // TODO: Add betting validation
-    // - validateBet(): Ensure bets follow rules
-    // - validateRaise(): Ensure raises are valid
-    // - validateAllIn(): Handle all-in situations
-
     fun setSmallBlind(amount: Int) {
         require(amount > 0) { "Small blind must be greater than 0" }
         if (_bigBlind > 0) {
@@ -79,11 +57,7 @@ class Game : StateSerializable {
             require(amount > _smallBlind) { "Big blind must be greater than small blind" }
         }
         _bigBlind = amount
-    }
-
-    fun setStartingMoney(amount: Int) {
-        require(amount > _bigBlind) { "Starting money must be greater than big blind" }
-        _startingMoney = amount
+        println("Big blind set to $_bigBlind")
     }
 
     /**
@@ -151,9 +125,11 @@ class Game : StateSerializable {
         
         // Handle small blind
         val smallBlindAmount = minOf(_smallBlind, smallBlindPlayer.money)
+        println("Trying to reduce small blind $smallBlindAmount from ${smallBlindPlayer.name}")
         if (smallBlindAmount > 0) {
             smallBlindPlayer.addMoney(-smallBlindAmount)
             round.addToPot(smallBlindAmount)
+            println("DONE")
         }
         
         // Handle big blind
@@ -351,7 +327,6 @@ class Game : StateSerializable {
             "dealer" to dealer,
             "smallBlind" to _smallBlind,
             "bigBlind" to _bigBlind,
-            "startingMoney" to _startingMoney,
             "isGameStarted" to _isGameStarted,
             "currentBet" to _currentBet,
             "lastRaisePosition" to _lastRaisePosition,
@@ -381,7 +356,6 @@ class Game : StateSerializable {
         dealer = (state["dealer"] as Number).toInt()
         _smallBlind = (state["smallBlind"] as Number).toInt()
         _bigBlind = (state["bigBlind"] as Number).toInt()
-        _startingMoney = (state["startingMoney"] as Number).toInt()
         _isGameStarted = state["isGameStarted"] as Boolean
         _currentBet = (state["currentBet"] as Number).toInt()
         _lastRaisePosition = (state["lastRaisePosition"] as Number).toInt()

@@ -6,20 +6,9 @@ import hwr.oop.group1.poker.Player
 class PokerCliException(message: String) : Exception(message)
 
 class PokerCli {
-    private val game = Game()
+    private var game = Game()
     private val stateManager = GameStateManager()
     private var currentPlayerIndex = 0
-
-    // TODO: Add player action commands
-    // - --fold: Fold the current hand
-    // - --check: Check (if no bet to call)
-    // - --all-in: Go all-in with remaining chips
-
-    // TODO: Add game state commands
-    // - --show-pot: Show current pot size
-    // - --show-players: Show all players and their chip counts
-    // - --show-current-bet: Show the current bet amount
-    // - --show-active-players: Show players still in the current hand
 
     fun start(args: Array<String>) {
         if (args.isEmpty()) {
@@ -60,7 +49,6 @@ class PokerCli {
                 "--add-player" -> handleAddPlayer(args)
                 "--set-small-blind" -> handleSetSmallBlind(args)
                 "--set-big-blind" -> handleSetBigBlind(args)
-                "--set-starting-money" -> handleSetStartingMoney(args)
                 "--start-game" -> handleStartGame()
                 "--deal-new-hand" -> handleDealNewHand()
                 "--call" -> handleCall()
@@ -121,19 +109,6 @@ class PokerCli {
             throw PokerCliException("Invalid big blind amount")
         }
         game.setBigBlind(amount)
-        println("Big blind set to $amount")
-    }
-
-    private fun handleSetStartingMoney(args: Array<String>) {
-        if (args.size < 2) {
-            throw PokerCliException("Amount required for starting money")
-        }
-        val amount = args[1].toIntOrNull()
-        if (amount == null || amount <= 0) {
-            throw PokerCliException("Invalid starting money amount")
-        }
-        game.setStartingMoney(amount)
-        println("Starting money set to $amount")
     }
 
     private fun handleStartGame() {
@@ -181,7 +156,7 @@ class PokerCli {
 
     private fun showCommunityCards() {
         val cards = game.round.getRevealedCommunityCards()
-        println("Community Cards: ${if (cards.isEmpty()) "" else cards.joinToString(" ")}")
+        println("Community Cards: ${if (cards.isEmpty()) "" else cards.joinToString(", ")}")
     }
 
     private fun showHand() {
@@ -232,23 +207,7 @@ class PokerCli {
 
     private fun loadGameState() {
         stateManager.loadState()?.let { loadedGame ->
-            try {
-                // Only update players if we don't have any
-                if (game.players.isEmpty()) {
-                    loadedGame.players.forEach { game.addPlayer(it) }
-                }
-                
-                // Update game state
-                game.updateRound(loadedGame.round)
-                game.updateDealer(loadedGame.dealer)
-                
-                // If the loaded game was started, start this game too
-                if (loadedGame.isGameStarted) {
-                    game.startNewGame()
-                }
-            } catch (e: IllegalArgumentException) {
-                // Ignore state loading errors
-            }
+            game = loadedGame
         }
     }
 } 

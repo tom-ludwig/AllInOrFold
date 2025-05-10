@@ -130,38 +130,6 @@ class PokerCliTest : AnnotationSpec() {
             .hasMessage("Invalid big blind amount")
     }
 
-    @Test
-    fun `set starting money command sets amount`() {
-        clearOutput()
-        cli.start(arrayOf("--set-big-blind", "10"))
-        clearOutput()
-        cli.start(arrayOf("--set-starting-money", "1000"))
-        assertThat(getOutput()).isEqualTo("Starting money set to 1000")
-    }
-
-    @Test
-    fun `set starting money requires amount`() {
-        clearOutput()
-        assertThatThrownBy { cli.start(arrayOf("--set-starting-money")) }
-            .isInstanceOf(PokerCliException::class.java)
-            .hasMessage("Amount required for starting money")
-    }
-
-    @Test
-    fun `set starting money validates amount`() {
-        clearOutput()
-        assertThatThrownBy { cli.start(arrayOf("--set-starting-money", "invalid")) }
-            .isInstanceOf(PokerCliException::class.java)
-            .hasMessage("Invalid starting money amount")
-
-        assertThatThrownBy { cli.start(arrayOf("--set-starting-money", "0")) }
-            .isInstanceOf(PokerCliException::class.java)
-            .hasMessage("Invalid starting money amount")
-
-        assertThatThrownBy { cli.start(arrayOf("--set-starting-money", "-1000")) }
-            .isInstanceOf(PokerCliException::class.java)
-            .hasMessage("Invalid starting money amount")
-    }
 
     @Test
     fun `start game command starts game`() {

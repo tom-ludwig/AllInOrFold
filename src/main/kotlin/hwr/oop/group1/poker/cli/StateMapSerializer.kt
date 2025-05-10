@@ -58,6 +58,5 @@ object StateMapSerializer : KSerializer<Map<String, Any>> {
         }
         is JsonArray -> element.map { deserializeJsonElement(it) }
         is JsonObject -> deserializeJsonObject(element)
-//        else -> throw IllegalArgumentException("Unsupported JSON element: $element")
     }
 } 
