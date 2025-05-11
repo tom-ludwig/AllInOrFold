@@ -17,6 +17,7 @@ class Player (name: String, money: Int = 0){
     fun addMoney(money: Int) {
         this.money += money
     }
+    
     fun fold() {
         hasFolded = true
         hand.clear()
