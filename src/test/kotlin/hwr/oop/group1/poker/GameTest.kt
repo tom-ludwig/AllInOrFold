@@ -42,8 +42,8 @@ class GameTest: AnnotationSpec() {
 
         game.newRound()
 
-        assertThat(c.money).isEqualTo(100 - Game.SMALL_BLIND)
-        assertThat(a.money).isEqualTo(100 - Game.BIG_BLIND)
+        assertThat(b.money).isEqualTo(100 - Game.SMALL_BLIND)
+        assertThat(c.money).isEqualTo(100 - Game.BIG_BLIND)
         assertThat(game.round.pot).isEqualTo(Game.SMALL_BLIND + Game.BIG_BLIND)
 
         assertThat(b.money).isEqualTo(100)
