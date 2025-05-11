@@ -19,10 +19,10 @@ class Player (name: String, money: Int = 0){
     }
     fun fold() {
         hasFolded = true
+         hand.clear()
     }
 
     fun resetFold(){
-        hasFolded = false
-        hand.clear()
+        hasFolded = false   
     }
 }
