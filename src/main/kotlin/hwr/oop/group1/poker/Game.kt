@@ -22,11 +22,13 @@ class Game {
       } else {
           (dealer + 2) % players.size
       }
-      players[smbIndex].addMoney(-SMALL_BLIND)
-      players[bbIndex].addMoney(-BIG_BLIND)
-
-      round.addToPot(SMALL_BLIND + BIG_BLIND)
+     bet (smbIndex, SMALL_BLIND)
+     bet (bbIndex, BIG_BLIND)
     }
+    private fun bet(playerIndex: Int, amount: Int) {
+    players[playerIndex].addMoney(-amount)
+    round.addToPot(amount)
+}
     fun addPlayer(player: Player) {
         players += player
     }
