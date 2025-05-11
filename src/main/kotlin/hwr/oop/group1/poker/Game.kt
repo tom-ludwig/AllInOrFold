@@ -35,7 +35,6 @@ class Game {
     fun nextDealer() {
         dealer = (dealer + 1) % players.size
     }
-
     fun newRound() {
         nextDealer()
         players.forEach {it.resetFold()}
