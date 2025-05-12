@@ -24,6 +24,6 @@ class Player (name: String, money: Int = 0){
     }
 
     fun resetFold(){
-        hasFolded = false   
+        hasFolded = false
     }
 }
