@@ -7,6 +7,42 @@ A poker game made in the OOP class at HWR in 2025
 
 ## Abstract
 
+## Conceptional UMLs
+### Sequence diagram
+~~~mermaid
+sequenceDiagram
+participant game
+participant round
+actor players
+game ->> round: startRound()
+loop for 4 phases
+round ->> round: doPhaseSpecificActions()
+loop until 3 Checks
+round ->> players: askAction()
+players ->> round: reportAction()
+end
+round ->> round: rankHands()
+end
+round ->> game: reportBackWinningsAndLoses()
+~~~
+### Class diagram
+~~~mermaid
+sequenceDiagram
+participant game
+participant round
+actor players
+game ->> round: startRound()
+loop for 4 phases
+round ->> round: doPhaseSpecificActions()
+loop until 3 Checks
+round ->> players: askAction()
+players ->> round: reportAction()
+end
+round ->> round: rankHands()
+end
+round ->> game: reportBackWinningsAndLoses()
+~~~
+
 
 ## Feature List
 
