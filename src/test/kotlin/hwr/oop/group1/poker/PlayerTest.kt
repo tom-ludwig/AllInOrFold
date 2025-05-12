@@ -47,13 +47,14 @@ class PlayerTest: AnnotationSpec() {
     }
 
     @Test 
-    fun `fold clears hand`() 
+    fun `fold clears hand`() {
+        val player = Player("Saruman", money = 50)
         player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
         player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
         player.fold()
-        assertThat(player.hand).hasSize(2)
         assertThat(player.hasFolded).isTrue()
         assertThat(player.hand).isEmpty()
+    }
 
     @Test
     fun `resetFold clears fold status`() {
@@ -62,10 +63,8 @@ class PlayerTest: AnnotationSpec() {
         player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
         player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
         player.fold()
-        assertThat(player.hand).hasSize(2)
         assertThat(player.hasFolded).isTrue()
-    
-q       player.resetFold()
+        player.resetFold()
         assertThat(player.hasFolded).isFalse()
     }
 }

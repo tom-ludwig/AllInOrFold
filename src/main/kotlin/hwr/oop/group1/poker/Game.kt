@@ -5,7 +5,7 @@ class Game {
         private set
     var players = emptyList<Player>().toMutableList()
         private set
-    var dealer = 0
+    var dealer = -1
         private set
     companion object {
         const val SMALL_BLIND = 5

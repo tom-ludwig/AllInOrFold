@@ -25,7 +25,7 @@ class GameTest: AnnotationSpec() {
         game.newRound()
         val dealer = game.dealer
 
-        assertThat(dealer).isEqualTo(1)
+        assertThat(dealer).isEqualTo(0)
     }
 
     @Test
@@ -46,7 +46,7 @@ class GameTest: AnnotationSpec() {
         assertThat(c.money).isEqualTo(100 - Game.BIG_BLIND)
         assertThat(game.round.pot).isEqualTo(Game.SMALL_BLIND + Game.BIG_BLIND)
 
-        assertThat(b.money).isEqualTo(100)
+        assertThat(a.money).isEqualTo(100)
     }
 
     @Test
@@ -60,8 +60,8 @@ class GameTest: AnnotationSpec() {
 
         game.newRound()
 
-        assertThat(second.money).isEqualTo(200 - Game.SMALL_BLIND)
-        assertThat(first.money).isEqualTo(200 - Game.BIG_BLIND)
+        assertThat(first.money).isEqualTo(200 - Game.SMALL_BLIND)
+        assertThat(second.money).isEqualTo(200 - Game.BIG_BLIND)
         assertThat(game.round.pot).isEqualTo(Game.SMALL_BLIND + Game.BIG_BLIND)
     }
 }
