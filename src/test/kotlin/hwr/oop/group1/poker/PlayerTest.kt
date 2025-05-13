@@ -33,4 +33,38 @@ class PlayerTest: AnnotationSpec() {
 
         assertThat(playerMoney).isEqualTo(10)
     }
+    @Test
+    fun `fold sets hasFolded to true `() {
+
+        val player = Player("Saruman", money = 50)
+        assertThat(player.hasFolded).isFalse()  // vorab
+
+
+        player.fold()
+
+
+        assertThat(player.hasFolded).isTrue()
+    }
+
+    @Test 
+    fun `fold clears hand`() {
+        val player = Player("Saruman", money = 50)
+        player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
+        player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
+        player.fold()
+        assertThat(player.hasFolded).isTrue()
+        assertThat(player.hand).isEmpty()
+    }
+
+    @Test
+    fun `resetFold clears fold status`() {
+
+        val player = Player("Saruman", money = 50)
+        player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
+        player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
+        player.fold()
+        assertThat(player.hasFolded).isTrue()
+        player.resetFold()
+        assertThat(player.hasFolded).isFalse()
+    }
 }
