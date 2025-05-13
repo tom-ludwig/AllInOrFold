@@ -1,0 +1,70 @@
+{
+    "players": [
+        {
+            "name": "Player 1",
+            "money": 990,
+            "hand": [
+                {
+                    "rank": "QUEEN",
+                    "suit": "DIAMONDS"
+                },
+                {
+                    "rank": "JACK",
+                    "suit": "DIAMONDS"
+                }
+            ],
+            "isActive": true
+        },
+        {
+            "name": "Player 2",
+            "money": 995,
+            "hand": [
+                {
+                    "rank": "KING",
+                    "suit": "CLUBS"
+                },
+                {
+                    "rank": "SEVEN",
+                    "suit": "SPADES"
+                }
+            ],
+            "isActive": true
+        }
+    ],
+    "round": {
+        "communityCards": [
+            {
+                "rank": "JACK",
+                "suit": "HEARTS"
+            },
+            {
+                "rank": "KING",
+                "suit": "DIAMONDS"
+            },
+            {
+                "rank": "TEN",
+                "suit": "DIAMONDS"
+            },
+            {
+                "rank": "NINE",
+                "suit": "DIAMONDS"
+            },
+            {
+                "rank": "NINE",
+                "suit": "SPADES"
+            }
+        ],
+        "pot": 15,
+        "stage": 0
+    },
+    "dealer": 0,
+    "smallBlind": 5,
+    "bigBlind": 10,
+    "isGameStarted": true,
+    "currentBet": 10,
+    "lastRaisePosition": -1,
+    "currentPosition": 1,
+    "isBettingRoundComplete": false,
+    "isHandComplete": false,
+    "lastWinnerAnnouncement": ""
+}
