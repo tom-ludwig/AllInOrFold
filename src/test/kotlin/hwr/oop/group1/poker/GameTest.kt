@@ -17,15 +17,17 @@ class GameTest: AnnotationSpec() {
     }
 
     @Test
-    fun `Dealer is 1 after new Round`() {
+    fun `Dealer is first player after new Round`() {
         val game = Game()
-        game.addPlayer(Player("Max"))
-        game.addPlayer(Player("Ben"))
+        val player1 = Player("Max")
+        val player2 = Player("Ben")
+        game.addPlayer(player1)
+        game.addPlayer(player2)
 
         game.newRound()
-        val dealer = game.dealer
+        val dealer = game.dealer()
 
-        assertThat(dealer).isEqualTo(0)
+        assertThat(dealer).isEqualTo(player1)
     }
 
     @Test

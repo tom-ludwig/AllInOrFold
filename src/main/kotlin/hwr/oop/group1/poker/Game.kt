@@ -5,40 +5,45 @@ class Game {
         private set
     var players = emptyList<Player>().toMutableList()
         private set
-    var dealer = -1
-        private set
+    private var dealerPosition = -1
     companion object {
         const val SMALL_BLIND = 5
         const val BIG_BLIND = 10
         }
     private fun payBlinds(){
       val smbIndex = if (players.size == 2) { //smbIndex = SmallBlindIndex
-          dealer
+          dealerPosition
       }else{
-          (dealer+1) % players.size
+          (dealerPosition+1) % players.size
       }
       val bbIndex = if (players.size == 2) {
-          (dealer + 1) % players.size
+          (dealerPosition + 1) % players.size
       } else {
-          (dealer + 2) % players.size
+          (dealerPosition + 2) % players.size
       }
      bet (smbIndex, SMALL_BLIND)
      bet (bbIndex, BIG_BLIND)
     }
     private fun bet(playerIndex: Int, amount: Int) {
-    players[playerIndex].addMoney(-amount)
-    round.addToPot(amount)
-}
+        players[playerIndex].addMoney(-amount)
+        round.addToPot(amount)
+    }
     fun addPlayer(player: Player) {
         players += player
     }
-    fun nextDealer() {
-        dealer = (dealer + 1) % players.size
-    }
+
     fun newRound() {
         nextDealer()
         players.forEach {it.resetFold()}
         round = Round()
         payBlinds()
+    }
+
+    private fun nextDealer() {
+        dealerPosition = (dealerPosition + 1) % players.size
+    }
+
+    fun dealer(): Player {
+        return players[dealerPosition]
     }
 }
