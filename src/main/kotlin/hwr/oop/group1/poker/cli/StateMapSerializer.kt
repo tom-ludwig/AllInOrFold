@@ -5,7 +5,17 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonDecoder
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonEncoder
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.intOrNull
+
 
 object StateMapSerializer : KSerializer<Map<String, Any>> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("StateMap")
@@ -14,9 +24,9 @@ object StateMapSerializer : KSerializer<Map<String, Any>> {
         val jsonObject = buildJsonObject {
             value.forEach { (key, value) ->
                 when (value) {
-                    is String -> put(key, value)
-                    is Number -> put(key, value.toInt())
-                    is Boolean -> put(key, value)
+                    is String -> put(key, JsonPrimitive(value))
+                    is Number -> put(key, JsonPrimitive(value.toInt()))
+                    is Boolean -> put(key, JsonPrimitive(value))
                     is List<*> -> put(key, JsonArray(value.map { serializeAny(it!!) }))
                     is Map<*, *> -> put(key, serializeMap(value as Map<String, Any>))
                     else -> throw IllegalArgumentException("Unsupported type: ${value::class}")
@@ -27,8 +37,11 @@ object StateMapSerializer : KSerializer<Map<String, Any>> {
     }
 
     override fun deserialize(decoder: Decoder): Map<String, Any> {
-        val jsonElement = (decoder as JsonDecoder).decodeJsonElement()
-        return deserializeJsonObject(jsonElement.jsonObject)
+        val element = (decoder as JsonDecoder).decodeJsonElement()
+        if (element !is JsonObject) {
+            throw IllegalArgumentException("Expected JsonObject for Map deserialization")
+        }
+        return deserializeJsonObject(element)
     }
 
     private fun serializeAny(value: Any): JsonElement = when (value) {
@@ -52,12 +65,11 @@ object StateMapSerializer : KSerializer<Map<String, Any>> {
     private fun deserializeJsonElement(element: JsonElement): Any = when (element) {
         is JsonPrimitive -> when {
             element.isString -> element.content
-            element.intOrNull != null -> element.int
-            element.booleanOrNull != null -> element.boolean
+            element.intOrNull != null -> element.intOrNull ?: element.content.toInt()
+            element.booleanOrNull != null -> element.booleanOrNull ?: element.content.toBoolean()
             else -> element.content
         }
         is JsonArray -> element.map { deserializeJsonElement(it) }
         is JsonObject -> deserializeJsonObject(element)
-//        else -> throw IllegalArgumentException("Unsupported JSON element: $element")
     }
 }
