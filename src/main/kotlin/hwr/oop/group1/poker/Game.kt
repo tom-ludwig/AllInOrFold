@@ -33,10 +33,16 @@ class Game {
     }
 
     fun newRound() {
+        val deck = Deck()
         nextDealer()
         players.forEach {it.resetFold()}
         round = Round()
         payBlinds()
+        for (player in players) {
+            repeat(2){
+                player.addCard(deck.draw())
+            }
+        }
     }
 
     private fun nextDealer() {
