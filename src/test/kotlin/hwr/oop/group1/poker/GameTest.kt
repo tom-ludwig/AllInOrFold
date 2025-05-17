@@ -66,4 +66,18 @@ class GameTest: AnnotationSpec() {
         assertThat(second.money).isEqualTo(200 - Game.BIG_BLIND)
         assertThat(game.round.pot).isEqualTo(Game.SMALL_BLIND + Game.BIG_BLIND)
     }
+
+    @Test
+    fun `players are dealt two cards at the beginning of a new round`() {
+        val game = Game()
+        val alice  = Player("Alice",  money = 100)
+        val bob = Player("Bob", money = 100)
+        game.addPlayer(alice)
+        game.addPlayer(bob)
+
+        game.newRound()
+
+        assertThat(alice.hand.size).isEqualTo(2)
+    }
+
 }
