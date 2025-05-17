@@ -15,4 +15,16 @@ class CardTest: AnnotationSpec() {
         assertThat(rank).isEqualTo(CardRank.KING)
         assertThat(suit).isEqualTo(CardSuit.DIAMONDS)
     }
+    @Test
+    fun `card is correctly converted and restored`() {
+        val original = Card(CardRank.QUEEN, CardSuit.DIAMONDS)
+
+        val state = original.toState()
+        val copy = Card.fromState(state)
+
+
+        assertThat(copy.rank).isEqualTo(CardRank.QUEEN)
+        assertThat(copy.suit).isEqualTo(CardSuit.DIAMONDS)
+        assertThat(copy).isEqualTo(original)
+    }
 }
