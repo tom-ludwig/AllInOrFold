@@ -7,17 +7,26 @@ class Player(
     var name: String = "",
     var money: Int = 0
 ) : StateSerializable {
-    var hand = emptyList<Card>().toMutableList()
+    var hand = mutableListOf<Card>()
         private set
     var hasFolded = false
         private set
+    var currentBet = 0
+        private set
 
     fun addCard(card: Card) {
-        hand += card
+        hand.add(card)
     }
 
     fun addMoney(money: Int) {
         this.money += money
+    }
+
+    fun betMoney(money: Int): Int {
+        var amount = Math.min(money, this.money)
+        this.money -= amount
+        currentBet += amount
+        return amount
     }
 
     fun fold() {

@@ -71,7 +71,7 @@ class RoundTest: AnnotationSpec() {
     fun `round state is correctly converted and restored`() {
         val original = Round()
         original.addToPot(50)
-        original.nextStage() //
+        original.nextStage()
 
         val state = original.toState()
 

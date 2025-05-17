@@ -4,12 +4,14 @@ import hwr.oop.group1.poker.cli.StateSerializable
 class Round : StateSerializable {
     var deck = Deck()
         private set
-    var communityCards = emptyList<Card>().toMutableList()
+    var communityCards = mutableListOf<Card>()
         private set
     private var revealedCommunityCardCount = 0
     var stage = 0
         private set
     var pot = 0
+        private set
+    var currentBet = 0
         private set
 
     init {
@@ -37,6 +39,11 @@ class Round : StateSerializable {
     fun addToPot(money: Int) {
         pot += money
     }
+
+    fun setCurrentBet(bet: Int) {
+        currentBet = bet
+    }
+
     override fun toState(): Map<String, Any> {
         return mapOf(
             "communityCards" to communityCards.map { it.toState() },
