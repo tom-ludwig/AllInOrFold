@@ -25,7 +25,7 @@ class RoundTest: AnnotationSpec() {
     }
 
     @Test
-    fun `There are 5 community cards at the start`(){
+    fun `There are 5 community cards at the start`() {
         val round = Round()
         assertThat(round.communityCards.size).isEqualTo(5)
     }
@@ -65,5 +65,27 @@ class RoundTest: AnnotationSpec() {
         val pot = round.pot
 
         assertThat(pot).isEqualTo(25)
+    }
+
+    @Test
+    fun `round state is correctly converted and restored`() {
+        val original = Round()
+        original.addToPot(50)
+        original.nextStage() //
+
+        val state = original.toState()
+
+        val copy = Round()
+        copy.fromState(state)
+
+
+        assertThat(copy.pot).isEqualTo(50)
+
+
+        assertThat(copy.stage).isEqualTo(1)
+
+
+        assertThat(copy.communityCards.size).isEqualTo(5)
+        assertThat(copy.getRevealedCommunityCards().size).isEqualTo(3)
     }
 }

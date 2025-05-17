@@ -67,4 +67,28 @@ class PlayerTest: AnnotationSpec() {
         player.resetFold()
         assertThat(player.hasFolded).isFalse()
     }
+
+    @Test
+    fun `player state is correctly converted and restored`() {
+        val original = Player(name = "Voldemort", money = 300)
+        original.addCard(Card(CardRank.ACE, CardSuit.SPADES))
+        original.addCard(Card(CardRank.TEN, CardSuit.HEARTS))
+        original.fold() // player fold → hasFolded = true, clear hand
+
+        val state = original.toState() // serialize player in map
+
+        val copy = Player()
+        copy.fromState(state)
+
+
+        assertThat(copy.name).isEqualTo("Voldemort")
+        assertThat(copy.money).isEqualTo(300)
+
+
+        assertThat(copy.hasFolded).isTrue()
+
+
+        assertThat(copy.hand).isEmpty()
+    }
 }
+

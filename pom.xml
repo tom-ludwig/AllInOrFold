@@ -31,6 +31,11 @@
       <id>mavenCentral</id>
       <url>https://repo1.maven.org/maven2/</url>
     </repository>
+    <repository>
+      <id>kotlinx</id>
+      <url>https://maven.pkg.jetbrains.space/public/p/kotlinx/maven</url>
+    </repository>
+
   </repositories>
 
   <dependencies>
@@ -57,6 +62,12 @@
       <version>${assertj-core.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-serialization-json-jvm</artifactId>
+      <version>1.5.1</version>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -94,6 +105,11 @@
             </kotest.framework.classpath.scanning.autoscan.disable>
           </systemPropertyVariables>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-serialization</artifactId>
+        <version>${kotlin.version}</version>
       </plugin>
     </plugins>
   </build>

@@ -1,6 +1,7 @@
 package hwr.oop.group1.poker
+import hwr.oop.group1.poker.cli.StateSerializable
 
-class Round {
+class Round : StateSerializable {
     var deck = Deck()
         private set
     var communityCards = emptyList<Card>().toMutableList()
@@ -16,7 +17,6 @@ class Round {
             addCommunityCard(deck.draw())
         }
     }
-
     fun addCommunityCard(card: Card) {
         this.communityCards += card
     }
@@ -36,5 +36,21 @@ class Round {
 
     fun addToPot(money: Int) {
         pot += money
+    }
+    override fun toState(): Map<String, Any> {
+        return mapOf(
+            "communityCards" to communityCards.map { it.toState() },
+            "revealedCommunityCardCount" to revealedCommunityCardCount,
+            "stage" to stage,
+            "pot" to pot
+        )
+    }
+    override fun fromState(state: Map<String, Any>) {
+        communityCards = (state["communityCards"] as List<Map<String, Any>>).map {
+            Card(CardRank.valueOf(it["rank"] as String), CardSuit.valueOf(it["suit"] as String))
+        }.toMutableList()
+        revealedCommunityCardCount = (state["revealedCommunityCardCount"] as Number).toInt()
+        stage = (state["stage"] as Number).toInt()
+        pot = (state["pot"] as Number).toInt()
     }
 }
