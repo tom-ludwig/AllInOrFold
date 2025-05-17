@@ -22,6 +22,7 @@ class Round {
     }
 
     fun nextStage() {
+        require(stage <= 3) {"Stages can only advance to river"}
         stage++
         if(stage == 1){
             revealedCommunityCardCount = 3

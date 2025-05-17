@@ -1,5 +1,6 @@
 package hwr.oop.group1.poker
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.AnnotationSpec
 import org.assertj.core.api.Assertions.assertThat
 
@@ -22,6 +23,16 @@ class RoundTest: AnnotationSpec() {
         val stage = round.stage
 
         assertThat(stage).isEqualTo(1)
+    }
+
+    @Test
+    fun `stages can't exceed river`(){
+        val round = Round()
+        shouldThrow<IllegalArgumentException> {
+            repeat(4) {
+                round.nextStage()
+            }
+        }
     }
 
     @Test
