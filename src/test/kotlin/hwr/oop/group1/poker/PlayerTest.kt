@@ -7,7 +7,7 @@ class PlayerTest: AnnotationSpec() {
 
     @Test
     fun `Player Max has name Max`() {
-        val player = Player("Max")
+        val player = Player("Max", 1000)
 
         val name = player.name
 
@@ -16,7 +16,7 @@ class PlayerTest: AnnotationSpec() {
 
     @Test
     fun `Player has added Card`() {
-        val player = Player("Max")
+        val player = Player("Max", 1000)
         val card = Card(CardRank.FIVE, CardSuit.SPADES)
 
         player.addCard(card)
@@ -26,17 +26,17 @@ class PlayerTest: AnnotationSpec() {
 
     @Test
     fun `Player Money is 10 after adding 10`() {
-        val player = Player("Max")
+        val player = Player("Max", 1000)
 
         player.addMoney(10)
         val playerMoney = player.money
 
-        assertThat(playerMoney).isEqualTo(10)
+        assertThat(playerMoney).isEqualTo(1010)
     }
     @Test
     fun `fold sets hasFolded to true `() {
 
-        val player = Player("Saruman", money = 50)
+        val player = Player("Saruman", 50)
         assertThat(player.hasFolded).isFalse()  // vorab
 
 
@@ -48,7 +48,7 @@ class PlayerTest: AnnotationSpec() {
 
     @Test 
     fun `fold clears hand`() {
-        val player = Player("Saruman", money = 50)
+        val player = Player("Saruman", 50)
         player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
         player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
         player.fold()
@@ -58,37 +58,13 @@ class PlayerTest: AnnotationSpec() {
 
     @Test
     fun `resetFold clears fold status`() {
-
-        val player = Player("Saruman", money = 50)
+        val player = Player("Saruman", 50)
         player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
         player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
         player.fold()
         assertThat(player.hasFolded).isTrue()
         player.resetFold()
         assertThat(player.hasFolded).isFalse()
-    }
-
-    @Test
-    fun `player state is correctly converted and restored`() {
-        val original = Player(name = "Voldemort", money = 300)
-        original.addCard(Card(CardRank.ACE, CardSuit.SPADES))
-        original.addCard(Card(CardRank.TEN, CardSuit.HEARTS))
-        original.fold() // player fold → hasFolded = true, clear hand
-
-        val state = original.toState() // serialize player in map
-
-        val copy = Player()
-        copy.fromState(state)
-
-
-        assertThat(copy.name).isEqualTo("Voldemort")
-        assertThat(copy.money).isEqualTo(300)
-
-
-        assertThat(copy.hasFolded).isTrue()
-
-
-        assertThat(copy.hand).isEmpty()
     }
 }
 

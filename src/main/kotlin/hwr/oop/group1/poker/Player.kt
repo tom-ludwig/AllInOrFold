@@ -1,12 +1,9 @@
 package hwr.oop.group1.poker
-import hwr.oop.group1.poker.cli.StateSerializable
-
-
 
 class Player(
-    var name: String = "",
-    var money: Int = 0
-) : StateSerializable {
+    var name: String,
+    var money: Int,
+) {
     var hand = mutableListOf<Card>()
         private set
     var hasFolded = false
@@ -23,10 +20,14 @@ class Player(
     }
 
     fun betMoney(money: Int): Int {
-        var amount = Math.min(money, this.money)
+        val amount = Math.min(money, this.money)
         this.money -= amount
-        currentBet += amount
+        currentBet = Math.max(currentBet, amount)
         return amount
+    }
+
+    fun resetCurrentBet() {
+        currentBet = 0
     }
 
     fun fold() {
@@ -38,27 +39,12 @@ class Player(
         hasFolded = false
     }
 
-    override fun toState(): Map<String, Any> {
-        return mapOf(
-            "name" to name,
-            "money" to money,
-            "hasFolded" to hasFolded,
-            "hand" to hand.map { it.toState() }
-        )
-    }
-
-    override fun fromState(state: Map<String, Any>) {
-        name = state["name"] as String
-        money = (state["money"] as Number).toInt()
-        hasFolded = state["hasFolded"] as Boolean
-
-        @Suppress("UNCHECKED_CAST")
-        val handState = state["hand"] as? List<Map<String, String>> ?: emptyList()
-
-        hand = handState.map {
-            val rank = CardRank.valueOf(it["rank"]!!)
-            val suit = CardSuit.valueOf(it["suit"]!!)
-            Card(rank, suit)
-        }.toMutableList()
+    /**
+     * Evaluates the player's hand strength using the community cards.
+     * Returns a HandRank object that can be used to compare hands.
+     */
+    fun evaluatePlayerHand(communityCards: List<Card>): HandRank {
+        val allCards = hand + communityCards
+        return evaluateHand(allCards)
     }
 }

@@ -38,7 +38,7 @@ class JsonStateManager(private val file: File = File("poker_state.json")) : Stat
 class GameStateManager(private val stateManager: StateManager = JsonStateManager()) {
     // game → map → save
     fun saveState(game: Game) {
-        stateManager.saveState(game.toState())
+//        stateManager.saveState(game.toState())
     }
 
     fun loadState(): Game? {
@@ -46,7 +46,7 @@ class GameStateManager(private val stateManager: StateManager = JsonStateManager
 
         return try {
             val game = Game()
-            game.fromState(state) // map → game
+//            game.fromState(state) // map → game
             game
         } catch (e: Exception) {
             println("Error loading game state: ${e.message}")
