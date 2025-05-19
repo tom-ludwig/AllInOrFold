@@ -7,7 +7,7 @@ class Player(
     var name: String = "",
     var money: Int = 0
 ) : StateSerializable {
-    var hand = mutableListOf<Card>()
+    var hole = mutableListOf<Card>()
         private set
     var hasFolded = false
         private set
@@ -15,7 +15,7 @@ class Player(
         private set
 
     fun addCard(card: Card) {
-        hand.add(card)
+        hole.add(card)
     }
 
     fun addMoney(money: Int) {
@@ -31,7 +31,7 @@ class Player(
 
     fun fold() {
         hasFolded = true
-        hand.clear()
+        hole.clear()
     }
 
     fun resetFold() {
@@ -43,7 +43,7 @@ class Player(
             "name" to name,
             "money" to money,
             "hasFolded" to hasFolded,
-            "hand" to hand.map { it.toState() }
+            "hole" to hole.map { it.toState() }
         )
     }
 
@@ -53,9 +53,9 @@ class Player(
         hasFolded = state["hasFolded"] as Boolean
 
         @Suppress("UNCHECKED_CAST")
-        val handState = state["hand"] as? List<Map<String, String>> ?: emptyList()
+        val holeState = state["hole"] as? List<Map<String, String>> ?: emptyList()
 
-        hand = handState.map {
+        hole = holeState.map {
             val rank = CardRank.valueOf(it["rank"]!!)
             val suit = CardSuit.valueOf(it["suit"]!!)
             Card(rank, suit)

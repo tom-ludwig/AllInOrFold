@@ -15,18 +15,18 @@ class Game : StateSerializable {
     }
 
     private fun payBlinds() {
-        val smbIndex = if (players.size == 2) { //smbIndex = SmallBlindIndex
+        val smallBlindIndex = if (players.size == 2) { //smbIndex = SmallBlindIndex
             dealerPosition
         } else {
             (dealerPosition + 1) % players.size
         }
-        val bbIndex = if (players.size == 2) {
+        val bigBlindIndex = if (players.size == 2) {
             (dealerPosition + 1) % players.size
         } else {
             (dealerPosition + 2) % players.size
         }
-        bet(players[smbIndex], SMALL_BLIND)
-        bet(players[bbIndex], BIG_BLIND)
+        bet(players[smallBlindIndex], SMALL_BLIND)
+        bet(players[bigBlindIndex], BIG_BLIND)
     }
 
     private fun bet(player: Player, amount: Int) {

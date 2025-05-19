@@ -77,7 +77,7 @@ class GameTest: AnnotationSpec() {
 
         game.newRound()
 
-        assertThat(alice.hand.size).isEqualTo(2)
+        assertThat(alice.hole.size).isEqualTo(2)
     }
 
     @Test
