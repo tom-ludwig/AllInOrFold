@@ -21,7 +21,7 @@ class PlayerTest: AnnotationSpec() {
 
         player.addCard(card)
 
-        assertThat(player.hand).contains(card)
+        assertThat(player.hole).contains(card)
     }
 
     @Test
@@ -47,13 +47,13 @@ class PlayerTest: AnnotationSpec() {
     }
 
     @Test 
-    fun `fold clears hand`() {
+    fun `fold clears hole`() {
         val player = Player("Saruman", money = 50)
         player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
         player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
         player.fold()
         assertThat(player.hasFolded).isTrue()
-        assertThat(player.hand).isEmpty()
+        assertThat(player.hole).isEmpty()
     }
 
     @Test
@@ -88,7 +88,7 @@ class PlayerTest: AnnotationSpec() {
         assertThat(copy.hasFolded).isTrue()
 
 
-        assertThat(copy.hand).isEmpty()
+        assertThat(copy.hole).isEmpty()
     }
 }
 
