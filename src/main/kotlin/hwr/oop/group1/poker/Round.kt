@@ -6,8 +6,8 @@ class Round(
     val smallBlindAmount: Int = 5,
     val bigBlindAmount: Int = 10,
     val dealerPosition: Int = 0,
-) : StateSerializable {
-    var communityCards = mutableListOf<Card>()
+) {
+    private var communityCards = mutableListOf<Card>()
         private set
 
     /**
@@ -21,20 +21,18 @@ class Round(
         private set
 
     // Blind positions relative to dealer
-    val smallBlindPosition: Int get() = (dealerPosition + 1) % players.size
-    val bigBlindPosition: Int get() = (dealerPosition + 2) % players.size
+    private val smallBlindPosition: Int get() = (dealerPosition + 1) % players.size
+    private val bigBlindPosition: Int get() = (dealerPosition + 2) % players.size
 
     var pot = 0
         private set
     var currentBet = 0
         private set
 
-    var currentPlayerPosition = 0
-        private set
+    private var currentPlayerPosition = 0
     val currentPlayer get() = players[currentPlayerPosition]
 
-    var lastRaisePosition = -1
-        private set
+    private var lastRaisePosition = -1
 
     private var isBettingRoundComplete = false
 
@@ -52,6 +50,9 @@ class Round(
         val deck = Deck()
 
         payBlinds()
+
+        // Set the currentPlayer to the player after the bigblind
+        currentPlayerPosition = (bigBlindPosition + 1) % players.size
 
         for (player in players) {
             // assign cards to players
@@ -134,7 +135,6 @@ class Round(
     /**
      * Advances to the next stage of the hand.
      * This is called when a betting round is complete.
-     * Stages progress: Pre-flop -> Flop -> Turn -> River
      */
     private fun nextStage() {
         require(stage < 3) { "Cannot advance past the river" }
@@ -153,10 +153,8 @@ class Round(
     /**
      * Places a bet in the current betting round.
      * Handles calls (matching current bet) and raises (increasing current bet).
-     * Automatically advances to the next player after the bet is placed.
      */
     private fun placeBet(player: Player, amount: Int) {
-//        require(isGameStarted) { "Game must be started before placing bets" }
         require(!isHandComplete) { "Hand is already complete" }
         require(amount >= 0) { "Bet amount must be non-negative" }
 
@@ -178,20 +176,6 @@ class Round(
         isBettingRoundComplete = false
         lastRaisePosition = bigBlindPosition
     }
-
-    /**
-     * Advances to the next player in the betting round.
-     * If all players have acted after the last raise, moves to the next betting round.
-     */
-//    private fun moveToNextPlayer() {
-//        currentPlayerPosition = (currentPlayerPosition + 1) % players.size
-//
-//        // Check if betting round is complete
-//        if (currentPlayerPosition == lastRaisePosition) {
-//            // All players have acted after the last raise
-
-//        }
-//    }
 
     /**
      * Checks if the current betting round is complete.
@@ -291,21 +275,6 @@ class Round(
                 pot = 0
             }
         }
-    }
-
-    override fun toState(): Map<String, Any> {
-        return mapOf(
-            "communityCards" to communityCards.map { it.toState() },
-            "stage" to stage,
-            "pot" to pot
-        )
-    }
-    override fun fromState(state: Map<String, Any>) {
-        communityCards = (state["communityCards"] as List<Map<String, Any>>).map {
-            Card(CardRank.valueOf(it["rank"] as String), CardSuit.valueOf(it["suit"] as String))
-        }.toMutableList()
-        stage = (state["stage"] as Number).toInt()
-        pot = (state["pot"] as Number).toInt()
     }
 }
 

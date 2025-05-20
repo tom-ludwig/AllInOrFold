@@ -161,17 +161,4 @@ class RoundTest : AnnotationSpec() {
         val totalMoney = players.sumOf { it.money }
         assertThat(totalMoney).isEqualTo(3000)
     }
-
-    @Test
-    fun `toState and fromState preserve state`() {
-        val state = round.toState()
-
-        val restoredRound = Round(players)
-        restoredRound.fromState(state)
-
-        assertThat(restoredRound.stage).isEqualTo(round.stage)
-        assertThat(restoredRound.pot).isEqualTo(round.pot)
-        assertThat(restoredRound.getRevealedCommunityCards())
-            .containsExactlyElementsOf(round.getRevealedCommunityCards())
-    }
 }
