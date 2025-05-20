@@ -54,8 +54,8 @@ class Round(
         // Set the currentPlayer to the player after the bigblind
         currentPlayerPosition = (bigBlindPosition + 1) % players.size
 
+        // assign cards to players
         for (player in players) {
-            // assign cards to players
             (0..<2).forEach {
                 _ -> player.addCard(deck.draw())
             }
