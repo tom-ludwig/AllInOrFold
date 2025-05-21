@@ -41,7 +41,7 @@ class GameStateManagerTest {
         assertThat(loadedGame.players[1].money).isEqualTo(expectedMoney2)
 
         // pot correct?
-        assertThat(loadedGame.round.pot).isEqualTo(originalGame.round.pot)
+        assertThat(loadedGame.round!!.pot).isEqualTo(originalGame.round!!.pot)
 
         tempFile.delete() // delete temporary file
     }
