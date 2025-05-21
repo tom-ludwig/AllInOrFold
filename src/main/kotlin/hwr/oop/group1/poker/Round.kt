@@ -56,13 +56,13 @@ class Round(
 
         // assign cards to players
         for (player in players) {
-            (0..<2).forEach {
-                _ -> player.addCard(deck.draw())
+            repeat(2) {
+                player.addCard(deck.draw())
             }
         }
 
-        (0..<5).forEach {
-            _ -> communityCards += deck.draw()
+        repeat(5) {
+            communityCards += deck.draw()
         }
     }
 
