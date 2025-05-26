@@ -50,6 +50,6 @@ class Player(
      */
     fun evaluatePlayerHand(communityCards: List<Card>): HandRank {
         val allCards = hand + communityCards
-        return evaluateHand(allCards)
+        return HandEvaluator.evaluateBestHandFrom(allCards)
     }
 }
