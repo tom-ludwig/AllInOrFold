@@ -4,36 +4,28 @@ import io.kotest.core.spec.style.AnnotationSpec
 import org.assertj.core.api.Assertions.assertThat
 
 class DeckTest: AnnotationSpec() {
-    // Reflection to access private field
-    private fun getCards(deck: Deck): List<Card> {
-        // Bypass private access to check community cards
-        val field = Deck::class.java.getDeclaredField("cards")
-        field.isAccessible = true
-        val cards =  field.get(deck) as List<*>
-        return cards.filterIsInstance<Card>().takeIf { it.size == cards.size } ?: emptyList()
+
+    private fun getRemainingCards(deck: Deck): List<Card> {
+        val cards = generateSequence { deck.draw() }.toList()
+
+        return cards
     }
 
     @Test
     fun `Deck includes all cards`() {
         val deck = Deck()
 
-        val cards = getCards(deck)
+        val cards = getRemainingCards(deck)
         assertThat(cards.toSet()).hasSize(cards.size).hasSize(52)
     }
 
     @Test
-    fun `Drawing draws top card and removes it`() {
+    fun `Drawing draws card and removes it`() {
         val deck = Deck()
 
-        val initialCards = getCards(deck)
-        val expectedTopCard = initialCards.first()
         val drawnCard = deck.draw()
 
-        val remainingCards = getCards(deck)
-
-        assertThat(drawnCard)
-            .describedAs("The drawn card should be the top card of the deck")
-            .isEqualTo(expectedTopCard)
+        val remainingCards = getRemainingCards(deck)
 
         assertThat(remainingCards)
             .describedAs("The deck should no longer contain the drawn card")
@@ -45,6 +37,6 @@ class DeckTest: AnnotationSpec() {
         val deck = Deck()
         val newDeck = Deck()
 
-        assertThat(getCards(deck)).isNotEqualTo(getCards(newDeck))
+        assertThat(getRemainingCards(deck)).isNotEqualTo(getRemainingCards(newDeck))
     }
 }

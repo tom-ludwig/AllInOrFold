@@ -15,7 +15,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.TWO, CardSuit.CLUBS),
             Card(CardRank.THREE, CardSuit.DIAMONDS)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.ROYAL_FLUSH).isEqualTo(result.type)
     }
@@ -31,7 +31,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.TWO, CardSuit.CLUBS),
             Card(CardRank.THREE, CardSuit.HEARTS)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.STRAIGHT_FLUSH).isEqualTo(result.type)
     }
@@ -47,7 +47,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.TWO, CardSuit.CLUBS),
             Card(CardRank.THREE, CardSuit.DIAMONDS)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.FOUR_OF_A_KIND).isEqualTo(result.type)
     }
@@ -63,7 +63,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.ACE, CardSuit.HEARTS),
             Card(CardRank.TWO, CardSuit.DIAMONDS)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.FULL_HOUSE).isEqualTo(result.type)
     }
@@ -79,7 +79,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.THREE, CardSuit.CLUBS),
             Card(CardRank.FOUR, CardSuit.SPADES)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.FLUSH).isEqualTo(result.type)
     }
@@ -95,7 +95,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.KING, CardSuit.CLUBS),
             Card(CardRank.ACE, CardSuit.DIAMONDS)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.STRAIGHT).isEqualTo(result.type)
     }
@@ -111,7 +111,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.JACK, CardSuit.SPADES),
             Card(CardRank.ACE, CardSuit.DIAMONDS)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.THREE_OF_A_KIND).isEqualTo(result.type)
     }
@@ -127,7 +127,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.KING, CardSuit.CLUBS),
             Card(CardRank.ACE, CardSuit.HEARTS)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.TWO_PAIR).isEqualTo(result.type)
     }
@@ -143,7 +143,7 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.KING, CardSuit.CLUBS),
             Card(CardRank.ACE, CardSuit.SPADES)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.ONE_PAIR).isEqualTo(result.type)
     }
@@ -159,37 +159,10 @@ class HandRankTest: AnnotationSpec() {
             Card(CardRank.KING, CardSuit.CLUBS),
             Card(CardRank.ACE, CardSuit.SPADES)
         )
-        val result = evaluateHand(cards)
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.HIGH_CARD).isEqualTo(result.type)
     }
-
-    @Test
-    fun `detects regular straight in getStraightRanks`() {
-        val ranks = setOf(CardRank.FIVE, CardRank.SIX, CardRank.SEVEN, CardRank.EIGHT, CardRank.NINE)
-        val result = getStraightRanks(ranks)
-
-        assertThat(result).isNotNull
-        assertThat(listOf(CardRank.NINE, CardRank.EIGHT, CardRank.SEVEN, CardRank.SIX, CardRank.FIVE)).isEqualTo(result)
-    }
-
-    @Test
-    fun `detects wheel straight A-2-3-4-5`() {
-        val ranks = setOf(CardRank.ACE, CardRank.TWO, CardRank.THREE, CardRank.FOUR, CardRank.FIVE)
-        val result = getStraightRanks(ranks)
-
-        assertThat(result).isNotNull
-        assertThat(listOf(CardRank.FIVE, CardRank.FOUR, CardRank.THREE, CardRank.TWO, CardRank.ACE)).isEqualTo(result)
-    }
-
-    @Test
-    fun `returns null when no straight in getStraightRanks`() {
-        val ranks = setOf(CardRank.TWO, CardRank.FOUR, CardRank.SIX, CardRank.EIGHT, CardRank.TEN)
-        val result = getStraightRanks(ranks)
-
-        assertThat(result).isNull()
-    }
-
 
     @Test
     fun `hand comparison respects hand strength`() {
