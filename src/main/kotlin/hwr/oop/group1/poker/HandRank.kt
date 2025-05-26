@@ -1,6 +1,6 @@
 package hwr.oop.group1.poker
 
-// A Ranking of a hand(5-card combination)
+// A Ranking of a hand (5-card combination)
 data class HandRank(
     val type: HandType,
     val ranks: List<CardRank> // ordered for tie-breaker
