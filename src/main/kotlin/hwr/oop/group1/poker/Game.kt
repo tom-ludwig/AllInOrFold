@@ -13,19 +13,17 @@ class Game {
     var smallBlindAmount = 10
         private set
 
-    private fun payBlinds() {
-        val smallBlindIndex = if (players.size == 2) {
-            dealerPosition
-        } else {
-            (dealerPosition + 1) % players.size
+    var bigBlindAmount = 20
+        private set
+
+    private var dealerPosition: Int = -1
+
+    fun setSmallBlind(amount: Int) {
+        require(amount > 0) { "Small blind must be greater than 0" }
+        if (bigBlindAmount > 0) {
+            require(amount < bigBlindAmount) { "Small blind must be less than big blind" }
         }
-        val bigBlindIndex = if (players.size == 2) {
-            (dealerPosition + 1) % players.size
-        } else {
-            (dealerPosition + 2) % players.size
-        }
-        bet(players[smallBlindIndex], SMALL_BLIND)
-        bet(players[bigBlindIndex], BIG_BLIND)
+        smallBlindAmount = amount
     }
 
     fun setBigBlind(amount: Int) {

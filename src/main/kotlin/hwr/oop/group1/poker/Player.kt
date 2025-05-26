@@ -6,11 +6,10 @@ import kotlin.math.min
 
 @Serializable
 class Player(
-
     var name: String,
     var money: Int,
 ) {
-    var hand = mutableListOf<Card>()
+    var hole = mutableListOf<Card>()
         private set
     var hasFolded = false
         private set
@@ -45,28 +44,12 @@ class Player(
         hasFolded = false
     }
 
-    override fun toState(): Map<String, Any> {
-        return mapOf(
-            "name" to name,
-            "money" to money,
-            "hasFolded" to hasFolded,
-            "hole" to hole.map { it.toState() }
-        )
-    }
-
-    override fun fromState(state: Map<String, Any>) {
-        name = state["name"] as String
-        money = (state["money"] as Number).toInt()
-        hasFolded = state["hasFolded"] as Boolean
-
-        @Suppress("UNCHECKED_CAST")
-        val holeState = state["hole"] as? List<Map<String, String>> ?: emptyList()
-
-        hole = holeState.map {
-            val rank = CardRank.valueOf(it["rank"]!!)
-            val suit = CardSuit.valueOf(it["suit"]!!)
-            Card(rank, suit)
-        }.toMutableList()
-
+    /**
+     * Evaluates the player's hand strength using the community cards.
+     * Returns a HandRank object that can be used to compare hands.
+     */
+    fun evaluatePlayerHand(communityCards: List<Card>): HandRank {
+        val allCards = hole + communityCards
+        return HandEvaluator.evaluateBestHandFrom(allCards)
     }
 }

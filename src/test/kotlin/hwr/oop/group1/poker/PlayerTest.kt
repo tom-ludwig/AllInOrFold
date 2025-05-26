@@ -46,10 +46,9 @@ class PlayerTest: AnnotationSpec() {
         assertThat(player.hasFolded).isTrue()
     }
 
-    @Test 
+    @Test
     fun `fold clears hole`() {
-        val player = Player("Saruman", money = 50)
-
+        val player = Player("Saruman", 50)
         player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
         player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
         player.fold()
@@ -68,4 +67,3 @@ class PlayerTest: AnnotationSpec() {
         assertThat(player.hasFolded).isFalse()
     }
 }
-

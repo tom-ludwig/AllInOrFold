@@ -37,8 +37,6 @@ class GameTest: AnnotationSpec() {
     fun `Set small and big blind sets it correctly`() {
         val game = Game()
 
-        game.newRound()
-
         game.setBigBlind(40)
         game.setSmallBlind(20)
 
