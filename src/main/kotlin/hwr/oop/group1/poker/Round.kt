@@ -1,6 +1,7 @@
 package hwr.oop.group1.poker
-import hwr.oop.group1.poker.cli.StateSerializable
+import kotlinx.serialization.Serializable
 
+@Serializable
 class Round(
     val players: List<Player>,
     val smallBlindAmount: Int = 5,

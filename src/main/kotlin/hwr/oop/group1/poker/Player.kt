@@ -1,8 +1,10 @@
 package hwr.oop.group1.poker
 
+import kotlinx.serialization.Serializable
 import kotlin.math.max
 import kotlin.math.min
 
+@Serializable
 class Player(
     var name: String,
     var money: Int,
