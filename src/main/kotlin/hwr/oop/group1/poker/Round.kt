@@ -57,13 +57,13 @@ class Round(
         // assign cards to players
         for (player in players) {
             repeat(2) {
-                val card = deck.draw() ?: throw RuntimeException("Deck ran out of cards before all players were dealt their cards")
+                val card = deck.draw() ?: throw IllegalStateException("Deck ran out of cards before all players were dealt their cards")
                 player.addCard(card)
             }
         }
 
         repeat(5) {
-            val card = deck.draw() ?: throw RuntimeException("Deck ran out of cards before dealing community cards")
+            val card = deck.draw() ?: throw IllegalStateException("Deck ran out of cards before dealing community cards")
             communityCards += card
         }
     }
