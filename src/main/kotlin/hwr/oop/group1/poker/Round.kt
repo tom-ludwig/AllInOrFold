@@ -1,6 +1,7 @@
 package hwr.oop.group1.poker
-import hwr.oop.group1.poker.cli.StateSerializable
+import kotlinx.serialization.Serializable
 
+@Serializable
 class Round(
     val players: List<Player>,
     val smallBlindAmount: Int = 5,
@@ -8,7 +9,6 @@ class Round(
     val dealerPosition: Int = 0,
 ) {
     private var communityCards = mutableListOf<Card>()
-        private set
 
     /**
      * The current stage of the hand:

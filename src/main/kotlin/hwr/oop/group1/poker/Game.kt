@@ -1,5 +1,8 @@
 package hwr.oop.group1.poker
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class Game {
     var round: Round? = null
         private set
@@ -14,7 +17,7 @@ class Game {
         private set
 
     // TODO: Increment after a round ended
-    private var dealerPosition: Int = -1;
+    private var dealerPosition: Int = -1
 
     fun setSmallBlind(amount: Int) {
         require(amount > 0) { "Small blind must be greater than 0" }
