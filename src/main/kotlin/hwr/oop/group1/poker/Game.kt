@@ -15,7 +15,7 @@ class Game : StateSerializable {
     }
 
     private fun payBlinds() {
-        val smallBlindIndex = if (players.size == 2) { //smbIndex = SmallBlindIndex
+        val smallBlindIndex = if (players.size == 2) {
             dealerPosition
         } else {
             (dealerPosition + 1) % players.size
