@@ -1,17 +1,18 @@
 package hwr.oop.group1.poker
 
 class Deck {
-    private val cards = mutableListOf<Card>()
+    val cards = createDeck()
 
-    init {
-        cards.clear()
-        for(suit in CardSuit.entries){
-            for (rank in CardRank.entries){
-                cards += Card(rank, suit)
+    fun draw(): Card = cards.removeFirst()
+
+    fun createDeck(): MutableList<Card> {
+        val deck = emptyList<Card>().toMutableList()
+        for (suit in CardSuit.entries) {
+            for (rank in CardRank.entries) {
+                deck += Card(rank, suit)
             }
         }
-        cards.shuffle()
+        deck.shuffle()
+        return deck
     }
-
-    fun draw(): Card = cards.removeAt(0)
 }
