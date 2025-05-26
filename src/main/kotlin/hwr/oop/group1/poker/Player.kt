@@ -1,13 +1,16 @@
 package hwr.oop.group1.poker
-import hwr.oop.group1.poker.cli.StateSerializable
 
+import kotlinx.serialization.Serializable
+import kotlin.math.max
+import kotlin.math.min
 
-
+@Serializable
 class Player(
-    var name: String = "",
-    var money: Int = 0
-) : StateSerializable {
-    var hole = mutableListOf<Card>()
+
+    var name: String,
+    var money: Int,
+) {
+    var hand = mutableListOf<Card>()
         private set
     var hasFolded = false
         private set
@@ -23,10 +26,14 @@ class Player(
     }
 
     fun betMoney(money: Int): Int {
-        var amount = Math.min(money, this.money)
+        val amount = min(money, this.money)
         this.money -= amount
-        currentBet += amount
+        currentBet = max(currentBet, amount)
         return amount
+    }
+
+    fun resetCurrentBet() {
+        currentBet = 0
     }
 
     fun fold() {
@@ -60,5 +67,6 @@ class Player(
             val suit = CardSuit.valueOf(it["suit"]!!)
             Card(rank, suit)
         }.toMutableList()
+
     }
 }
