@@ -4,7 +4,6 @@ class Deck {
     private val cards = mutableListOf<Card>()
 
     init {
-        cards.clear()
         for(suit in CardSuit.entries){
             for (rank in CardRank.entries){
                 cards += Card(rank, suit)
@@ -13,5 +12,5 @@ class Deck {
         cards.shuffle()
     }
 
-    fun draw(): Card = cards.removeAt(0)
+    fun draw(): Card? = cards.removeFirstOrNull()
 }

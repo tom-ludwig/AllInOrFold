@@ -1,5 +1,8 @@
 package hwr.oop.group1.poker
 
+import kotlin.math.max
+import kotlin.math.min
+
 class Player(
     var name: String,
     var money: Int,
@@ -20,9 +23,9 @@ class Player(
     }
 
     fun betMoney(money: Int): Int {
-        val amount = Math.min(money, this.money)
+        val amount = min(money, this.money)
         this.money -= amount
-        currentBet = Math.max(currentBet, amount)
+        currentBet = max(currentBet, amount)
         return amount
     }
 
@@ -45,6 +48,6 @@ class Player(
      */
     fun evaluatePlayerHand(communityCards: List<Card>): HandRank {
         val allCards = hand + communityCards
-        return evaluateHand(allCards)
+        return HandEvaluator.evaluateBestHandFrom(allCards)
     }
 }
