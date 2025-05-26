@@ -1,5 +1,10 @@
 package hwr.oop.group1.poker
 
+import kotlinx.serialization.Serializable
+import kotlin.math.max
+import kotlin.math.min
+
+@Serializable
 class Player(
     var name: String,
     var money: Int,
@@ -20,9 +25,9 @@ class Player(
     }
 
     fun betMoney(money: Int): Int {
-        val amount = Math.min(money, this.money)
+        val amount = min(money, this.money)
         this.money -= amount
-        currentBet = Math.max(currentBet, amount)
+        currentBet = max(currentBet, amount)
         return amount
     }
 
