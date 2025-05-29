@@ -187,4 +187,48 @@ class HandRankTest: AnnotationSpec() {
 
         assertThat(hand1.compareTo(hand2)).isEqualTo(0)
     }
+
+    @Test
+    fun `get all combinations`() {
+        val card1 = Card(CardRank.ACE, CardSuit.HEARTS)
+        val card2 = Card(CardRank.TWO, CardSuit.HEARTS)
+        val card3 = Card(CardRank.THREE, CardSuit.HEARTS)
+        val cards = listOf(
+            card1,
+            card2,
+            card3
+        )
+        val combinations = cards.combinations(2)
+
+        assertThat(combinations).isEqualTo(listOf(
+            listOf(card1, card2),
+            listOf(card1, card3),
+            listOf(card2, card3))
+        )
+    }
+
+    @Test
+    fun `combinations returns correct number of combos`() {
+        val input = listOf(
+            Card(CardRank.ACE, CardSuit.HEARTS),
+            Card(CardRank.TWO, CardSuit.HEARTS),
+            Card(CardRank.THREE, CardSuit.HEARTS),
+            Card(CardRank.FOUR, CardSuit.HEARTS),
+            Card(CardRank.FIVE, CardSuit.HEARTS),
+            Card(CardRank.SIX, CardSuit.HEARTS),
+            Card(CardRank.SEVEN, CardSuit.HEARTS)
+        )
+        val result = input.combinations(5)
+
+        assertThat(21).isEqualTo(result.size) // C(7,5) = 21
+        assertThat(result.all { it.size == 5 }).isTrue()
+    }
+
+    @Test
+    fun `combinations edge case empty list`() {
+        val input = emptyList<Card>()
+        val result = input.combinations(3)
+
+        assertThat(result.isEmpty()).isTrue()
+    }
 }

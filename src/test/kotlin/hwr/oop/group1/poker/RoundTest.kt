@@ -209,13 +209,16 @@ class RoundTest : AnnotationSpec() {
 
     @Test
     fun `round can be saved and loaded`() {
-        val json = Json
         val file = File("test_game.json")
+        round.doAction(Action.CALL)
+        round.doAction(Action.RAISE, 50)
+        round.doAction(Action.CALL)
+        round.doAction(Action.CALL)
         val expectedRound = round
 
-        file.writeText(json.encodeToString(expectedRound))
+        file.writeText(Json.encodeToString(expectedRound))
 
-        val loadedRound = json.decodeFromString<Round>(file.readText())
+        val loadedRound = Json.decodeFromString<Round>(file.readText())
 
         file.delete()
 
