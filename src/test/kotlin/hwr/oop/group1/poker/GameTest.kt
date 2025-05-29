@@ -34,6 +34,19 @@ class GameTest: AnnotationSpec() {
     }
 
     @Test
+    fun `Player can not be added if round started`() {
+        val game = Game()
+        val player = Player("Max", 1000)
+
+        game.addPlayer(Player("Alice", 1000))
+        game.addPlayer(Player("Bob", 1000))
+        game.newRound()
+        assertThatThrownBy {
+            game.addPlayer(player)
+        }.hasMessageContaining("The Round has already started")
+    }
+
+    @Test
     fun `Set small and big blind sets it correctly`() {
         val game = Game()
 

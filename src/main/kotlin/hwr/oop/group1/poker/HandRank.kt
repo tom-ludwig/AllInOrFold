@@ -13,8 +13,8 @@ data class HandRank(
     }
 }
 
-fun <T> List<T>.combinations(k: Int): List<List<T>> {
-    fun combine(start: Int, curr: List<T>): List<List<T>> {
+fun List<Card>.combinations(k: Int): List<List<Card>> {
+    fun combine(start: Int, curr: List<Card>): List<List<Card>> {
         if (curr.size == k) return listOf(curr)
         if (start >= this.size) return emptyList()
         return combine(start + 1, curr + this[start]) + combine(start + 1, curr)
