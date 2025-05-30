@@ -1,12 +1,15 @@
 package hwr.oop.group1.poker
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 class Round(
     val players: List<Player>,
     val smallBlindAmount: Int = 5,
     val bigBlindAmount: Int = 10,
-    val dealerPosition: Int = 0,
+    private val dealerPosition: Int = 0,
+    @Transient
+    private val setupDeck: Deck? = null
 ) {
     private var communityCards = mutableListOf<Card>()
 
@@ -21,8 +24,8 @@ class Round(
         private set
 
     // Blind positions relative to dealer
-    private val smallBlindPosition: Int get() = (dealerPosition + 1) % players.size
-    private val bigBlindPosition: Int get() = (dealerPosition + 2) % players.size
+    private var smallBlindPosition: Int = getNextActivePlayerPosition(dealerPosition)
+    private var bigBlindPosition: Int = getNextActivePlayerPosition(smallBlindPosition)
 
     var pot = 0
         private set
@@ -32,38 +35,35 @@ class Round(
     private var currentPlayerPosition = 0
     val currentPlayer get() = players[currentPlayerPosition]
 
-    private var lastRaisePosition = -1
-
-    private var isBettingRoundComplete = false
-
     var isHandComplete = false
         private set
 
     var lastWinnerAnnouncement = ""
        private set
 
-    init {
+    fun setup() {
         require(players.size >= 2) { "Need at least 2 players to start a hand" }
         require(dealerPosition <= players.size - 1) { "The dealer position must be a valid player position" }
         require(bigBlindAmount > smallBlindAmount) { "The small blind has to be smaller than the big blind" }
         // Reset round state
-        val deck = Deck()
+        val deck = setupDeck ?: Deck()
 
         payBlinds()
 
-        // Set the currentPlayer to the player after the bigblind
-        currentPlayerPosition = (bigBlindPosition + 1) % players.size
+        // Set the currentPlayer to the player after the big blind
+        currentPlayerPosition = if (players.size > 2) getNextActivePlayerPosition(bigBlindPosition) else dealerPosition
 
         // assign cards to players
         for (player in players) {
+            player.hand.clear()
             repeat(2) {
-                val card = deck.draw() ?: throw IllegalStateException("Deck ran out of cards before all players were dealt their cards")
+                val card = deck.draw()!!
                 player.addCard(card)
             }
         }
 
         repeat(5) {
-            val card = deck.draw() ?: throw IllegalStateException("Deck ran out of cards before dealing community cards")
+            val card = deck.draw()!!
             communityCards += card
         }
     }
@@ -81,26 +81,22 @@ class Round(
         // Move to next active player
         nextPlayer()
 
-        // Set isHandComplete to make sure no other actions can be triggered
-        isHandComplete = checkIfHandIsComplete()
-
-        if (isBettingRoundComplete) {
-            handleBettingRoundComplete()
-        } else if (isHandComplete) {
+        if(checkHandComplete()){
+            isHandComplete = true
             determineWinner()
-        } else {
-            checkBettingStageComplete()
+        }
+        else if (bettingRoundComplete()) {
+            handleBettingRoundComplete()
         }
     }
 
     private fun nextPlayer() {
-        do {
-            currentPlayerPosition = (currentPlayerPosition + 1) % players.size
-        } while (players[currentPlayerPosition].hasFolded)
+        currentPlayerPosition = getNextActivePlayerPosition(currentPlayerPosition)
     }
 
     private fun check() {
         if (currentBet != currentPlayer.currentBet) throw CanNotCheckException(currentPlayer)
+        currentPlayer.setChecked()
     }
 
     private fun call() {
@@ -126,7 +122,6 @@ class Round(
      */
     fun getRevealedCommunityCards(): List<Card> {
         return when (stage) {
-            0 -> emptyList()
             1 -> communityCards.take(3)
             2 -> communityCards.take(4)
             3 -> communityCards
@@ -141,7 +136,6 @@ class Round(
     private fun nextStage() {
         require(stage < 3) { "Cannot advance past the river" }
 
-        lastRaisePosition = -1
         currentBet = 0  // Reset current bet for next round
         players.map { it.resetCurrentBet() }
         stage++
@@ -163,9 +157,8 @@ class Round(
         require(player.money >= amount) { "Player does not have enough money" }
 
         // Check if the player raised
-        if (amount > currentBet) {
-            lastRaisePosition = currentPlayerPosition
-            currentBet = amount
+        if (amount + player.currentBet > currentBet) {
+            currentBet = amount + player.currentBet
         }
 
         player.betMoney(amount)
@@ -175,8 +168,6 @@ class Round(
     private fun payBlinds() {
         placeBet(players[smallBlindPosition], smallBlindAmount)
         placeBet(players[bigBlindPosition], bigBlindAmount)
-        isBettingRoundComplete = false
-        lastRaisePosition = bigBlindPosition
     }
 
     /**
@@ -185,16 +176,23 @@ class Round(
      * 1. All players have acted after the last raise
      * 2. All active players have matched the current bet
      */
-    private fun checkBettingStageComplete() {
-        if (lastRaisePosition == -1) {
-            // No raises in this round, check if everyone has acted
-            if (currentPlayerPosition == bigBlindPosition) {
-                isBettingRoundComplete = true
-            }
-        } else if (currentPlayerPosition == lastRaisePosition) {
-            // All players have acted after the last raise
-            isBettingRoundComplete = true
+    private fun bettingRoundComplete(): Boolean {
+        val activePlayers = players.filter { it.isActive() }
+        if (currentBet == 0) {
+            // No raises in this round, check if everyone has checked
+            return activePlayers.all { it.hasChecked }
         }
+        return activePlayers.all { it.currentBet == currentBet }
+                // In the first round the big blind can play again
+                && (stage != 0 || !players[bigBlindPosition].isActive() || players[bigBlindPosition].hasChecked || currentBet > bigBlindAmount)
+    }
+
+    private fun getNextActivePlayerPosition(index: Int): Int {
+        var currentIndex = index
+        do {
+            currentIndex = (currentIndex + 1) % players.size
+        } while (!players[currentIndex].isActive())
+        return currentIndex
     }
 
     /**
@@ -202,12 +200,9 @@ class Round(
      * If all stages are complete, triggers the showdown.
      */
     private fun handleBettingRoundComplete() {
-        if (!isBettingRoundComplete) return
-
-        isBettingRoundComplete = false
         currentBet = 0
-        lastRaisePosition = -1
-        currentPlayerPosition = (dealerPosition + 1) % players.size
+
+        currentPlayerPosition = getNextActivePlayerPosition(dealerPosition)
 
         if (stage < 3) {
             // Move to next stage
@@ -219,7 +214,7 @@ class Round(
         }
     }
 
-    private fun checkIfHandIsComplete(): Boolean {
+    private fun checkHandComplete(): Boolean {
         // Check if only one player is active
         if (players.filter { !it.hasFolded }.size == 1) return true
 
@@ -279,27 +274,3 @@ class Round(
         }
     }
 }
-
-class NotEnoughMoneyException (
-    player: Player,
-    amount: Int
-): RuntimeException(
-    "player $player wants to raise $amount but only has ${player.money}"
-)
-
-class CanNotCheckException (
-    player: Player
-): RuntimeException(
-    "player $player can not check"
-)
-
-class NotEnoughToRaiseException (
-    player: Player,
-    amount: Int
-): RuntimeException(
-    "player $player can not raise, because $amount is not enough"
-)
-
-class HandIsCompleteException: RuntimeException(
-    "The Hand is already complete, to play again start a new round."
-)
