@@ -25,6 +25,9 @@
     <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
     <serialization.version>1.8.1</serialization.version>
+    <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
+    <pitest.version>1.19.1</pitest.version>
+    <kotest-extensions-pitest.version>1.2.0</kotest-extensions-pitest.version>
   </properties>
 
   <repositories>
@@ -67,6 +70,12 @@
       <groupId>org.jetbrains.kotlinx</groupId>
       <artifactId>kotlinx-serialization-json</artifactId>
       <version>${serialization.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.kotest.extensions</groupId>
+      <artifactId>kotest-extensions-pitest</artifactId>
+      <version>${kotest-extensions-pitest.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -148,6 +157,28 @@
                 </transformer>
               </transformers>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>${pitest.version}</version>
+        <configuration>
+          <targetClasses>
+            <param>hwr.oop.*</param>
+          </targetClasses>
+          <targetTests>
+            <param>hwr.oop.*</param>
+          </targetTests>
+        </configuration>
+        <executions>
+          <execution>
+            <id>mutation-testing</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>mutationCoverage</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
