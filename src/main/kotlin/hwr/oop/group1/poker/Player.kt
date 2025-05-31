@@ -8,7 +8,7 @@ class Player(
     var name: String,
     var money: Int,
 ) {
-    var hand = mutableListOf<Card>()
+    var hole = mutableListOf<Card>()
         private set
     var hasFolded = false
         private set
@@ -18,7 +18,7 @@ class Player(
         private set
 
     fun addCard(card: Card) {
-        hand.add(card)
+        hole.add(card)
     }
 
     fun addMoney(money: Int) {
@@ -39,7 +39,7 @@ class Player(
 
     fun fold() {
         hasFolded = true
-        hand.clear()
+        hole.clear()
     }
 
     fun resetFold() {
@@ -59,7 +59,7 @@ class Player(
      * Returns a HandRank object that can be used to compare hands.
      */
     fun evaluatePlayerHand(communityCards: List<Card>): HandRank {
-        val allCards = hand + communityCards
+        val allCards = hole + communityCards
         return HandEvaluator.evaluateBestHandFrom(allCards)
     }
 }

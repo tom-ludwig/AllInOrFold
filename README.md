@@ -32,7 +32,7 @@ classDiagram
     }
 	class Exceptions{
 		CanNotCheckException
-		HandIsCompleteException
+		RoundIsCompleteException
 		NotEnoughMoneyException
 		NotEnoughToRaiseException
 	}
@@ -50,7 +50,7 @@ classDiagram
 		- currentPlayerPosition
 		- lastRaisePosition
 		- isBettingRoundComplete
-		+- is HandComplete
+		+- is RoundComplete
 		+- lastWinnerAnnouncement
 		+ doAction(action, amount)
 		- nextPlayer()
@@ -65,7 +65,7 @@ classDiagram
 		- payBlinds()
 		- checkBettingStageComplete()
 		- handleBettingRoundComplete()
-		- checkIfHandIsComplete()
+		- checkIfRoundIsComplete()
 		- determineWinner()
     }
     class Player {
@@ -133,14 +133,18 @@ classDiagram
 | Number | implemented? | Feature             | Tests |
 |--------|--------------|---------------------|-------|
 | 1      | &check;      | serialize game      | /     |
-| 2      |              | save game to file   | /     |
-| 3      |              | load game from file | /     |
+| 2      | &check;      | save game to file   | /     |
+| 3      | &check;      | load game from file | /     |
 
 ### User Interface
-
-| Number | Feature | Tests |
-|--------|---------|-------|
-| 1      | /       | /     |
+- `new`
+- `start`
+- `addPlayer <name> <money>`
+- `check`
+- `call`
+- `raise <amount>`
+- `show round <cards | pot | bet>`
+- `show player <name | cards | money | bet>`
 
 ## Additional Dependencies
 

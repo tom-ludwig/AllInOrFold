@@ -123,7 +123,7 @@ class RoundTest : AnnotationSpec() {
         round.doAction(Action.FOLD) // Alice
         round.doAction(Action.FOLD) // Bob
 
-        assertThat(round.isHandComplete).isTrue()
+        assertThat(round.isRoundComplete).isTrue()
         assertThat(round.lastWinnerAnnouncement).contains("Caroline")
     }
 
@@ -139,13 +139,13 @@ class RoundTest : AnnotationSpec() {
             round.doAction(Action.CHECK)
         }
 
-        assertThat(round.isHandComplete).isTrue()
+        assertThat(round.isRoundComplete).isTrue()
         assertThat(round.pot).isEqualTo(0)
         assertThat(players.sumOf { it.money }).isEqualTo(3000)
     }
 
     @Test
-    fun `player cannot trigger an action, after the hand end`() {
+    fun `player cannot trigger an action, after the round end`() {
         round.doAction(Action.CALL)
         round.doAction(Action.CALL)
         round.doAction(Action.CHECK)
@@ -157,8 +157,8 @@ class RoundTest : AnnotationSpec() {
         }
         assertThatThrownBy {
             round.doAction(Action.CHECK)
-        }.isInstanceOf(HandIsCompleteException::class.java)
-            .hasMessageContaining("Hand is already complete")
+        }.isInstanceOf(RoundIsCompleteException::class.java)
+            .hasMessageContaining("Round is already complete")
     }
 
     @Test

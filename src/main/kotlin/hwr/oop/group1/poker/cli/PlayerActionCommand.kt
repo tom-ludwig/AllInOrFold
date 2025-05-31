@@ -1,7 +1,7 @@
 package hwr.oop.group1.poker.cli
 
 import hwr.oop.group1.poker.Action
-import hwr.oop.group1.poker.HandIsCompleteException
+import hwr.oop.group1.poker.RoundIsCompleteException
 import hwr.oop.group1.poker.persistence.GamePersistence
 
 class PlayerActionCommand : CliCommand {
@@ -12,7 +12,7 @@ class PlayerActionCommand : CliCommand {
 
     override fun handle(persistence: GamePersistence, args: List<String>) {
         val game = persistence.loadGame() ?: throw NoGameException()
-        val round = game.round ?: throw HandIsCompleteException()
+        val round = game.round ?: throw RoundIsCompleteException()
         val currentPlayer = round.currentPlayer
 
         val stageBefore = round.stage
@@ -37,7 +37,7 @@ class PlayerActionCommand : CliCommand {
         persistence.saveGame(game)
         println("Player ${currentPlayer.name} has performed action $action")
 
-        if(round.isHandComplete){
+        if(round.isRoundComplete){
             println(round.lastWinnerAnnouncement)
         }
         else {
