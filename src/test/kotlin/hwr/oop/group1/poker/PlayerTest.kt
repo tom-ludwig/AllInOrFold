@@ -1,7 +1,9 @@
 package hwr.oop.group1.poker
 
 import io.kotest.core.spec.style.AnnotationSpec
+import kotlinx.serialization.json.Json
 import org.assertj.core.api.Assertions.assertThat
+import java.io.File
 
 class PlayerTest: AnnotationSpec() {
 
@@ -35,13 +37,10 @@ class PlayerTest: AnnotationSpec() {
     }
     @Test
     fun `fold sets hasFolded to true `() {
-
         val player = Player("Saruman", 50)
-        assertThat(player.hasFolded).isFalse()  // vorab
-
+        assertThat(player.hasFolded).isFalse()
 
         player.fold()
-
 
         assertThat(player.hasFolded).isTrue()
     }
@@ -66,4 +65,21 @@ class PlayerTest: AnnotationSpec() {
         player.resetFold()
         assertThat(player.hasFolded).isFalse()
     }
+
+    @Test
+    fun `player can be saved and loaded`() {
+        val json = Json
+        val file = File("test_game.json")
+        val expectedPlayer = Player("Max", 1000)
+
+        file.writeText(json.encodeToString(expectedPlayer))
+
+        val loadedPlayer = json.decodeFromString<Player>(file.readText())
+
+        file.delete()
+
+        assertThat(loadedPlayer).isNotNull()
+        assertThat(loadedPlayer).usingRecursiveComparison().isEqualTo(expectedPlayer)
+    }
 }
+

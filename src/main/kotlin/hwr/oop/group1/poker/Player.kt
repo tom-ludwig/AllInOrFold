@@ -1,7 +1,6 @@
 package hwr.oop.group1.poker
 
 import kotlinx.serialization.Serializable
-import kotlin.math.max
 import kotlin.math.min
 
 @Serializable
@@ -15,6 +14,8 @@ class Player(
         private set
     var currentBet = 0
         private set
+    var hasChecked = false
+        private set
 
     fun addCard(card: Card) {
         hole.add(card)
@@ -27,12 +28,13 @@ class Player(
     fun betMoney(money: Int): Int {
         val amount = min(money, this.money)
         this.money -= amount
-        currentBet = max(currentBet, amount)
+        currentBet += amount
         return amount
     }
 
     fun resetCurrentBet() {
         currentBet = 0
+        hasChecked = false
     }
 
     fun fold() {
@@ -42,6 +44,14 @@ class Player(
 
     fun resetFold() {
         hasFolded = false
+    }
+
+    fun isActive(): Boolean {
+        return !hasFolded || money == 0
+    }
+
+    fun setChecked() {
+        hasChecked = true
     }
 
     /**

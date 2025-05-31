@@ -1,12 +1,14 @@
 package hwr.oop.group1.poker
 
 import io.kotest.core.spec.style.AnnotationSpec
+import kotlinx.serialization.json.Json
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import java.io.File
 
 class RoundTest : AnnotationSpec() {
-    lateinit var round: Round
-    lateinit var players: List<Player>
+    private lateinit var round: Round
+    private lateinit var players: List<Player>
 
     @BeforeEach
     fun setUp() {
@@ -16,6 +18,7 @@ class RoundTest : AnnotationSpec() {
             Player("Caroline", 1000)
         )
         round = Round(players, 5, 10)
+        round.setup()
     }
 
     @Test
@@ -36,6 +39,18 @@ class RoundTest : AnnotationSpec() {
     }
 
     @Test
+    fun `currentPlayer is dealer when only 2 players`() {
+        players = listOf(
+            Player("Alice", 1000),
+            Player("Bob", 1000),
+        )
+        round = Round(players, 5, 10)
+        round.setup()
+
+        assertThat(round.currentPlayer.name).isEqualTo("Alice")
+    }
+
+    @Test
     fun `community cards should be hidden at stage 0`() {
         assertThat(round.getRevealedCommunityCards()).isEmpty()
     }
@@ -46,13 +61,13 @@ class RoundTest : AnnotationSpec() {
         // Preflop to flop
         round.doAction(Action.CALL) // Alice
         round.doAction(Action.CALL) // Bob
-        round.doAction(Action.CALL) // Caroline
+        round.doAction(Action.CHECK) // Caroline
         assertThat(round.getRevealedCommunityCards()).hasSize(3)
 
         // Flop to turn
         round.doAction(Action.CHECK)
         round.doAction(Action.CHECK)
-//        round.doAction(Action.CHECK)
+        round.doAction(Action.CHECK)
         assertThat(round.getRevealedCommunityCards()).hasSize(4)
 
         // Turn to river
@@ -116,9 +131,9 @@ class RoundTest : AnnotationSpec() {
     fun `players get winnings at showdown`() {
         round.doAction(Action.CALL)
         round.doAction(Action.CALL)
-        round.doAction(Action.CALL)
+        round.doAction(Action.CHECK)
 
-        repeat(2) {
+        repeat(3) {
             round.doAction(Action.CHECK)
             round.doAction(Action.CHECK)
             round.doAction(Action.CHECK)
@@ -130,12 +145,12 @@ class RoundTest : AnnotationSpec() {
     }
 
     @Test
-    fun `player cannot tigger an action, after the hand end`() {
+    fun `player cannot trigger an action, after the hand end`() {
         round.doAction(Action.CALL)
         round.doAction(Action.CALL)
-        round.doAction(Action.CALL)
+        round.doAction(Action.CHECK)
 
-        repeat(2) {
+        repeat(3) {
             round.doAction(Action.CHECK)
             round.doAction(Action.CHECK)
             round.doAction(Action.CHECK)
@@ -148,17 +163,66 @@ class RoundTest : AnnotationSpec() {
 
     @Test
     fun `winner gets remainder of split pot`() {
-        round.doAction(Action.CALL)
-        round.doAction(Action.CALL)
-        round.doAction(Action.CALL)
+        val deck = Deck(
+            mutableListOf(
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
 
-        repeat(2) {
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+
+                Card(CardRank.TWO, CardSuit.HEARTS),
+                Card(CardRank.TWO, CardSuit.HEARTS),
+
+                Card(CardRank.THREE, CardSuit.HEARTS),
+                Card(CardRank.FIVE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+            )
+        )
+        players = listOf(
+            Player("Alice", 1000),
+            Player("Bob", 1000),
+            Player("Caroline", 1000)
+        )
+        round = Round(players, 2, 5, setupDeck = deck)
+        round.setup()
+
+        round.doAction(Action.CALL)
+        round.doAction(Action.CALL)
+        round.doAction(Action.CHECK)
+
+        repeat(3) {
             round.doAction(Action.CHECK)
             round.doAction(Action.CHECK)
             round.doAction(Action.CHECK)
         }
 
-        val totalMoney = players.sumOf { it.money }
-        assertThat(totalMoney).isEqualTo(3000)
+        assertThat(players[0].money).isEqualTo(995 + 8)
+        assertThat(players[1].money).isEqualTo(995 + 7)
+        assertThat(players[2].money).isEqualTo(995)
+    }
+
+    @Test
+    fun `round can be saved and loaded`() {
+        val file = File("test_game.json")
+        round.doAction(Action.CALL)
+        round.doAction(Action.RAISE, 50)
+        round.doAction(Action.CALL)
+        round.doAction(Action.CALL)
+        val expectedRound = round
+
+        file.writeText(Json.encodeToString(expectedRound))
+
+        val loadedRound = Json.decodeFromString<Round>(file.readText())
+
+        file.delete()
+
+        assertThat(loadedRound).isNotNull()
+        assertThat(loadedRound).usingRecursiveComparison().isEqualTo(expectedRound)
     }
 }

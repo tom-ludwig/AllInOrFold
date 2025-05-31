@@ -7,7 +7,7 @@ class Game {
     var round: Round? = null
         private set
 
-    var players = emptyList<Player>().toMutableList()
+    var players = mutableListOf<Player>()
         private set
 
     var smallBlindAmount = 10
@@ -16,7 +16,7 @@ class Game {
     var bigBlindAmount = 20
         private set
 
-    private var dealerPosition: Int = -1
+    private var dealerPosition: Int = 0
 
     fun setSmallBlind(amount: Int) {
         require(amount > 0) { "Small blind must be greater than 0" }
@@ -36,12 +36,12 @@ class Game {
     }
 
     fun addPlayer(player: Player) {
-        // TODO: Exception if the current round isn't over
+        if (round != null && !round!!.isHandComplete) throw RoundStartedException()
+        require( players.size < 20) { "There are already 20 players" }
         players += player
     }
 
     fun newRound() {
-        dealerPosition = (dealerPosition + 1) % players.size
         players.map {
             it.resetFold()
             it.resetCurrentBet()
@@ -52,5 +52,7 @@ class Game {
             bigBlindAmount,
             dealerPosition,
         )
+        round!!.setup()
+        dealerPosition = (dealerPosition + 1) % players.size
     }
 }

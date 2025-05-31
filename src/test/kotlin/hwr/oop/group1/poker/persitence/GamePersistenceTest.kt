@@ -1,5 +1,6 @@
 package hwr.oop.group1.poker.persitence
 
+import hwr.oop.group1.poker.Action
 import hwr.oop.group1.poker.Game
 import hwr.oop.group1.poker.Player
 import hwr.oop.group1.poker.persistence.GamePersistence
@@ -49,6 +50,27 @@ class GamePersistenceTest: AnnotationSpec() {
         val player1 = Player("Max", 1000)
 
         expectedGame.addPlayer(player1)
+        adapter.saveGame(expectedGame)
+
+        val loadedGame = adapter.loadGame()
+
+        assertThat(loadedGame).isNotNull()
+        assertThat(loadedGame).usingRecursiveComparison().isEqualTo(expectedGame)
+    }
+
+    @Test
+    fun `loaded Game should not perform init`() {
+        val expectedGame = Game()
+        val player1 = Player("Max", 1000)
+        val player2 = Player("Ben", 1000)
+        val player3 = Player("Alice", 1000)
+
+        expectedGame.addPlayer(player1)
+        expectedGame.addPlayer(player2)
+        expectedGame.addPlayer(player3)
+        expectedGame.newRound()
+        expectedGame.round!!.doAction(Action.CALL)
+
         adapter.saveGame(expectedGame)
 
         val loadedGame = adapter.loadGame()
