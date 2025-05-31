@@ -150,4 +150,4 @@ classDiagram
 
 | Number | Dependency Name | Dependency Description | Why is it necessary? |
 |--------|-----------------|------------------------|----------------------|
-| 1      | /               | /                      | /                    |
+| 1      | kotlinx-serialization-json | A library for JSON serialization and deserialization in Kotlin.  | Used for handling JSON data in the project. |
