@@ -246,7 +246,7 @@ class CliTest : AnnotationSpec() {
         val game = persistence.loadGame()!!
         val round = game.round!!
         val currentPlayer = round.currentPlayer
-        val holeCards = currentPlayer.hand
+        val holeCards = currentPlayer.hole
 
         assertThat(output)
             .contains("The hole cards of Alice are")
