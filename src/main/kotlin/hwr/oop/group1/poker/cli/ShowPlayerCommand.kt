@@ -1,6 +1,6 @@
 package hwr.oop.group1.poker.cli
 
-import hwr.oop.group1.poker.HandIsCompleteException
+import hwr.oop.group1.poker.RoundIsCompleteException
 import hwr.oop.group1.poker.persistence.GamePersistence
 
 class ShowPlayerCommand : CliCommand {
@@ -13,13 +13,13 @@ class ShowPlayerCommand : CliCommand {
         val action = args[2]
         if(!commands.contains(action)) throw InvalidCommandUsageException("show player")
         val game = persistence.loadGame() ?: throw NoGameException()
-        val round = game.round ?: throw HandIsCompleteException()
+        val round = game.round ?: throw RoundIsCompleteException()
         val currentPlayer = round.currentPlayer
 
         when (action) {
             "cards" -> {
                 println("The hole cards of ${currentPlayer.name} are:")
-                currentPlayer.hand.forEach {
+                currentPlayer.hole.forEach {
                     println("   $it")
                 }
             }

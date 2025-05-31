@@ -20,8 +20,8 @@ class NotEnoughToRaiseException (
     "player $player can not raise, because $amount is not enough"
 )
 
-class HandIsCompleteException: RuntimeException(
-    "The Hand is already complete, to play again start a new round."
+class RoundIsCompleteException: RuntimeException(
+    "The Round is already complete, to play again start a new round."
 )
 
 class RoundStartedException : RuntimeException(

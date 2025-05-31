@@ -36,7 +36,7 @@ class Game {
     }
 
     fun addPlayer(player: Player) {
-        if (round != null && !round!!.isHandComplete) throw RoundStartedException()
+        if (round != null && !round!!.isRoundComplete) throw RoundStartedException()
         require( players.size < 20) { "There are already 20 players" }
         players += player
     }

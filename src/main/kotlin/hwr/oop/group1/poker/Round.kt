@@ -14,7 +14,7 @@ class Round(
     private var communityCards = mutableListOf<Card>()
 
     /**
-     * The current stage of the hand:
+     * The current stage of the round:
      * 0 = Pre-flop (no community cards)
      * 1 = Flop (3 community cards)
      * 2 = Turn (4 community cards)
@@ -35,14 +35,14 @@ class Round(
     private var currentPlayerPosition = 0
     val currentPlayer get() = players[currentPlayerPosition]
 
-    var isHandComplete = false
+    var isRoundComplete = false
         private set
 
     var lastWinnerAnnouncement = ""
        private set
 
     fun setup() {
-        require(players.size >= 2) { "Need at least 2 players to start a hand" }
+        require(players.size >= 2) { "Need at least 2 players to start a round" }
         require(dealerPosition <= players.size - 1) { "The dealer position must be a valid player position" }
         require(bigBlindAmount > smallBlindAmount) { "The small blind has to be smaller than the big blind" }
         // Reset round state
@@ -55,7 +55,7 @@ class Round(
 
         // assign cards to players
         for (player in players) {
-            player.hand.clear()
+            player.hole.clear()
             repeat(2) {
                 val card = deck.draw()!!
                 player.addCard(card)
@@ -69,7 +69,7 @@ class Round(
     }
 
     fun doAction(action: Action, amount: Int = 0) {
-        if (isHandComplete) throw HandIsCompleteException()
+        if (isRoundComplete) throw RoundIsCompleteException()
 
         when (action) {
             Action.CHECK -> check()
@@ -81,8 +81,8 @@ class Round(
         // Move to next active player
         nextPlayer()
 
-        if(checkHandComplete()){
-            isHandComplete = true
+        if(checkRoundComplete()){
+            isRoundComplete = true
             determineWinner()
         }
         else if (bettingRoundComplete()) {
@@ -130,7 +130,7 @@ class Round(
     }
 
     /**
-     * Advances to the next stage of the hand.
+     * Advances to the next stage of the round.
      * This is called when a betting round is complete.
      */
     private fun nextStage() {
@@ -151,7 +151,7 @@ class Round(
      * Handles calls (matching current bet) and raises (increasing current bet).
      */
     private fun placeBet(player: Player, amount: Int) {
-        require(!isHandComplete) { "Hand is already complete" }
+        require(!isRoundComplete) { "Round is already complete" }
         require(amount >= 0) { "Bet amount must be non-negative" }
 
         require(player.money >= amount) { "Player does not have enough money" }
@@ -209,12 +209,12 @@ class Round(
             nextStage()
         } else {
             // River is complete, trigger showdown
-            isHandComplete = true
+            isRoundComplete = true
             determineWinner()
         }
     }
 
-    private fun checkHandComplete(): Boolean {
+    private fun checkRoundComplete(): Boolean {
         // Check if only one player is active
         if (players.filter { !it.hasFolded }.size == 1) return true
 
@@ -225,7 +225,7 @@ class Round(
     }
 
     /**
-     * Determines the winner(s) of the hand and awards the pot.
+     * Determines the winner(s) of the round and awards the pot.
      * This is called after the river betting round is complete.
      * Handles split pots when multiple players have equal hand strength.
      */
