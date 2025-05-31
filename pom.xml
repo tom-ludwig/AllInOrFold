@@ -6,9 +6,9 @@
 
   <groupId>hwr.oop.projects</groupId>
 
-  <artifactId>AllInOrFold</artifactId>
+  <artifactId>com.group1.allinorfold</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 
   <name>AllInOrFold</name>
   <description>A Poker game</description>
@@ -98,6 +98,7 @@
           <compilerPlugins>
             <plugin>kotlinx-serialization</plugin>
           </compilerPlugins>
+          <jvmTarget>${kotlin.compiler.jvmTarget}</jvmTarget>
         </configuration>
         <dependencies>
           <dependency>
@@ -117,6 +118,38 @@
             </kotest.framework.classpath.scanning.autoscan.disable>
           </systemPropertyVariables>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>hwr.oop.group1.poker.MainKt</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.4.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>hwr.oop.group1.poker.MainKt</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
