@@ -2,22 +2,38 @@ package hwr.oop.group1.poker
 
 // A Ranking of a hand (5-card combination)
 data class HandRank(
-    val type: HandType,
-    val ranks: List<CardRank> // ordered for tie-breaker
+  val type: HandType,
+  val ranks: List<CardRank>, // ordered for tie-breaker
 ) : Comparable<HandRank> {
-    override fun compareTo(other: HandRank): Int {
-        val cmp = type.strength.compareTo(other.type.strength)
-        return if (cmp != 0) cmp else ranks.zip(other.ranks)
-            .map { it.first.value - it.second.value }
-            .firstOrNull { it != 0 } ?: 0
-    }
+  override fun compareTo(other: HandRank): Int {
+    val cmp = type.strength.compareTo(other.type.strength)
+    return if (cmp != 0) cmp
+    else
+      ranks.zip(other.ranks).map { it.first.value - it.second.value }
+        .firstOrNull {
+          it != 0
+        }
+        ?: 0
+  }
 }
 
-fun List<Card>.combinations(k: Int): List<List<Card>> {
-    fun combine(start: Int, curr: List<Card>): List<List<Card>> {
-        if (curr.size == k) return listOf(curr)
-        if (start >= this.size) return emptyList()
-        return combine(start + 1, curr + this[start]) + combine(start + 1, curr)
-    }
-    return combine(0, emptyList())
+fun List<Card>.combinations(combinationSize: Int): List<List<Card>> {
+  fun combine(
+    startIndex: Int,
+    currentCombination: List<Card>,
+  ): List<List<Card>> {
+    if (currentCombination.size == combinationSize) return listOf(
+      currentCombination
+    )
+    if (startIndex >= this.size) return emptyList()
+    return combine(
+      startIndex + 1,
+      currentCombination + this[startIndex]
+    ) + combine(
+      startIndex + 1,
+      currentCombination
+    )
+  }
+  return combine(0, emptyList())
 }
+
