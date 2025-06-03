@@ -34,7 +34,7 @@ class RoundTest : AnnotationSpec() {
 
   @Test
   fun `currentPlayer is player after big blind`() {
-    assertThat(round.currentPlayer.name).isEqualTo("Alice")
+    assertThat(round.getCurrentPlayer().name).isEqualTo("Alice")
   }
 
   @Test
@@ -45,7 +45,7 @@ class RoundTest : AnnotationSpec() {
     )
     round = Round.create(players, 5, 10)
 
-    assertThat(round.currentPlayer.name).isEqualTo("Alice")
+    assertThat(round.getCurrentPlayer().name).isEqualTo("Alice")
   }
 
   @Test
@@ -106,10 +106,10 @@ class RoundTest : AnnotationSpec() {
 
   @Test
   fun `folding skips player and marks them folded`() {
-    val initial = round.currentPlayer.name
+    val initial = round.getCurrentPlayer().name
     round.doAction(Action.FOLD)
     assertThat(round.players[0].hasFolded).isTrue()
-    assertThat(round.currentPlayer.name).isEqualTo("Bob")
+    assertThat(round.getCurrentPlayer().name).isEqualTo("Bob")
   }
 
   @Test

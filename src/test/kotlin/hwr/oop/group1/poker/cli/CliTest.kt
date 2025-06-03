@@ -44,7 +44,9 @@ class CliTest : AnnotationSpec() {
     }
 
     assertThat(output).contains("Alice", "was added")
-    assertThat(persistence.loadGame().getPlayers().first().name).isEqualTo("Alice")
+    assertThat(
+      persistence.loadGame().getPlayers().first().name
+    ).isEqualTo("Alice")
   }
 
   @Test
@@ -61,8 +63,12 @@ class CliTest : AnnotationSpec() {
     }
 
     assertThat(output).contains("Alice", "was added")
-    assertThat(persistence.loadGame().getPlayers().first().name).isEqualTo("Alice")
-    assertThat(persistence.loadGame().getPlayers().first().getMoney()).isEqualTo(
+    assertThat(
+      persistence.loadGame().getPlayers().first().name
+    ).isEqualTo("Alice")
+    assertThat(
+      persistence.loadGame().getPlayers().first().getMoney()
+    ).isEqualTo(
       100
     )
   }
@@ -106,7 +112,7 @@ class CliTest : AnnotationSpec() {
     val game = persistence.loadGame()
     val round = game.round!!
 
-    assertThat(round.currentPlayer.name).isEqualTo("Bob")
+    assertThat(round.getCurrentPlayer().name).isEqualTo("Bob")
     assertThat(round.pot).isEqualTo(50)
     assertThat(output).contains(
       "Player Alice has performed action call",
@@ -251,7 +257,7 @@ class CliTest : AnnotationSpec() {
     }
     val game = persistence.loadGame()
     val round = game.round!!
-    val currentPlayer = round.currentPlayer
+    val currentPlayer = round.getCurrentPlayer()
     val holeCards = currentPlayer.getHole()
 
     assertThat(output)
@@ -306,7 +312,7 @@ class CliTest : AnnotationSpec() {
 
     val game = persistence.loadGame()
     val round = game.round!!
-    val currentPlayer = round.currentPlayer
+    val currentPlayer = round.getCurrentPlayer()
     val money = currentPlayer.getMoney()
     assertThat(output).contains(
       "The current money of ${currentPlayer.name}",
@@ -356,7 +362,7 @@ class CliTest : AnnotationSpec() {
 
     val game = persistence.loadGame()
     val round = game.round!!
-    val currentPlayer = round.currentPlayer
+    val currentPlayer = round.getCurrentPlayer()
     assertThat(output).contains("The current player is", currentPlayer.name)
   }
 
@@ -404,7 +410,7 @@ class CliTest : AnnotationSpec() {
 
     val game = persistence.loadGame()
     val round = game.round!!
-    val currentPlayer = round.currentPlayer
+    val currentPlayer = round.getCurrentPlayer()
     val currentPlayerBet = currentPlayer.currentBet
     assertThat(output).contains("The current bet of ${currentPlayer.name} is $currentPlayerBet")
   }
