@@ -44,7 +44,7 @@ class CliTest : AnnotationSpec() {
     }
 
     assertThat(output).contains("Alice", "was added")
-    assertThat(persistence.loadGame().players.first().name).isEqualTo("Alice")
+    assertThat(persistence.loadGame().getPlayers().first().name).isEqualTo("Alice")
   }
 
   @Test
@@ -61,8 +61,8 @@ class CliTest : AnnotationSpec() {
     }
 
     assertThat(output).contains("Alice", "was added")
-    assertThat(persistence.loadGame().players.first().name).isEqualTo("Alice")
-    assertThat(persistence.loadGame().players.first().getMoney()).isEqualTo(
+    assertThat(persistence.loadGame().getPlayers().first().name).isEqualTo("Alice")
+    assertThat(persistence.loadGame().getPlayers().first().getMoney()).isEqualTo(
       100
     )
   }

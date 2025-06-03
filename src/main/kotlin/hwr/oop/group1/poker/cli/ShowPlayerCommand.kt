@@ -13,7 +13,7 @@ class ShowPlayerCommand : GameDependentCommand() {
     val action = args[2]
     if (!commands.contains(action)) throw InvalidCommandUsageException("show player")
     val round = game.round ?: throw RoundIsCompleteException()
-    val currentPlayer = round.currentPlayer
+    val currentPlayer = round.getCurrentPlayer()
 
     when (action) {
       "cards" -> {

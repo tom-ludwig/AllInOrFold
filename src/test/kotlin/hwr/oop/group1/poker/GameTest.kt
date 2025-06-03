@@ -12,7 +12,7 @@ class GameTest : AnnotationSpec() {
     val player = Player("Max", 1000)
 
     game.addPlayer(player)
-    val players = game.players
+    val players = game.getPlayers()
 
     assertThat(players).contains(player)
   }

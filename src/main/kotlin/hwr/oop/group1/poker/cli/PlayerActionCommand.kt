@@ -12,7 +12,7 @@ class PlayerActionCommand : GameDependentCommand() {
 
   override fun handleWithGame(game: Game, args: List<String>) {
     val round = game.round ?: throw RoundIsCompleteException()
-    val currentPlayer = round.currentPlayer
+    val currentPlayer = round.getCurrentPlayer()
 
     val stageBefore = round.stage
 
@@ -49,7 +49,7 @@ class PlayerActionCommand : GameDependentCommand() {
           listOf("show", "round", "cards")
         )
       }
-      println("Next player is ${round.currentPlayer.name}")
+      println("Next player is ${round.getCurrentPlayer().name}")
     }
   }
 }

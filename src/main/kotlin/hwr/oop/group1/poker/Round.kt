@@ -32,29 +32,6 @@ private constructor(
       round.setup()
       return round
     }
-
-//    fun createFromPersistence(
-//      players: List<Player>,
-//      smallBlindAmount: Int = 5,
-//      bigBlindAmount: Int = 10,
-//      dealerPosition: Int = 0,
-//      communityCards: List<Card>,
-//      pot: Int = 0,
-//      currentBet: Int = 0,
-//      currentPlayerPosition: Int = 0,
-//      isRoundComplete: Boolean = false,
-//      lastWinnerAnnouncement: String = ""
-//    ): Round {
-//      val round = Round(players, smallBlindAmount, bigBlindAmount, dealerPosition)
-//      round.communityCards = communityCards.toMutableList()
-//      round.pot = pot
-//      round.currentBet = currentBet
-//      round.currentPlayerPosition = currentPlayerPosition
-//      round.isRoundComplete = isRoundComplete
-//      round.lastWinnerAnnouncement = lastWinnerAnnouncement
-//      // Skip setup since we're loading existing state
-//      return round
-//    }
   }
 
   /**
@@ -77,15 +54,15 @@ private constructor(
 
   private var currentPlayerPosition = 0
 
-  // Convert to Method;
-  val currentPlayer
-    get() = players[currentPlayerPosition]
-
   var isRoundComplete = false
     private set
 
   var lastWinnerAnnouncement = ""
     private set
+
+  fun getCurrentPlayer(): Player {
+    return players[currentPlayerPosition]
+  }
 
   private fun setup() {
     require(players.size >= 2) { "Need at least 2 players to start a round" }
@@ -146,28 +123,28 @@ private constructor(
   }
 
   private fun check() {
-    if (currentBet != currentPlayer.currentBet) throw CanNotCheckException(
-      currentPlayer
+    if (currentBet != getCurrentPlayer().currentBet) throw CanNotCheckException(
+      getCurrentPlayer()
     )
-    currentPlayer.setChecked()
+    getCurrentPlayer().setChecked()
   }
 
   private fun call() {
-    placeBet(currentPlayer, currentBet - currentPlayer.currentBet)
+    placeBet(getCurrentPlayer(), currentBet - getCurrentPlayer().currentBet)
   }
 
   private fun raise(amount: Int) {
-    if (currentPlayer.getMoney() < amount) throw NotEnoughMoneyException(
-      currentPlayer,
+    if (getCurrentPlayer().getMoney() < amount) throw NotEnoughMoneyException(
+      getCurrentPlayer(),
       amount
     )
-    if (currentPlayer.currentBet + amount <= currentBet)
-      throw NotEnoughToRaiseException(currentPlayer, amount)
-    placeBet(currentPlayer, amount)
+    if (getCurrentPlayer().currentBet + amount <= currentBet)
+      throw NotEnoughToRaiseException(getCurrentPlayer(), amount)
+    placeBet(getCurrentPlayer(), amount)
   }
 
   private fun fold() {
-    currentPlayer.fold()
+    getCurrentPlayer().fold()
   }
 
   /**
