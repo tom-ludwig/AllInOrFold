@@ -33,4 +33,22 @@ class CardTest : AnnotationSpec() {
     assertThat(loadedCard).isNotNull()
     assertThat(loadedCard).usingRecursiveComparison().isEqualTo(expectedCard)
   }
+
+  @Test
+  fun `card toString handles all rank-suit combinations`() {
+    // Comprehensive test to ensure all combinations work
+    // This helps catch any conditional mutations that might affect specific combinations
+    CardRank.values().forEach { rank ->
+      CardSuit.values().forEach { suit ->
+        val card = Card(rank, suit)
+        val result = card.toString()
+
+        val expectedRank = rank.name.lowercase().replaceFirstChar { it.uppercase() }
+        val expectedSuit = suit.name.lowercase().replaceFirstChar { it.uppercase() }
+        val expected = "$expectedRank of $expectedSuit"
+
+        assertThat(result).isEqualTo(expected)
+      }
+    }
+  }
 }

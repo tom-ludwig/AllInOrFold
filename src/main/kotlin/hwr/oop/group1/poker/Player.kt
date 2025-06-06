@@ -60,7 +60,7 @@ class Player(
   }
 
   fun isActive(): Boolean {
-    return !hasFolded || money == 0
+    return !hasFolded && money != 0
   }
 
   fun setChecked() {

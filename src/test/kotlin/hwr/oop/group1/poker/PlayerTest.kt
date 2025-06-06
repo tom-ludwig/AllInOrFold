@@ -27,6 +27,38 @@ class PlayerTest : AnnotationSpec() {
   }
 
   @Test
+  fun `Player isn't active after spending all his money`() {
+    val player = Player("Max", 50)
+
+    assertThat(player.isActive()).isTrue()
+    assertThat(player.betMoney(50)).isEqualTo(50)
+
+    assertThat(player.isActive()).isFalse()
+  }
+
+  @Test
+  fun `Player isn't active after folding`() {
+    val player = Player("Max", 50)
+
+    assertThat(player.isActive()).isTrue()
+    player.fold()
+
+    assertThat(player.isActive()).isFalse()
+  }
+
+  @Test
+  fun `Players Cards are removed correctly`() {
+    val player = Player("Max", 1000)
+    val card = Card(CardRank.FIVE, CardSuit.SPADES)
+    player.addCard(card)
+    player.addCard(card)
+
+    player.clearHole()
+
+    assertThat(player.getHole()).isEmpty()
+  }
+
+  @Test
   fun `Player Money is 10 after adding 10`() {
     val player = Player("Max", 1000)
 

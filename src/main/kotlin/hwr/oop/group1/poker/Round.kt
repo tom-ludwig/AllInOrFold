@@ -69,9 +69,7 @@ private constructor(
     require(dealerPosition <= players.size - 1) {
       "The dealer position must be a valid player position"
     }
-    require(bigBlindAmount > smallBlindAmount) {
-      "The small blind has to be smaller than the big blind"
-    }
+
     // Reset round state
     val deck = setupDeck ?: Deck()
 

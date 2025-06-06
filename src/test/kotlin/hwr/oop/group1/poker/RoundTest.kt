@@ -38,6 +38,11 @@ class RoundTest : AnnotationSpec() {
   }
 
   @Test
+  fun `Round can't be created with invalid dealer index`() {
+    assertThatThrownBy { Round.create(players, 5, 10, dealerPosition = 5) }.hasMessageContaining("The dealer position must be a valid player position")
+  }
+
+  @Test
   fun `currentPlayer is dealer when only 2 players`() {
     players = listOf(
       Player("Alice", 1000),
@@ -126,6 +131,8 @@ class RoundTest : AnnotationSpec() {
 
     assertThat(round.isRoundComplete).isTrue()
     assertThat(round.lastWinnerAnnouncement).contains("Caroline")
+    assertThat(players.first { player -> player.name == "Caroline" }.getMoney())
+      .isEqualTo(1005) // Caroline gets the pot
   }
 
   @Test

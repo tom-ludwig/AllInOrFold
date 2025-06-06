@@ -36,56 +36,56 @@ object HandEvaluator {
         ) {
           HandRank(
             type = HandType.ROYAL_FLUSH,
-            ranks = straightRanks
+            cardRank = straightRanks
           )
         } else {
           HandRank(
             type = HandType.STRAIGHT_FLUSH,
-            ranks = straightRanks
+            cardRank = straightRanks
           )
         }
       }
 
-      rankGroups[0].second == 4 -> {
+      rankGroups.first().second == 4 -> {
         HandRank(
           type = HandType.FOUR_OF_A_KIND,
-          ranks = listOf(rankGroups[0].first, rankGroups[1].first)
+          cardRank = listOf(rankGroups[0].first, rankGroups[1].first)
         )
       }
 
-      rankGroups[0].second == 3 && rankGroups[1].second >= 2 -> {
+      rankGroups.first().second == 3 && rankGroups[1].second >= 2 -> {
         HandRank(
           type = HandType.FULL_HOUSE,
-          ranks = listOf(rankGroups[0].first, rankGroups[1].first)
+          cardRank = listOf(rankGroups[0].first, rankGroups[1].first)
         )
       }
 
       isFlush -> {
         HandRank(
           type = HandType.FLUSH,
-          ranks = sorted.map { it.rank }
+          cardRank = sorted.map { it.rank }
         )
       }
 
       straightRanks.isNotEmpty() -> {
         HandRank(
           type = HandType.STRAIGHT,
-          ranks = straightRanks
+          cardRank = straightRanks
         )
       }
 
-      rankGroups[0].second == 3 -> {
+      rankGroups.first().second == 3 -> {
         HandRank(
           type = HandType.THREE_OF_A_KIND,
-          ranks = listOf(rankGroups[0].first) + rankGroups.drop(1)
+          cardRank = listOf(rankGroups[0].first) + rankGroups.drop(1)
             .map { it.first }
         )
       }
 
-      rankGroups[0].second == 2 && rankGroups[1].second == 2 -> {
+      rankGroups.first().second == 2 && rankGroups[1].second == 2 -> {
         HandRank(
           type = HandType.TWO_PAIR,
-          ranks = listOf(
+          cardRank = listOf(
             rankGroups[0].first,
             rankGroups[1].first,
             rankGroups[2].first
@@ -93,10 +93,10 @@ object HandEvaluator {
         )
       }
 
-      rankGroups[0].second == 2 -> {
+      rankGroups.first().second == 2 -> {
         HandRank(
           type = HandType.ONE_PAIR,
-          ranks = listOf(rankGroups[0].first) + rankGroups.drop(1)
+          cardRank = listOf(rankGroups[0].first) + rankGroups.drop(1)
             .map { it.first }
         )
       }
@@ -104,7 +104,7 @@ object HandEvaluator {
       else -> {
         HandRank(
           type = HandType.HIGH_CARD,
-          ranks = sorted.map { it.rank }
+          cardRank = sorted.map { it.rank }
         )
       }
     }
@@ -131,5 +131,25 @@ object HandEvaluator {
       }
     }
     return emptyList()
+  }
+
+  private fun List<Card>.combinations(combinationSize: Int): List<List<Card>> {
+    fun combine(
+      startIndex: Int,
+      currentCombination: List<Card>,
+    ): List<List<Card>> {
+      if (currentCombination.size == combinationSize) return listOf(
+        currentCombination
+      )
+      if (startIndex >= this.size) return emptyList()
+      return combine(
+        startIndex + 1,
+        currentCombination + this[startIndex]
+      ) + combine(
+        startIndex + 1,
+        currentCombination
+      )
+    }
+    return combine(0, emptyList())
   }
 }
