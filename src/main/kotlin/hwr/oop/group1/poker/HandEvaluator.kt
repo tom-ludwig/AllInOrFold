@@ -115,19 +115,17 @@ object HandEvaluator {
    * empty list if no straight was found in set of cards
    */
   private fun findStraightRanks(ranks: Set<CardRank>): List<CardRank> {
-    val sorted = ranks.map { it.value }.toSet().toMutableSet()
+    val uniqueValues = ranks.map { it.value }.toSet().toMutableSet()
 
     // Handle Ace as 1 for A-2-3-4-5
-    if (CardRank.ACE in ranks) sorted.add(1)
+    if (CardRank.ACE in ranks) uniqueValues.add(1)
 
-    val values = sorted.sortedDescending()
-    for (i in 0..values.size - 5) {
-      val window = values.subList(i, i + 5)
-      if (window.zipWithNext().all { it.first - it.second == 1 }) {
-        return window.map { v ->
-          CardRank.values()
-            .first { it.value == if (v == 1) 14 else v }
-        }
+    val sortedValues = uniqueValues.sortedDescending()
+    val windowSize = 5
+    for (i in 0..sortedValues.size - windowSize) {
+      val window = sortedValues.subList(i, i + windowSize)
+      if (isStraight(window)) {
+        return convertIntegersToCardRanks(window)
       }
     }
     return emptyList()
@@ -151,5 +149,16 @@ object HandEvaluator {
       )
     }
     return combine(0, emptyList())
+  }
+
+  private fun isStraight (list: List<Int>): Boolean {
+    return list.zipWithNext().all { it.first - it.second == 1 }
+  }
+
+  private fun convertIntegersToCardRanks(list: List<Int>): List<CardRank> {
+    return list.map { v ->
+      CardRank.values()
+        .first { it.value == if (v == 1) 14 else v }
+    }
   }
 }
