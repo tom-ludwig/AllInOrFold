@@ -1,5 +1,7 @@
 package hwr.oop.group1.poker
 
+import hwr.oop.group1.poker.handEvaluation.HandEvaluator
+import hwr.oop.group1.poker.handEvaluation.HandRank
 import io.kotest.core.spec.style.AnnotationSpec
 import org.assertj.core.api.Assertions.assertThat
 
