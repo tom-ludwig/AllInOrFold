@@ -132,7 +132,6 @@ object HandEvaluator {
   private val strategies = listOf(
     StraightFlushStrategy(),
     FourOfAKindStrategy(),
-    FourOfAKindStrategy(),
     FullHouseStrategy(),
     FlushStrategy(),
     StraightStrategy(),
