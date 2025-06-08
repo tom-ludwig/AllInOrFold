@@ -1,4 +1,7 @@
-package hwr.oop.group1.poker
+package hwr.oop.group1.poker.handEvaluation
+
+import hwr.oop.group1.poker.CardRank
+import hwr.oop.group1.poker.HandType
 
 // A Ranking of a hand (5-card combination)
 data class HandRank(
