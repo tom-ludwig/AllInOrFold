@@ -5,7 +5,7 @@ import hwr.oop.group1.poker.HandType
 import hwr.oop.group1.poker.handEvaluation.HandRank
 import hwr.oop.group1.poker.handEvaluation.RankGroups
 
-class TwoPairStrategy : HandDetectionStrategy {
+class TwoPairStrategy : HandDetector {
   override fun detect(cards: List<Card>, rankGroups: RankGroups): HandRank? {
     val pairs = rankGroups.getRanksWithCount(2)
     if (pairs.size < 2) return null

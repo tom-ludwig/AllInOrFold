@@ -121,24 +121,24 @@ private constructor(
   }
 
   private fun check() {
-    if (currentBet != getCurrentPlayer().currentBet) throw CanNotCheckException(
-      getCurrentPlayer()
-    )
+    val currentPlayer = players[currentPlayerPosition]
+    if (currentBet != currentPlayer.currentBet) throw CanNotCheckException(currentPlayer)
     getCurrentPlayer().setChecked()
   }
 
   private fun call() {
-    placeBet(getCurrentPlayer(), currentBet - getCurrentPlayer().currentBet)
+    placeBet(players[currentPlayerPosition], currentBet - getCurrentPlayer().currentBet)
   }
 
   private fun raise(amount: Int) {
-    if (getCurrentPlayer().getMoney() < amount) throw NotEnoughMoneyException(
-      getCurrentPlayer(),
+    val currentPlayer = players[currentPlayerPosition]
+    if (currentPlayer.getMoney() < amount) throw NotEnoughMoneyException(
+      currentPlayer,
       amount
     )
-    if (getCurrentPlayer().currentBet + amount <= currentBet)
-      throw NotEnoughToRaiseException(getCurrentPlayer(), amount)
-    placeBet(getCurrentPlayer(), amount)
+    if (currentPlayer.currentBet + amount <= currentBet)
+      throw NotEnoughToRaiseException(currentPlayer, amount)
+    placeBet(currentPlayer, amount)
   }
 
   private fun fold() {
@@ -166,7 +166,7 @@ private constructor(
     require(stage < 3) { "Cannot advance past the river" }
 
     currentBet = 0 // Reset current bet for next round
-    players.map { it.resetCurrentBet() }
+    players.forEach { it.resetCurrentBet() }
     stage++
   }
 

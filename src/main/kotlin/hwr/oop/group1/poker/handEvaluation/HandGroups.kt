@@ -19,8 +19,4 @@ class RankGroups(cards: List<Card>) {
     grouped.filter { it.second == n }.map { it.first }
 
   fun topRanks(): List<CardRank> = grouped.map { it.first }
-
-  fun first(): Pair<CardRank, Int> = grouped.first()
-
-  fun second(): Pair<CardRank, Int>? = grouped.getOrNull(1)
 }

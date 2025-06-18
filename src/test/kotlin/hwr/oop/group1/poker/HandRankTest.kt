@@ -36,6 +36,24 @@ class HandRankTest : AnnotationSpec() {
     val result = HandEvaluator.evaluateBestHandFrom(cards)
 
     assertThat(HandType.STRAIGHT_FLUSH).isEqualTo(result.type)
+    assertThat(result.cardRank).isEqualTo(listOf(CardRank.TEN, CardRank.NINE, CardRank.EIGHT, CardRank.SEVEN, CardRank.SIX))
+  }
+
+  @Test
+  fun `detects bicycle straight`() {
+    val cards = listOf(
+      Card(CardRank.ACE, CardSuit.SPADES),
+      Card(CardRank.TWO, CardSuit.SPADES),
+      Card(CardRank.THREE, CardSuit.SPADES),
+      Card(CardRank.FOUR, CardSuit.SPADES),
+      Card(CardRank.FIVE, CardSuit.SPADES),
+      Card(CardRank.QUEEN, CardSuit.CLUBS),
+      Card(CardRank.KING, CardSuit.HEARTS)
+    )
+    val result = HandEvaluator.evaluateBestHandFrom(cards)
+
+    assertThat(HandType.STRAIGHT_FLUSH).isEqualTo(result.type)
+    assertThat(result.cardRank).contains(CardRank.ACE) // Ace gets counted as 1 and converted back to an ace
   }
 
   @Test
@@ -52,6 +70,8 @@ class HandRankTest : AnnotationSpec() {
     val result = HandEvaluator.evaluateBestHandFrom(cards)
 
     assertThat(HandType.FOUR_OF_A_KIND).isEqualTo(result.type)
+    assertThat(result.cardRank.toSet()).isEqualTo(setOf(CardRank.FIVE, CardRank.TEN))
+    assertThat(result.cardRank.size).isEqualTo(2)
   }
 
   @Test
@@ -84,6 +104,7 @@ class HandRankTest : AnnotationSpec() {
     val result = HandEvaluator.evaluateBestHandFrom(cards)
 
     assertThat(HandType.FLUSH).isEqualTo(result.type)
+    assertThat(result.cardRank).isEqualTo(listOf(CardRank.KING, CardRank.JACK, CardRank.NINE, CardRank.FIVE, CardRank.TWO))
   }
 
   @Test
@@ -116,6 +137,7 @@ class HandRankTest : AnnotationSpec() {
     val result = HandEvaluator.evaluateBestHandFrom(cards)
 
     assertThat(HandType.THREE_OF_A_KIND).isEqualTo(result.type)
+    assertThat(result.cardRank.size).isEqualTo(3)
   }
 
   @Test
@@ -132,6 +154,9 @@ class HandRankTest : AnnotationSpec() {
     val result = HandEvaluator.evaluateBestHandFrom(cards)
 
     assertThat(HandType.TWO_PAIR).isEqualTo(result.type)
+    // check kicker:
+    assertThat(setOf(CardRank.FOUR, CardRank.TEN, CardRank.ACE)).isEqualTo(result.cardRank.toSet())
+    assertThat(result.cardRank.size).isEqualTo(3)
   }
 
   @Test
@@ -148,6 +173,7 @@ class HandRankTest : AnnotationSpec() {
     val result = HandEvaluator.evaluateBestHandFrom(cards)
 
     assertThat(HandType.ONE_PAIR).isEqualTo(result.type)
+    assertThat(result.cardRank.size).isEqualTo(4)
   }
 
   @Test
@@ -164,6 +190,7 @@ class HandRankTest : AnnotationSpec() {
     val result = HandEvaluator.evaluateBestHandFrom(cards)
 
     assertThat(HandType.HIGH_CARD).isEqualTo(result.type)
+    assertThat(result.cardRank).isEqualTo(listOf(CardRank.ACE, CardRank.KING, CardRank.JACK, CardRank.NINE, CardRank.SEVEN))
   }
 
   @Test
@@ -203,50 +230,4 @@ class HandRankTest : AnnotationSpec() {
 
     assertThat(hand1.compareTo(hand2)).isEqualTo(0)
   }
-
-//  @Test
-//  fun `get all combinations`() {
-//    val card1 = Card(CardRank.ACE, CardSuit.HEARTS)
-//    val card2 = Card(CardRank.TWO, CardSuit.HEARTS)
-//    val card3 = Card(CardRank.THREE, CardSuit.HEARTS)
-//    val cards = listOf(
-//      card1,
-//      card2,
-//      card3
-//    )
-//    val combinations = cards.combinations(2)
-//
-//    assertThat(combinations).isEqualTo(
-//      listOf(
-//        listOf(card1, card2),
-//        listOf(card1, card3),
-//        listOf(card2, card3)
-//      )
-//    )
-//  }
-//
-//  @Test
-//  fun `combinations returns correct number of combos`() {
-//    val input = listOf(
-//      Card(CardRank.ACE, CardSuit.HEARTS),
-//      Card(CardRank.TWO, CardSuit.HEARTS),
-//      Card(CardRank.THREE, CardSuit.HEARTS),
-//      Card(CardRank.FOUR, CardSuit.HEARTS),
-//      Card(CardRank.FIVE, CardSuit.HEARTS),
-//      Card(CardRank.SIX, CardSuit.HEARTS),
-//      Card(CardRank.SEVEN, CardSuit.HEARTS)
-//    )
-//    val result = input.combinations(5)
-//
-//    assertThat(21).isEqualTo(result.size) // C(7,5) = 21
-//    assertThat(result.all { it.size == 5 }).isTrue()
-//  }
-//
-//  @Test
-//  fun `combinations edge case empty list`() {
-//    val input = emptyList<Card>()
-//    val result = input.combinations(3)
-//
-//    assertThat(result.isEmpty()).isTrue()
-//  }
 }

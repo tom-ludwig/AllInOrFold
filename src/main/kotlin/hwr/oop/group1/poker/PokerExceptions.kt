@@ -4,20 +4,20 @@ class NotEnoughMoneyException(
   player: Player,
   amount: Int,
 ) : RuntimeException(
-  "player $player wants to raise $amount but only has ${player.getMoney()}"
+  "player ${player.name} wants to raise $amount but only has ${player.getMoney()}"
 )
 
 class CanNotCheckException(
   player: Player,
 ) : RuntimeException(
-  "player $player can not check"
+  "player ${player.name} can not check"
 )
 
 class NotEnoughToRaiseException(
   player: Player,
   amount: Int,
 ) : RuntimeException(
-  "player $player can not raise, because $amount is not enough"
+  "player ${player.name} can not raise, because $amount is not enough"
 )
 
 class RoundIsCompleteException : RuntimeException(

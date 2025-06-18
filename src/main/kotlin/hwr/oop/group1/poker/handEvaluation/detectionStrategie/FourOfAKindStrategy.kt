@@ -5,7 +5,7 @@ import hwr.oop.group1.poker.HandType
 import hwr.oop.group1.poker.handEvaluation.HandRank
 import hwr.oop.group1.poker.handEvaluation.RankGroups
 
-class FourOfAKindStrategy : HandDetectionStrategy {
+class FourOfAKindStrategy : HandDetector {
   override fun detect(cards: List<Card>, rankGroups: RankGroups): HandRank? {
     if (!rankGroups.hasOfAKind(4)) return null
     val quads = rankGroups.getRanksWithCount(4).first()
