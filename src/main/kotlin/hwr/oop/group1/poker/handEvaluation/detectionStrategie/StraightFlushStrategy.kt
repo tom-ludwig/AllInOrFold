@@ -7,15 +7,15 @@ import hwr.oop.group1.poker.handEvaluation.HandRank
 import hwr.oop.group1.poker.handEvaluation.RankGroups
 
 class StraightFlushStrategy : HandDetector {
-  override fun detect(cards: List<Card>, rankGroups: RankGroups): HandRank? {
-    val flushSuitGroup = cards.groupBy { it.suit }.values.find { it.size >= 5 } ?: return null
-    val flushCards = flushSuitGroup.sortedByDescending { it.rank.value }
-    val straight = findStraightRanks(flushCards.map { it.rank }.toSet())
-    if (straight.isEmpty()) return null
+    override fun detect(cards: List<Card>, rankGroups: RankGroups): HandRank? {
+        val flushSuitGroup = cards.groupBy { it.suit }.values.find { it.size >= 5 } ?: return null
+        val flushCards = flushSuitGroup.sortedByDescending { it.rank.value }
+        val straight = findStraightRanks(flushCards.map { it.rank }.toSet())
+        if (straight.isEmpty()) return null
 
-    return if (straight == listOf(CardRank.ACE, CardRank.KING, CardRank.QUEEN, CardRank.JACK, CardRank.TEN))
-      HandRank(HandType.ROYAL_FLUSH, straight)
-    else
-      HandRank(HandType.STRAIGHT_FLUSH, straight)
-  }
+        return if (straight == listOf(CardRank.ACE, CardRank.KING, CardRank.QUEEN, CardRank.JACK, CardRank.TEN))
+            HandRank(HandType.ROYAL_FLUSH, straight)
+        else
+            HandRank(HandType.STRAIGHT_FLUSH, straight)
+    }
 }
