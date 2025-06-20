@@ -17,6 +17,8 @@ class Player(
     private set
   var hasChecked = false
     private set
+  var isAllIn = false
+    private set
 
   fun getMoney(): Int {
     return money
@@ -42,7 +44,12 @@ class Player(
     val amount = min(money, this.money)
     this.money -= amount
     currentBet += amount
+    if(this.money == 0) setAllIn()
     return amount
+  }
+
+  fun resetChecked() {
+    hasChecked = false
   }
 
   fun resetCurrentBet() {
@@ -60,11 +67,15 @@ class Player(
   }
 
   fun isActive(): Boolean {
-    return !hasFolded && money != 0
+    return !(hasFolded || isAllIn)
   }
 
   fun setChecked() {
     hasChecked = true
+  }
+
+  private fun setAllIn() {
+    isAllIn = true
   }
 
   /**
