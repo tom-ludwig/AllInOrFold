@@ -5,15 +5,15 @@ import hwr.oop.group1.poker.handEvaluation.detectionStrategie.*
 
 object HandEvaluator {
     private val strategies = listOf(
-        StraightFlushStrategy(),
-        FourOfAKindStrategy(),
-        FullHouseStrategy(),
-        FlushStrategy(),
-        StraightStrategy(),
-        ThreeOfAKindStrategy(),
-        TwoPairStrategy(),
-        OnePairStrategy(),
-        HighCardStrategy()
+        StraightFlushDetector(),
+        FourOfAKindDetector(),
+        FullHouseDetector(),
+        FlushDetector(),
+        StraightDetector(),
+        ThreeOfAKindDetector(),
+        TwoPairDetector(),
+        OnePairDetector(),
+        HighCardDetector()
     )
 
     fun evaluateBestHandFrom(cards: List<Card>): HandRank {

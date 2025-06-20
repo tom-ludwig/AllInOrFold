@@ -5,14 +5,13 @@ import hwr.oop.group1.poker.HandType
 import hwr.oop.group1.poker.handEvaluation.HandRank
 import hwr.oop.group1.poker.handEvaluation.RankGroups
 
-class StraightStrategy : HandDetector {
+class FlushDetector : HandDetector {
     override fun detect(cards: List<Card>, rankGroups: RankGroups): HandRank? {
-        val ranks = cards.map { it.rank }.toSet()
-        val straight = findStraightRanks(ranks)
-        return if (straight.isNotEmpty()) {
-            HandRank(HandType.STRAIGHT, straight)
-        } else {
-            null
-        }
+        val flush = cards.groupBy { it.suit }
+            .values.firstOrNull { it.size >= 5 }
+            ?: return null
+
+        val sortedRanks = flush.sortedByDescending { it.rank.value }.take(5).map { it.rank }
+        return HandRank(HandType.FLUSH, sortedRanks)
     }
 }

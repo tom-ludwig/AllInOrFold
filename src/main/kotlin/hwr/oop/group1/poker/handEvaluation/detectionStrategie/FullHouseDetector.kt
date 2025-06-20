@@ -5,7 +5,7 @@ import hwr.oop.group1.poker.HandType
 import hwr.oop.group1.poker.handEvaluation.HandRank
 import hwr.oop.group1.poker.handEvaluation.RankGroups
 
-class FullHouseStrategy : HandDetector {
+class FullHouseDetector : HandDetector {
     override fun detect(
         cards: List<Card>,
         rankGroups: RankGroups

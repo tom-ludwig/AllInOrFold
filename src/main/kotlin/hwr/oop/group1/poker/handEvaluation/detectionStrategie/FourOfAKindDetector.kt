@@ -5,13 +5,11 @@ import hwr.oop.group1.poker.HandType
 import hwr.oop.group1.poker.handEvaluation.HandRank
 import hwr.oop.group1.poker.handEvaluation.RankGroups
 
-class FlushStrategy : HandDetector {
+class FourOfAKindDetector : HandDetector {
     override fun detect(cards: List<Card>, rankGroups: RankGroups): HandRank? {
-        val flush = cards.groupBy { it.suit }
-            .values.firstOrNull { it.size >= 5 }
-            ?: return null
-
-        val sortedRanks = flush.sortedByDescending { it.rank.value }.take(5).map { it.rank }
-        return HandRank(HandType.FLUSH, sortedRanks)
+        if (!rankGroups.hasOfAKind(4)) return null
+        val quads = rankGroups.getRanksWithCount(4).first()
+        val kicker = rankGroups.topRanks().first { it != quads }
+        return HandRank(HandType.FOUR_OF_A_KIND, listOf(quads, kicker))
     }
 }

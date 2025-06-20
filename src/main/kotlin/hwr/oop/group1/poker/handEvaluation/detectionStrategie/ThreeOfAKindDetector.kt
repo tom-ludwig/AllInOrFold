@@ -5,7 +5,7 @@ import hwr.oop.group1.poker.HandType
 import hwr.oop.group1.poker.handEvaluation.HandRank
 import hwr.oop.group1.poker.handEvaluation.RankGroups
 
-class ThreeOfAKindStrategy : HandDetector {
+class ThreeOfAKindDetector : HandDetector {
     override fun detect(cards: List<Card>, rankGroups: RankGroups): HandRank? {
         val threes = rankGroups.getRanksWithCount(3)
         if (threes.isEmpty()) return null
