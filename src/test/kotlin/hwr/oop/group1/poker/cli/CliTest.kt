@@ -113,7 +113,7 @@ class CliTest : AnnotationSpec() {
     val round = game.round!!
 
     assertThat(round.getCurrentPlayer().name).isEqualTo("Bob")
-    assertThat(round.pot).isEqualTo(50)
+    assertThat(round.potSize()).isEqualTo(50)
     assertThat(output).contains(
       "Player Alice has performed action call",
       "Next player is Bob"
@@ -141,7 +141,7 @@ class CliTest : AnnotationSpec() {
     val game = persistence.loadGame()
     val round = game.round!!
 
-    assertThat(round.pot).isEqualTo(60)
+    assertThat(round.potSize()).isEqualTo(60)
     assertThat(output).contains("Player Caroline has performed action check")
   }
 
@@ -164,7 +164,7 @@ class CliTest : AnnotationSpec() {
     val game = persistence.loadGame()
     val round = game.round!!
 
-    assertThat(round.pot).isEqualTo(60)
+    assertThat(round.potSize()).isEqualTo(60)
     assertThat(output).contains("Player Alice has performed action raise")
   }
 
@@ -187,7 +187,7 @@ class CliTest : AnnotationSpec() {
     val game = persistence.loadGame()
     val round = game.round!!
 
-    assertThat(round.pot).isEqualTo(30)
+    assertThat(round.potSize()).isEqualTo(30)
     assertThat(output).contains("Player Alice has performed action fold")
   }
 
@@ -339,7 +339,7 @@ class CliTest : AnnotationSpec() {
 
     val game = persistence.loadGame()
     val round = game.round!!
-    val pot = round.pot
+    val pot = round.potSize()
     assertThat(output).contains("The current pot contains", pot.toString())
   }
 
