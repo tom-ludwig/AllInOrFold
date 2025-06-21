@@ -168,6 +168,12 @@
           <targetClasses>
             <param>hwr.oop.*</param>
           </targetClasses>
+          <excludedClasses>
+            <param>kotlinx.serialization.Serializable</param>
+          </excludedClasses>
+          <excludedTestClasses>
+            <param>kotlinx.serialization.Serializable</param>
+          </excludedTestClasses>
           <targetTests>
             <param>hwr.oop.*</param>
           </targetTests>
