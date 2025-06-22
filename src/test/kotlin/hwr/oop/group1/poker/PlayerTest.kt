@@ -7,113 +7,113 @@ import java.io.File
 
 class PlayerTest : AnnotationSpec() {
 
-  @Test
-  fun `Player Max has name Max`() {
-    val player = Player("Max", 1000)
+    @Test
+    fun `Player Max has name Max`() {
+        val player = Player("Max", 1000)
 
-    val name = player.name
+        val name = player.name
 
-    assertThat(name).isEqualTo("Max")
-  }
+        assertThat(name).isEqualTo("Max")
+    }
 
-  @Test
-  fun `Player has added Card`() {
-    val player = Player("Max", 1000)
-    val card = Card(CardRank.FIVE, CardSuit.SPADES)
+    @Test
+    fun `Player has added Card`() {
+        val player = Player("Max", 1000)
+        val card = Card(CardRank.FIVE, CardSuit.SPADES)
 
-    player.addCard(card)
+        player.addCard(card)
 
-    assertThat(player.getHole()).contains(card)
-  }
+        assertThat(player.getHole()).contains(card)
+    }
 
-  @Test
-  fun `Player isn't active after spending all his money`() {
-    val player = Player("Max", 50)
+    @Test
+    fun `Player isn't active after spending all his money`() {
+        val player = Player("Max", 50)
 
-    assertThat(player.isActive()).isTrue()
-    assertThat(player.betMoney(50)).isEqualTo(50)
+        assertThat(player.isActive()).isTrue()
+        assertThat(player.betMoney(50)).isEqualTo(50)
 
-    assertThat(player.isActive()).isFalse()
-  }
+        assertThat(player.isActive()).isFalse()
+    }
 
-  @Test
-  fun `Player isn't active after folding`() {
-    val player = Player("Max", 50)
+    @Test
+    fun `Player isn't active after folding`() {
+        val player = Player("Max", 50)
 
-    assertThat(player.isActive()).isTrue()
-    player.fold()
+        assertThat(player.isActive()).isTrue()
+        player.fold()
 
-    assertThat(player.isActive()).isFalse()
-  }
+        assertThat(player.isActive()).isFalse()
+    }
 
-  @Test
-  fun `Players Cards are removed correctly`() {
-    val player = Player("Max", 1000)
-    val card = Card(CardRank.FIVE, CardSuit.SPADES)
-    player.addCard(card)
-    player.addCard(card)
+    @Test
+    fun `Players Cards are removed correctly`() {
+        val player = Player("Max", 1000)
+        val card = Card(CardRank.FIVE, CardSuit.SPADES)
+        player.addCard(card)
+        player.addCard(card)
 
-    player.clearHole()
+        player.clearHole()
 
-    assertThat(player.getHole()).isEmpty()
-  }
+        assertThat(player.getHole()).isEmpty()
+    }
 
-  @Test
-  fun `Player Money is 10 after adding 10`() {
-    val player = Player("Max", 1000)
+    @Test
+    fun `Player Money is 10 after adding 10`() {
+        val player = Player("Max", 1000)
 
-    player.addMoney(10)
-    val playerMoney = player.getMoney()
+        player.addMoney(10)
+        val playerMoney = player.getMoney()
 
-    assertThat(playerMoney).isEqualTo(1010)
-  }
+        assertThat(playerMoney).isEqualTo(1010)
+    }
 
-  @Test
-  fun `fold sets hasFolded to true `() {
-    val player = Player("Saruman", 50)
-    assertThat(player.hasFolded).isFalse()
+    @Test
+    fun `fold sets hasFolded to true `() {
+        val player = Player("Saruman", 50)
+        assertThat(player.hasFolded).isFalse()
 
-    player.fold()
+        player.fold()
 
-    assertThat(player.hasFolded).isTrue()
-  }
+        assertThat(player.hasFolded).isTrue()
+    }
 
-  @Test
-  fun `fold clears hole`() {
-    val player = Player("Saruman", 50)
-    player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
-    player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
-    player.fold()
-    assertThat(player.hasFolded).isTrue()
-    assertThat(player.getHole()).isEmpty()
-  }
+    @Test
+    fun `fold clears hole`() {
+        val player = Player("Saruman", 50)
+        player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
+        player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
+        player.fold()
+        assertThat(player.hasFolded).isTrue()
+        assertThat(player.getHole()).isEmpty()
+    }
 
-  @Test
-  fun `resetFold clears fold status`() {
-    val player = Player("Saruman", 50)
-    player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
-    player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
-    player.fold()
-    assertThat(player.hasFolded).isTrue()
-    player.resetFold()
-    assertThat(player.hasFolded).isFalse()
-  }
+    @Test
+    fun `resetFold clears fold status`() {
+        val player = Player("Saruman", 50)
+        player.addCard(Card(CardRank.ACE, CardSuit.SPADES))
+        player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
+        player.fold()
+        assertThat(player.hasFolded).isTrue()
+        player.resetFold()
+        assertThat(player.hasFolded).isFalse()
+    }
 
-  @Test
-  fun `player can be saved and loaded`() {
-    val json = Json
-    val file = File("test_game.json")
-    val expectedPlayer = Player("Max", 1000)
+    @Test
+    fun `player can be saved and loaded`() {
+        val json = Json
+        val file = File("test_game.json")
+        val expectedPlayer = Player("Max", 1000)
 
-    file.writeText(json.encodeToString(expectedPlayer))
+        file.writeText(json.encodeToString(expectedPlayer))
 
-    val loadedPlayer = json.decodeFromString<Player>(file.readText())
+        val loadedPlayer = json.decodeFromString<Player>(file.readText())
 
-    file.delete()
+        file.delete()
 
-    assertThat(loadedPlayer).isNotNull()
-    assertThat(loadedPlayer).usingRecursiveComparison()
-      .isEqualTo(expectedPlayer)
-  }
+        assertThat(loadedPlayer).isNotNull()
+        assertThat(loadedPlayer).usingRecursiveComparison()
+            .isEqualTo(expectedPlayer)
+    }
 }
 
