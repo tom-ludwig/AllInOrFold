@@ -1,6 +1,8 @@
 package hwr.oop.group1.poker
 
+import hwr.oop.group1.poker.handEvaluation.HandRank
 import kotlinx.serialization.Serializable
+import kotlin.compareTo
 import kotlin.math.min
 
 @Serializable
@@ -26,13 +28,13 @@ class Pot(
 
             val remainingPlayers = mutableListOf<Player>()
             val remainingPlayerBets = mutableListOf<Int>()
-            for (i in players.indices) {
-                val bet = playerBets[i]
+            for (playerIndex in players.indices) {
+                val bet = playerBets[playerIndex]
                 if (bet > betSize) {
-                    remainingPlayers.add(players[i])
+                    remainingPlayers.add(players[playerIndex])
                     remainingPlayerBets.add(bet - betSize)
                 }
-                playerBets[i] = min(bet, betSize)
+                playerBets[playerIndex] = min(bet, betSize)
             }
 
             addPot(remainingPlayers, remainingPlayerBets, remainingBetSize)
@@ -104,8 +106,7 @@ class Pot(
         if (activePlayers.size == 1) {
             // Only one player left, they win
             val winner = activePlayers[0]
-            winner.addMoney(potSize())
-            lastWinnerAnnouncement = "${winner.name} wins ${potSize()} chips!"
+            rewardWinners(listOf(winner), potSize())
         } else {
             // Evaluate hands and find winners
             val playerHands =
@@ -121,34 +122,37 @@ class Pot(
 
             if (bestHand != null) {
                 val winners = groupedByHand[bestHand]!!.map { it.first }
-                val splitAmount = potSize() / winners.size
-                val remainder = potSize() % winners.size
-
-                // Award split pot
-                winners.forEach { winner -> winner.addMoney(splitAmount) }
-
-                // Award remainder to first winner (or could be distributed randomly)
-                if (remainder > 0) {
-                    winners[0].addMoney(remainder)
-                }
-
-                // Create winner announcement
-                lastWinnerAnnouncement =
-                    if (winners.size == 1) {
-                        "${winners[0].name} wins ${potSize()} chips with ${bestHand.type}!"
-                    } else {
-                        val winnerNames = winners.joinToString(", ") { it.name }
-                        "$winnerNames split the pot of ${potSize()} chips (${splitAmount} each) with ${bestHand.type}!"
-                    }
+                rewardWinners(winners, potSize(), bestHand)
             }
-            nextPot?.determineWinner(communityCards)
         }
+        nextPot?.determineWinner(communityCards)
         playerBets.clear()
+    }
+
+    fun rewardWinners(players: List<Player>, totalAmount: Int, bestHand: HandRank? = null){
+        val splitAmount = potSize() / players.size
+        val remainder = potSize() % players.size
+
+        // Award split pot
+        players.forEach { winner -> winner.addMoney(splitAmount) }
+
+        // Award remainder to first winner
+        if (remainder > 0) {
+            players[0].addMoney(remainder)
+        }
+        lastWinnerAnnouncement =
+            if (players.size == 1) {
+                "${players[0].name} wins ${potSize()} chips${if (bestHand != null) " with " + bestHand.type else ""}!"
+            } else {
+                val winnerNames = players.joinToString(", ") { it.name }
+
+                "$winnerNames split the pot of ${potSize()} chips (${splitAmount} each) with ${bestHand!!.type}!"
+            }
     }
 
     fun getWinnerAnnouncements(): List<String> {
         val winnerAnnouncements = mutableListOf(lastWinnerAnnouncement)
-        if (nextPot != null) winnerAnnouncements.add(lastWinnerAnnouncement)
+        if (nextPot != null) winnerAnnouncements.addAll(nextPot!!.getWinnerAnnouncements())
         return winnerAnnouncements
     }
 }

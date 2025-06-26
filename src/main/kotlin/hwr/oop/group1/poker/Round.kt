@@ -48,8 +48,10 @@ private constructor(
         getNextActivePlayerPosition(smallBlindPosition)
 
     private var pot = Pot()
+    // Current bet is total of bets from all pots
     val currentBet get() = pot.totalBet()
-    private var startingBet = 0
+    // Current bet at start of stage
+    private var startingCurrentBet = 0
 
     private var currentPlayerPosition = 0
 
@@ -123,9 +125,9 @@ private constructor(
     }
 
     private fun check() {
-        val currentPlayer = players[currentPlayerPosition]
+        val currentPlayer = getCurrentPlayer()
         if (currentBet != currentPlayer.currentBet) throw CanNotCheckException(currentPlayer)
-        getCurrentPlayer().setChecked()
+        currentPlayer.setChecked()
     }
 
     private fun fold() {
@@ -153,7 +155,7 @@ private constructor(
         require(stage < 3) { "Cannot advance past the river" }
 
         pot.nextStage()
-        startingBet = currentBet
+        startingCurrentBet = currentBet
         stage++
     }
 
@@ -169,7 +171,7 @@ private constructor(
      */
     private fun bettingRoundComplete(): Boolean {
         val activePlayers = players.filter { it.isActive() }
-        if (currentBet == startingBet) {
+        if (currentBet == startingCurrentBet) {
             // No raises in this round, check if everyone has checked
             return activePlayers.all { it.hasChecked }
         }
