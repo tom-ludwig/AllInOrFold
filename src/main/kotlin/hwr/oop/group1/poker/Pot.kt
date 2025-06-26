@@ -2,7 +2,6 @@ package hwr.oop.group1.poker
 
 import hwr.oop.group1.poker.handEvaluation.HandRank
 import kotlinx.serialization.Serializable
-import kotlin.compareTo
 import kotlin.math.min
 
 @Serializable
@@ -47,7 +46,6 @@ class Pot(
     }
 
     fun raise(player: Player, amount: Int) {
-        require(amount >= 0) { "Bet amount must be non-negative" }
         if (player.getMoney() < amount) throw NotEnoughMoneyException(
             player,
             amount
@@ -98,11 +96,11 @@ class Pot(
 
     fun nextStage() {
         players().forEach { it.resetChecked() }
-        if (nextPot != null) nextPot!!.nextStage()
     }
 
     fun determineWinner(communityCards: MutableList<Card>) {
         val activePlayers = players().filter { !it.hasFolded }
+        if(activePlayers.isEmpty()) return
         if (activePlayers.size == 1) {
             // Only one player left, they win
             val winner = activePlayers[0]
@@ -118,12 +116,10 @@ class Pot(
 
             // Group players by hand strength
             val groupedByHand = playerHands.groupBy { it.second }
-            val bestHand = groupedByHand.keys.maxOrNull()
+            val bestHand = groupedByHand.keys.maxOrNull()!!
 
-            if (bestHand != null) {
-                val winners = groupedByHand[bestHand]!!.map { it.first }
-                rewardWinners(winners, potSize(), bestHand)
-            }
+            val winners = groupedByHand[bestHand]!!.map { it.first }
+            rewardWinners(winners, potSize(), bestHand)
         }
         nextPot?.determineWinner(communityCards)
         playerBets.clear()

@@ -415,18 +415,8 @@ class CliTest : AnnotationSpec() {
         assertThat(output).contains("The current bet of ${currentPlayer.name} is $currentPlayerBet")
     }
 
-//  @Test
-//  fun `command without created game throws exception`() {
-//    val args = listOf("poker", "start")
-//
-//    assertThatThrownBy {
-//      cli.handle(args)
-//    }.hasMessageContaining("No game was found")
-//      .isInstanceOf(NoGameException::class.java)
-//  }
-
     @Test
-    fun `command has to start with game`() {
+    fun `command has to start with poker`() {
         val args = listOf("start")
 
         assertThatThrownBy {
@@ -436,11 +426,31 @@ class CliTest : AnnotationSpec() {
     }
 
     @Test
+    fun `command has to exist`() {
+        val args = listOf("poker", "something")
+
+        assertThatThrownBy {
+            cli.handle(args)
+        }.hasMessageContaining("Command 'something' does not exist")
+            .isInstanceOf(InvalidCommandException::class.java)
+    }
+
+    @Test
     fun `command addPlayer has to include a name`() {
         cli.handle(listOf("poker", "new"))
 
         assertThatThrownBy {
             cli.handle(listOf("poker", "addPlayer"))
+        }.hasMessageContaining("Command addPlayer was used Incorrectly")
+            .isInstanceOf(InvalidCommandUsageException::class.java)
+    }
+
+    @Test
+    fun `exception when second argument of addPlayer is not a number`() {
+        cli.handle(listOf("poker", "new"))
+
+        assertThatThrownBy {
+            cli.handle(listOf("poker", "addPlayer", "alice", "something"))
         }.hasMessageContaining("Command addPlayer was used Incorrectly")
             .isInstanceOf(InvalidCommandUsageException::class.java)
     }

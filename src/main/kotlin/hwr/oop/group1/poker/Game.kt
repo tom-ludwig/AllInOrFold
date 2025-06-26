@@ -14,10 +14,10 @@ class Game {
         return players.toList()
     }
 
-    var smallBlindAmount = 10
+    var smallBlindAmount = 0
         private set
 
-    var bigBlindAmount = 20
+    var bigBlindAmount = 0
         private set
 
     private var dealerPosition: Int = 0
@@ -50,6 +50,8 @@ class Game {
             it.resetFold()
             it.resetCurrentBet()
         }
+        if (smallBlindAmount == 0) smallBlindAmount = 10
+        if (bigBlindAmount == 0) bigBlindAmount = 20
         round =
             Round.create(
                 players,

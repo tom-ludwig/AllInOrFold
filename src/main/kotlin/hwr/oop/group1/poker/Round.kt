@@ -152,8 +152,6 @@ private constructor(
 
     /** Advances to the next stage of the round. This is called when a betting round is complete. */
     private fun nextStage() {
-        require(stage < 3) { "Cannot advance past the river" }
-
         pot.nextStage()
         startingCurrentBet = currentBet
         stage++
@@ -185,6 +183,7 @@ private constructor(
     }
 
     private fun getNextActivePlayerPosition(index: Int): Int {
+        if(players.all { !it.isActive() }) return 0
         var currentIndex = index
         do {
             currentIndex = (currentIndex + 1) % players.size
@@ -210,13 +209,12 @@ private constructor(
     }
 
     private fun checkRoundComplete(): Boolean {
-        // Check if only one player is active
+        // Check if only one player is not folded
         if (players.filter { !it.hasFolded }.size == 1) return true
 
-        // Check if all players are all in
-        if (players.filter { !it.hasFolded }.all { it.getMoney() == 0 }) return true
-
-        return false
+        // Check if only one player is not all in
+        val activePlayers = players.filter { it.isActive() }
+        return activePlayers.isEmpty() || activePlayers.size == 1 && activePlayers.first().currentBet == currentBet
     }
 
     /**

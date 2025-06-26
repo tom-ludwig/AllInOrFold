@@ -34,6 +34,16 @@ class GameTest : AnnotationSpec() {
     }
 
     @Test
+    fun `Round does not start if there is only one player`() {
+        val game = Game()
+        val player1 = Player("Max", 1000)
+
+        game.addPlayer(player1)
+
+        assertThatThrownBy { game.newRound() }.hasMessageContaining("Need at least 2 players to start a round")
+    }
+
+    @Test
     fun `Player can not be added if round started`() {
         val game = Game()
         val player = Player("Max", 1000)
@@ -47,11 +57,25 @@ class GameTest : AnnotationSpec() {
     }
 
     @Test
+    fun `Player can be added if round ended`() {
+        val game = Game()
+        val player = Player("Max", 1000)
+
+        game.addPlayer(Player("Alice", 1000))
+        game.addPlayer(Player("Bob", 1000))
+        game.newRound()
+        game.round!!.doAction(Action.FOLD)
+
+        game.addPlayer(player)
+        assertThat(game.getPlayers()).contains(player)
+    }
+
+    @Test
     fun `Set small and big blind sets it correctly`() {
         val game = Game()
 
-        game.setBigBlind(40)
         game.setSmallBlind(20)
+        game.setBigBlind(40)
 
         assertThat(game.smallBlindAmount).isEqualTo(20)
         assertThat(game.bigBlindAmount).isEqualTo(40)
@@ -71,5 +95,35 @@ class GameTest : AnnotationSpec() {
         assertThatThrownBy {
             game.setSmallBlind(0)
         }.hasMessageContaining("Small blind must be greater than 0")
+    }
+
+    @Test
+    fun `small and big blind get set correctly in round`() {
+        val game = Game()
+
+        game.setSmallBlind(20)
+        game.setBigBlind(40)
+
+        game.addPlayer(Player("Alice", 1000))
+        game.addPlayer(Player("Bob", 1000))
+        game.newRound()
+
+        assertThat(game.round!!.smallBlindAmount).isEqualTo(20)
+        assertThat(game.round!!.bigBlindAmount).isEqualTo(40)
+    }
+
+    @Test
+    fun `only 20 players can be added`() {
+        val game = Game()
+
+        for (i in 1..20) {
+            game.addPlayer(Player("Player $i", 1000))
+        }
+
+        assertThat(game.getPlayers().size).isEqualTo(20)
+
+        assertThatThrownBy {
+            game.addPlayer(Player("Player 21", 1000))
+        }.hasMessageContaining("There are already 20 players")
     }
 }
