@@ -28,3 +28,15 @@ class RoundStartedException : RuntimeException(
     "The Round has already started"
 )
 
+class DuplicatePlayerException(
+    playerName: String,
+) : RuntimeException(
+    "Player with name '$playerName' already exists in the game"
+)
+
+class PlayerNotFoundException(
+    playerName: String,
+) : RuntimeException(
+    "Player with name '$playerName' was not found in the game"
+)
+

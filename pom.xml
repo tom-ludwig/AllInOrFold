@@ -165,15 +165,15 @@
         <artifactId>pitest-maven</artifactId>
         <version>${pitest.version}</version>
         <configuration>
+          <avoidCallsTo>
+            <avoidCallsTo>kotlin.jvm.internal</avoidCallsTo>
+          </avoidCallsTo>
+          <excludedMethods>
+            <param>deserialize</param>
+          </excludedMethods>
           <targetClasses>
             <param>hwr.oop.*</param>
           </targetClasses>
-          <excludedClasses>
-            <param>kotlinx.serialization.Serializable</param>
-          </excludedClasses>
-          <excludedTestClasses>
-            <param>kotlinx.serialization.Serializable</param>
-          </excludedTestClasses>
           <targetTests>
             <param>hwr.oop.*</param>
           </targetTests>

@@ -48,8 +48,10 @@ private constructor(
         getNextActivePlayerPosition(smallBlindPosition)
 
     private var pot = Pot()
+
     // Current bet is total of bets from all pots
     val currentBet get() = pot.totalBet()
+
     // Current bet at start of stage
     private var startingCurrentBet = 0
 
@@ -183,7 +185,7 @@ private constructor(
     }
 
     private fun getNextActivePlayerPosition(index: Int): Int {
-        if(players.all { !it.isActive() }) return 0
+        if (players.all { !it.isActive() }) return 0
         var currentIndex = index
         do {
             currentIndex = (currentIndex + 1) % players.size

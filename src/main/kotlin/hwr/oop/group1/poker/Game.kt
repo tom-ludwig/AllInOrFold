@@ -20,12 +20,13 @@ class Game {
     var bigBlindAmount = 0
         private set
 
-    private var dealerPosition: Int = 0
+    var dealerPosition: Int = 0
+        private set
 
     fun setSmallBlind(amount: Int) {
         require(amount > 0) { "Small blind must be greater than 0" }
         if (bigBlindAmount > 0) {
-            require(amount < bigBlindAmount) { "Small blind must be less than big blind" }
+            require(amount <= bigBlindAmount) { "Small blind must be less than big blind" }
         }
         smallBlindAmount = amount
     }
@@ -33,16 +34,28 @@ class Game {
     fun setBigBlind(amount: Int) {
         require(amount > 0) { "Big blind must be greater than 0" }
         if (smallBlindAmount > 0) {
-            require(amount > smallBlindAmount) { "Big blind must be greater than small blind" }
+            require(amount >= smallBlindAmount) { "Big blind must be greater than small blind" }
         }
         bigBlindAmount = amount
-        println("Big blind set to $bigBlindAmount")
     }
 
     fun addPlayer(player: Player) {
         if (round != null && !round!!.isRoundComplete) throw RoundStartedException()
         require(players.size < 20) { "There are already 20 players" }
+        if (players.any { it.name == player.name }) {
+            throw DuplicatePlayerException(player.name)
+        }
         players += player
+    }
+
+    fun removePlayer(playerName: String) {
+        if (round != null && !round!!.isRoundComplete) throw RoundStartedException()
+        require(players.isNotEmpty()) { "There are already no players." }
+        val playerExists = players.any { it.name == playerName }
+        if (!playerExists) {
+            throw PlayerNotFoundException(playerName)
+        }
+        players.removeAll { it.name == playerName }
     }
 
     fun newRound() {

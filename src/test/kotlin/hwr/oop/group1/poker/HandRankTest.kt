@@ -4,6 +4,7 @@ import hwr.oop.group1.poker.handEvaluation.HandEvaluator
 import hwr.oop.group1.poker.handEvaluation.HandRank
 import io.kotest.core.spec.style.AnnotationSpec
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 
 class HandRankTest : AnnotationSpec() {
     @Test
@@ -25,8 +26,8 @@ class HandRankTest : AnnotationSpec() {
     @Test
     fun `detects straight flush`() {
         val cards = listOf(
-            Card(CardRank.SIX, CardSuit.SPADES),
             Card(CardRank.SEVEN, CardSuit.SPADES),
+            Card(CardRank.SIX, CardSuit.SPADES),
             Card(CardRank.EIGHT, CardSuit.SPADES),
             Card(CardRank.NINE, CardSuit.SPADES),
             Card(CardRank.TEN, CardSuit.SPADES),
@@ -62,6 +63,56 @@ class HandRankTest : AnnotationSpec() {
 
         assertThat(HandType.STRAIGHT_FLUSH).isEqualTo(result.type)
         assertThat(result.cardRank).contains(CardRank.ACE) // Ace gets counted as 1 and converted back to an ace
+    }
+
+    @Test
+    fun `bicycle straight flush returns cards in correct order`() {
+        val cards = listOf(
+            Card(CardRank.ACE, CardSuit.SPADES),
+            Card(CardRank.TWO, CardSuit.SPADES),
+            Card(CardRank.THREE, CardSuit.SPADES),
+            Card(CardRank.FOUR, CardSuit.SPADES),
+            Card(CardRank.FIVE, CardSuit.SPADES),
+            Card(CardRank.QUEEN, CardSuit.CLUBS),
+            Card(CardRank.KING, CardSuit.HEARTS)
+        )
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
+
+        assertThat(HandType.STRAIGHT_FLUSH).isEqualTo(result.type)
+        assertThat(result.cardRank).isEqualTo(
+            listOf(
+                CardRank.FIVE,
+                CardRank.FOUR,
+                CardRank.THREE,
+                CardRank.TWO,
+                CardRank.ACE
+            )
+        )
+    }
+
+    @Test
+    fun `straight flush returns cards in correct order`() {
+        val cards = listOf(
+            Card(CardRank.SEVEN, CardSuit.SPADES),
+            Card(CardRank.SIX, CardSuit.SPADES),
+            Card(CardRank.EIGHT, CardSuit.SPADES),
+            Card(CardRank.NINE, CardSuit.SPADES),
+            Card(CardRank.TEN, CardSuit.SPADES),
+            Card(CardRank.TWO, CardSuit.CLUBS),
+            Card(CardRank.THREE, CardSuit.HEARTS)
+        )
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
+
+        assertThat(HandType.STRAIGHT_FLUSH).isEqualTo(result.type)
+        assertThat(result.cardRank).isEqualTo(
+            listOf(
+                CardRank.TEN,
+                CardRank.NINE,
+                CardRank.EIGHT,
+                CardRank.SEVEN,
+                CardRank.SIX
+            )
+        )
     }
 
     @Test
@@ -206,6 +257,23 @@ class HandRankTest : AnnotationSpec() {
         val result = HandEvaluator.evaluateBestHandFrom(cards)
 
         assertThat(HandType.HIGH_CARD).isEqualTo(result.type)
+        assertThat(result.cardRank.size).isEqualTo(5)
+    }
+
+    @Test
+    fun `high card returns cards in descending order`() {
+        val cards = listOf(
+            Card(CardRank.TWO, CardSuit.HEARTS),
+            Card(CardRank.FIVE, CardSuit.CLUBS),
+            Card(CardRank.SEVEN, CardSuit.DIAMONDS),
+            Card(CardRank.NINE, CardSuit.SPADES),
+            Card(CardRank.JACK, CardSuit.HEARTS),
+            Card(CardRank.KING, CardSuit.CLUBS),
+            Card(CardRank.ACE, CardSuit.SPADES)
+        )
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
+
+        assertThat(HandType.HIGH_CARD).isEqualTo(result.type)
         assertThat(result.cardRank).isEqualTo(
             listOf(
                 CardRank.ACE,
@@ -215,6 +283,35 @@ class HandRankTest : AnnotationSpec() {
                 CardRank.SEVEN
             )
         )
+    }
+
+    @Test
+    fun `handles edge case with exactly 5 cards`() {
+        val cards = listOf(
+            Card(CardRank.TWO, CardSuit.HEARTS),
+            Card(CardRank.FIVE, CardSuit.CLUBS),
+            Card(CardRank.SEVEN, CardSuit.DIAMONDS),
+            Card(CardRank.NINE, CardSuit.SPADES),
+            Card(CardRank.JACK, CardSuit.HEARTS)
+        )
+        val result = HandEvaluator.evaluateBestHandFrom(cards)
+
+        assertThat(HandType.HIGH_CARD).isEqualTo(result.type)
+        assertThat(result.cardRank.size).isEqualTo(5)
+    }
+
+    @Test
+    fun `handles edge case with fewer than 5 cards`() {
+        val cards = listOf(
+            Card(CardRank.TWO, CardSuit.HEARTS),
+            Card(CardRank.FIVE, CardSuit.CLUBS),
+            Card(CardRank.SEVEN, CardSuit.DIAMONDS)
+        )
+        
+        // This should throw an exception because we can't form a 5-card hand from 3 cards
+        assertThatThrownBy {
+            HandEvaluator.evaluateBestHandFrom(cards)
+        }.isInstanceOf(NullPointerException::class.java)
     }
 
     @Test

@@ -18,10 +18,79 @@ class GameTest : AnnotationSpec() {
     }
 
     @Test
+    fun `Adding duplicate player throws DuplicatePlayerException`() {
+        val game = Game()
+        val player1 = Player("Max", 1000)
+        val player2 = Player("Max", 1500) // Same name, different money
+
+        game.addPlayer(player1)
+
+        assertThatThrownBy { game.addPlayer(player2) }
+            .isInstanceOf(DuplicatePlayerException::class.java)
+            .hasMessage("Player with name 'Max' already exists in the game")
+    }
+
+    @Test
+    fun `Remove player successfully removes existing player`() {
+        val game = Game()
+        val player = Player("Max", 1000)
+
+        game.addPlayer(player)
+        assertThat(game.getPlayers()).contains(player)
+
+        game.removePlayer("Max")
+        assertThat(game.getPlayers()).doesNotContain(player)
+    }
+
+    @Test
+    fun `Remove player throws PlayerNotFoundException for non-existent player`() {
+        val game = Game()
+        game.addPlayer(Player("Alice", 1000))
+
+        assertThatThrownBy { game.removePlayer("Bob") }
+            .isInstanceOf(PlayerNotFoundException::class.java)
+            .hasMessage("Player with name 'Bob' was not found in the game")
+    }
+
+    @Test
+    fun `Remove player throws exception when no players exist`() {
+        val game = Game()
+
+        assertThatThrownBy { game.removePlayer("AnyPlayer") }
+            .hasMessageContaining("There are already no players")
+    }
+
+    @Test
+    fun `Remove player cannot be called during active round`() {
+        val game = Game()
+        game.addPlayer(Player("Alice", 1000))
+        game.addPlayer(Player("Bob", 1000))
+        game.newRound()
+
+        assertThatThrownBy { game.removePlayer("Alice") }
+            .isInstanceOf(RoundStartedException::class.java)
+            .hasMessage("The Round has already started")
+    }
+
+    @Test
+    fun `Remove player can be called after round ends`() {
+        val game = Game()
+        val player = Player("Alice", 1000)
+        
+        game.addPlayer(player)
+        game.addPlayer(Player("Bob", 1000))
+        game.newRound()
+        game.round!!.doAction(Action.FOLD) // End the round
+
+        game.removePlayer("Alice")
+        assertThat(game.getPlayers()).doesNotContain(player)
+    }
+
+    @Test
     fun `Game starts Round`() {
         val game = Game()
         val player1 = Player("Max", 1000)
-        val player2 = Player("Max", 1000)
+        val player2 = Player("Bob", 1000)
 
         game.addPlayer(player1)
         game.addPlayer(player2)
@@ -126,4 +195,31 @@ class GameTest : AnnotationSpec() {
             game.addPlayer(Player("Player 21", 1000))
         }.hasMessageContaining("There are already 20 players")
     }
+
+    @Test
+    fun `Players can't be added after the round started`() {
+        val game = Game()
+        game.addPlayer(Player("Player 1", 1000))
+        game.addPlayer(Player("Player 2", 1000))
+        game.newRound()
+
+        assertThatThrownBy {
+            game.addPlayer(Player("Player 21", 1000))
+        }.hasMessageContaining("The Round has already started")
+    }
+
+    @Test
+    fun `NewRound correctly setups values`() {
+        val game = Game()
+
+        game.addPlayer(Player("Player 1", 1000))
+        game.addPlayer(Player("Player 2", 1000))
+
+        assertThat(game.dealerPosition).isEqualTo(0)
+
+        game.newRound()
+
+        assertThat(game.dealerPosition).isEqualTo(1)
+    }
+
 }

@@ -41,7 +41,7 @@ class Player(
         val amount = min(money, this.money)
         this.money -= amount
         currentBet += amount
-        if(this.money == 0) setAllIn()
+        if (this.money == 0) setAllIn()
         return amount
     }
 

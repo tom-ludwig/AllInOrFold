@@ -11,6 +11,7 @@ class Cli(
     private val commands = listOf(
         NewGameCommand(),
         AddPlayerCommand(),
+        RemovePlayerCommand(),
         GameStartCommand(),
         PlayerActionCommand(),
         ShowRoundCommand(),

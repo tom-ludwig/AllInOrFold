@@ -74,6 +74,73 @@ class CliTest : AnnotationSpec() {
     }
 
     @Test
+    fun `players can be removed from game`() {
+        val args = listOf(
+            listOf("poker", "new"),
+            listOf("poker", "addPlayer", "Alice"),
+            listOf("poker", "addPlayer", "Bob"),
+            listOf("poker", "removePlayer", "Alice"),
+        )
+
+        val output = captureStandardOut {
+            args.forEach {
+                cli.handle(it)
+            }
+        }
+
+        assertThat(output).contains("Alice", "was removed successfully")
+        val game = persistence.loadGame()
+        assertThat(game.getPlayers()).hasSize(1)
+        assertThat(game.getPlayers().first().name).isEqualTo("Bob")
+    }
+
+    @Test
+    fun `removing non-existent player shows error message`() {
+        val args = listOf(
+            listOf("poker", "new"),
+            listOf("poker", "addPlayer", "Alice"),
+            listOf("poker", "removePlayer", "Bob"),
+        )
+
+        val output = captureStandardOut {
+            args.forEach {
+                cli.handle(it)
+            }
+        }
+
+        assertThat(output).contains("A player with the name 'Bob' was not found in the game")
+        val game = persistence.loadGame()
+        assertThat(game.getPlayers()).hasSize(1)
+        assertThat(game.getPlayers().first().name).isEqualTo("Alice")
+    }
+
+    @Test
+    fun `removing player from empty game shows error message`() {
+        val args = listOf(
+            listOf("poker", "new"),
+            listOf("poker", "removePlayer", "Alice"),
+        )
+
+        val output = captureStandardOut {
+            args.forEach {
+                cli.handle(it)
+            }
+        }
+
+        assertThat(output).contains("There are already no players")
+    }
+
+    @Test
+    fun `command removePlayer has to include a name`() {
+        cli.handle(listOf("poker", "new"))
+
+        assertThatThrownBy {
+            cli.handle(listOf("poker", "removePlayer"))
+        }.hasMessageContaining("Command removePlayer was used Incorrectly")
+            .isInstanceOf(InvalidCommandUsageException::class.java)
+    }
+
+    @Test
     fun `new Game can be started`() {
         val args = listOf(
             listOf("poker", "new"),

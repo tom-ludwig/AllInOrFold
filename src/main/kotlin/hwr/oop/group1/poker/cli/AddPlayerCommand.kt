@@ -1,5 +1,6 @@
 package hwr.oop.group1.poker.cli
 
+import hwr.oop.group1.poker.DuplicatePlayerException
 import hwr.oop.group1.poker.Game
 import hwr.oop.group1.poker.Player
 
@@ -13,7 +14,11 @@ class AddPlayerCommand : GameDependentCommand() {
         val playerName = args[1]
         val money = if (args.size > 2) args[2].toIntOrNull()
             ?: throw InvalidCommandUsageException("addPlayer") else null
-        game.addPlayer(Player(playerName, money ?: 1000))
-        println("Player $playerName was added")
+        try {
+            game.addPlayer(Player(playerName, money ?: 1000))
+            println("Player $playerName was added")
+        } catch (e: DuplicatePlayerException) {
+            println("A player with the name '$playerName' already exists in the game.")
+        }
     }
 }
