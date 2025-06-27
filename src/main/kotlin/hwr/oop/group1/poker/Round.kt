@@ -47,22 +47,25 @@ private constructor(
     private var bigBlindPosition: Int =
         getNextActivePlayerPosition(smallBlindPosition)
 
-    var pot = 0
-        private set
-    var currentBet = 0
-        private set
+    private var pot = Pot()
+    // Current bet is total of bets from all pots
+    val currentBet get() = pot.totalBet()
+    // Current bet at start of stage
+    private var startingCurrentBet = 0
 
     private var currentPlayerPosition = 0
 
     var isRoundComplete = false
         private set
 
-    var lastWinnerAnnouncement = ""
+    var lastWinnerAnnouncements = emptyList<String>()
         private set
 
     fun getCurrentPlayer(): Player {
         return players[currentPlayerPosition]
     }
+
+    fun potSize() = pot.potSize()
 
     private fun setup() {
         require(players.size >= 2) { "Need at least 2 players to start a round" }
@@ -73,6 +76,7 @@ private constructor(
         // Reset round state
         val deck = setupDeck ?: Deck()
 
+        pot.resetTotalBet()
         payBlinds()
 
         // Set the currentPlayer to the player after the big blind
@@ -100,8 +104,8 @@ private constructor(
 
         when (action) {
             Action.CHECK -> check()
-            Action.CALL -> call()
-            Action.RAISE -> raise(amount)
+            Action.CALL -> pot.call(getCurrentPlayer())
+            Action.RAISE -> pot.raise(getCurrentPlayer(), amount)
             Action.FOLD -> fold()
         }
 
@@ -121,24 +125,9 @@ private constructor(
     }
 
     private fun check() {
-        val currentPlayer = players[currentPlayerPosition]
+        val currentPlayer = getCurrentPlayer()
         if (currentBet != currentPlayer.currentBet) throw CanNotCheckException(currentPlayer)
-        getCurrentPlayer().setChecked()
-    }
-
-    private fun call() {
-        placeBet(players[currentPlayerPosition], currentBet - getCurrentPlayer().currentBet)
-    }
-
-    private fun raise(amount: Int) {
-        val currentPlayer = players[currentPlayerPosition]
-        if (currentPlayer.getMoney() < amount) throw NotEnoughMoneyException(
-            currentPlayer,
-            amount
-        )
-        if (currentPlayer.currentBet + amount <= currentBet)
-            throw NotEnoughToRaiseException(currentPlayer, amount)
-        placeBet(currentPlayer, amount)
+        currentPlayer.setChecked()
     }
 
     private fun fold() {
@@ -163,40 +152,14 @@ private constructor(
 
     /** Advances to the next stage of the round. This is called when a betting round is complete. */
     private fun nextStage() {
-        require(stage < 3) { "Cannot advance past the river" }
-
-        currentBet = 0 // Reset current bet for next round
-        players.forEach { it.resetCurrentBet() }
+        pot.nextStage()
+        startingCurrentBet = currentBet
         stage++
     }
 
-    private fun addToPot(money: Int) {
-        require(money >= 0) { "Cannot add negative amount to pot" }
-        pot += money
-    }
-
-    /**
-     * Places a bet in the current betting round. Handles calls (matching current bet) and raises
-     * (increasing current bet).
-     */
-    private fun placeBet(player: Player, amount: Int) {
-        require(!isRoundComplete) { "Round is already complete" }
-        require(amount >= 0) { "Bet amount must be non-negative" }
-
-        require(player.getMoney() >= amount) { "Player does not have enough money" }
-
-        // Check if the player raised
-        if (amount + player.currentBet > currentBet) {
-            currentBet = amount + player.currentBet
-        }
-
-        player.betMoney(amount)
-        addToPot(amount)
-    }
-
     private fun payBlinds() {
-        placeBet(players[smallBlindPosition], smallBlindAmount)
-        placeBet(players[bigBlindPosition], bigBlindAmount)
+        pot.raise(players[smallBlindPosition], smallBlindAmount)
+        pot.raise(players[bigBlindPosition], bigBlindAmount)
     }
 
     /**
@@ -206,7 +169,7 @@ private constructor(
      */
     private fun bettingRoundComplete(): Boolean {
         val activePlayers = players.filter { it.isActive() }
-        if (currentBet == 0) {
+        if (currentBet == startingCurrentBet) {
             // No raises in this round, check if everyone has checked
             return activePlayers.all { it.hasChecked }
         }
@@ -220,6 +183,7 @@ private constructor(
     }
 
     private fun getNextActivePlayerPosition(index: Int): Int {
+        if(players.all { !it.isActive() }) return 0
         var currentIndex = index
         do {
             currentIndex = (currentIndex + 1) % players.size
@@ -232,8 +196,6 @@ private constructor(
      * are complete, triggers the showdown.
      */
     private fun handleBettingRoundComplete() {
-        currentBet = 0
-
         currentPlayerPosition = getNextActivePlayerPosition(dealerPosition)
 
         if (stage < 3) {
@@ -247,13 +209,12 @@ private constructor(
     }
 
     private fun checkRoundComplete(): Boolean {
-        // Check if only one player is active
+        // Check if only one player is not folded
         if (players.filter { !it.hasFolded }.size == 1) return true
 
-        // Check if all players are all in
-        if (players.filter { !it.hasFolded }.all { it.getMoney() == 0 }) return true
-
-        return false
+        // Check if only one player is not all in
+        val activePlayers = players.filter { it.isActive() }
+        return activePlayers.isEmpty() || activePlayers.size == 1 && activePlayers.first().currentBet == currentBet
     }
 
     /**
@@ -261,50 +222,8 @@ private constructor(
      * betting round is complete. Handles split pots when multiple players have equal hand strength.
      */
     private fun determineWinner() {
-        val activePlayers = players.filter { !it.hasFolded }
-        if (activePlayers.size == 1) {
-            // Only one player left, they win
-            val winner = activePlayers[0]
-            winner.addMoney(pot)
-            lastWinnerAnnouncement = "${winner.name} wins $pot chips!"
-            pot = 0
-        } else {
-            // Evaluate hands and find winners
-            val playerHands =
-                activePlayers.map { player ->
-                    player to player.evaluatePlayerHand(
-                        getRevealedCommunityCards()
-                    )
-                }
-
-            // Group players by hand strength
-            val groupedByHand = playerHands.groupBy { it.second }
-            val bestHand = groupedByHand.keys.maxOrNull()
-
-            if (bestHand != null) {
-                val winners = groupedByHand[bestHand]!!.map { it.first }
-                val splitAmount = pot / winners.size
-                val remainder = pot % winners.size
-
-                // Award split pot
-                winners.forEach { winner -> winner.addMoney(splitAmount) }
-
-                // Award remainder to first winner (or could be distributed randomly)
-                if (remainder > 0) {
-                    winners[0].addMoney(remainder)
-                }
-
-                // Create winner announcement
-                lastWinnerAnnouncement =
-                    if (winners.size == 1) {
-                        "${winners[0].name} wins $pot chips with ${bestHand.type}!"
-                    } else {
-                        val winnerNames = winners.joinToString(", ") { it.name }
-                        "$winnerNames split the pot of $pot chips (${splitAmount} each) with ${bestHand.type}!"
-                    }
-                pot = 0
-            }
-        }
+        pot.determineWinner(communityCards)
+        lastWinnerAnnouncements = pot.getWinnerAnnouncements()
     }
 }
 

@@ -27,7 +27,7 @@ class RoundTest : AnnotationSpec() {
 
     @Test
     fun `blinds are paid on round init`() {
-        assertThat(round.pot).isEqualTo(15)
+        assertThat(round.potSize()).isEqualTo(15)
         assertThat(players[1].getMoney()).isEqualTo(995) // small blind
         assertThat(players[2].getMoney()).isEqualTo(990) // big blind
     }
@@ -117,9 +117,19 @@ class RoundTest : AnnotationSpec() {
     }
 
     @Test
+    fun `player cannot call if current bet is already matched`() {
+        round.doAction(Action.CALL)
+        round.doAction(Action.CALL)
+        assertThatThrownBy {
+            round.doAction(Action.CALL)
+        }.hasMessageContaining("Player can not Call")
+    }
+
+    @Test
     fun `folding skips player and marks them folded`() {
-        val initial = round.getCurrentPlayer().name
         round.doAction(Action.FOLD)
+        round.doAction(Action.CALL)
+        round.doAction(Action.CHECK)
         assertThat(round.players[0].hasFolded).isTrue()
         assertThat(round.getCurrentPlayer().name).isEqualTo("Bob")
     }
@@ -137,9 +147,18 @@ class RoundTest : AnnotationSpec() {
         round.doAction(Action.FOLD) // Bob
 
         assertThat(round.isRoundComplete).isTrue()
-        assertThat(round.lastWinnerAnnouncement).contains("Caroline")
+        assertThat(round.lastWinnerAnnouncements.first()).contains("Caroline")
         assertThat(players.first { player -> player.name == "Caroline" }.getMoney())
             .isEqualTo(1005) // Caroline gets the pot
+    }
+
+    @Test
+    fun `round ends when all players are all in`() {
+        round.doAction(Action.RAISE, 1000) // Alice
+        round.doAction(Action.CALL) // Bob
+        round.doAction(Action.CALL) // Caroline
+
+        assertThat(round.isRoundComplete).isTrue()
     }
 
     @Test
@@ -155,7 +174,7 @@ class RoundTest : AnnotationSpec() {
         }
 
         assertThat(round.isRoundComplete).isTrue()
-        assertThat(round.pot).isEqualTo(0)
+        assertThat(round.potSize()).isEqualTo(0)
         assertThat(players.sumOf { it.getMoney() }).isEqualTo(3000)
     }
 
@@ -216,9 +235,51 @@ class RoundTest : AnnotationSpec() {
             round.doAction(Action.CHECK)
         }
 
-        assertThat(players[0].getMoney()).isEqualTo(995 + 8)
-        assertThat(players[1].getMoney()).isEqualTo(995 + 7)
+        assertThat(players[0].getMoney()).isEqualTo(995 + 7)
+        assertThat(players[1].getMoney()).isEqualTo(995 + 8)
         assertThat(players[2].getMoney()).isEqualTo(995)
+    }
+
+    @Test
+    fun `correct payouts for all in`() {
+        val deck = Deck(
+            mutableListOf(
+                Card(CardRank.TWO, CardSuit.HEARTS),
+                Card(CardRank.TWO, CardSuit.HEARTS),
+
+                Card(CardRank.KING, CardSuit.HEARTS),
+                Card(CardRank.KING, CardSuit.HEARTS),
+
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+
+                Card(CardRank.THREE, CardSuit.HEARTS),
+                Card(CardRank.FIVE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+
+                Card(CardRank.ACE, CardSuit.HEARTS),
+                Card(CardRank.ACE, CardSuit.HEARTS),
+            )
+        )
+        players = listOf(
+            Player("Alice", 1000),
+            Player("Bob", 700),
+            Player("Caroline", 500)
+        )
+        round = Round.create(players, 50, 100, setupDeck = deck)
+
+        round.doAction(Action.RAISE, 800)
+        round.doAction(Action.CALL)
+        round.doAction(Action.CALL)
+
+        assertThat(players[0].getMoney()).isEqualTo(200 + 100)
+        assertThat(round.lastWinnerAnnouncements[2]).contains("Alice wins 100")
+        assertThat(players[1].getMoney()).isEqualTo(400)
+        assertThat(round.lastWinnerAnnouncements[1]).contains("Bob wins 400")
+        assertThat(players[2].getMoney()).isEqualTo(1500)
+        assertThat(round.lastWinnerAnnouncements[0]).contains("Caroline wins 1500")
     }
 
     @Test

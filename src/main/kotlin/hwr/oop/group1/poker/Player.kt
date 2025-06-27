@@ -18,6 +18,8 @@ class Player(
         private set
     var hasChecked = false
         private set
+    var isAllIn = false
+        private set
 
     fun getMoney(): Int = money
 
@@ -39,11 +41,16 @@ class Player(
         val amount = min(money, this.money)
         this.money -= amount
         currentBet += amount
+        if(this.money == 0) setAllIn()
         return amount
     }
 
     fun resetCurrentBet() {
         currentBet = 0
+        hasChecked = false
+    }
+
+    fun resetChecked() {
         hasChecked = false
     }
 
@@ -56,10 +63,14 @@ class Player(
         hasFolded = false
     }
 
-    fun isActive(): Boolean = !hasFolded && money != 0
+    fun isActive(): Boolean = !(hasFolded || isAllIn)
 
     fun setChecked() {
         hasChecked = true
+    }
+
+    private fun setAllIn() {
+        isAllIn = true
     }
 
     fun evaluatePlayerHand(communityCards: List<Card>): HandRank {

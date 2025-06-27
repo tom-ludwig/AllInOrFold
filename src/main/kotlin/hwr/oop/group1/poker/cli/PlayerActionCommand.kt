@@ -40,7 +40,7 @@ class PlayerActionCommand : GameDependentCommand() {
         println("Player ${currentPlayer.name} has performed action $action")
 
         if (round.isRoundComplete) {
-            println(round.lastWinnerAnnouncement)
+            round.lastWinnerAnnouncements.forEach { println(it) }
         } else {
             if (round.stage != stageBefore) {
                 println("Stage is over")

@@ -19,16 +19,20 @@ object HandEvaluator {
     fun evaluateBestHandFrom(cards: List<Card>): HandRank {
         return cards.combinations(5)
             .map { evaluateFiveCardHand(it) }
-            .maxBy { it }
+            .maxByOrNull { it }!!
     }
 
     private fun evaluateFiveCardHand(cards: List<Card>): HandRank {
         val rankGroups = RankGroups(cards)
+        var returnValue: HandRank? = null
         for (strategy in strategies) {
             val result = strategy.detect(cards, rankGroups)
-            if (result != null) return result
+            if (result != null) {
+                returnValue = result
+                break
+            }
         }
-        throw IllegalStateException("No strategy matched for cards: $cards")
+        return returnValue!!
     }
 
     private fun List<Card>.combinations(combinationSize: Int): List<List<Card>> {

@@ -23,7 +23,7 @@ class ShowRoundCommand : GameDependentCommand() {
             }
 
             "pot" -> {
-                println("The current pot contains ${round.pot}")
+                println("The current pot contains ${round.potSize()}")
             }
 
             "bet" -> {
