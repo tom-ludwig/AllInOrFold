@@ -50,6 +50,26 @@ class CliTest : AnnotationSpec() {
     }
 
     @Test
+    fun `players with duplicate names can not be added to game`() {
+        val args = listOf(
+            listOf("poker", "new"),
+            listOf("poker", "addPlayer", "Alice"),
+            listOf("poker", "addPlayer", "Alice"),
+        )
+
+        val output = captureStandardOut {
+            args.forEach {
+                cli.handle(it)
+            }
+        }
+
+        assertThat(output).contains("A player with the name 'Alice' already exists in the game")
+        assertThat(
+            persistence.loadGame().getPlayers().first().name
+        ).isEqualTo("Alice")
+    }
+
+    @Test
     fun `players can be added to game with custom money`() {
         val args = listOf(
             listOf("poker", "new"),

@@ -42,7 +42,7 @@ class Pot(
 
         setBetAmount(player, currentBet)
         player.betMoney(toCall)
-        if (nextPot != null && !player.isAllIn) nextPot!!.call(player)
+        if (nextPot != null && !player.isAllIn && nextPot!!.currentBet != 0) nextPot!!.call(player)
     }
 
     fun raise(player: Player, amount: Int) {
@@ -104,7 +104,7 @@ class Pot(
         if (activePlayers.size == 1) {
             // Only one player left, they win
             val winner = activePlayers[0]
-            rewardWinners(listOf(winner), potSize())
+            rewardWinners(listOf(winner))
         } else {
             // Evaluate hands and find winners
             val playerHands =
@@ -119,13 +119,13 @@ class Pot(
             val bestHand = groupedByHand.keys.maxOrNull()!!
 
             val winners = groupedByHand[bestHand]!!.map { it.first }
-            rewardWinners(winners, potSize(), bestHand)
+            rewardWinners(winners, bestHand)
         }
         nextPot?.determineWinner(communityCards)
         playerBets.clear()
     }
 
-    fun rewardWinners(players: List<Player>, totalAmount: Int, bestHand: HandRank? = null){
+    fun rewardWinners(players: List<Player>, bestHand: HandRank? = null){
         val splitAmount = potSize() / players.size
         val remainder = potSize() % players.size
 
@@ -133,9 +133,8 @@ class Pot(
         players.forEach { winner -> winner.addMoney(splitAmount) }
 
         // Award remainder to first winner
-        if (remainder > 0) {
-            players[0].addMoney(remainder)
-        }
+        players.first().addMoney(remainder)
+
         lastWinnerAnnouncement =
             if (players.size == 1) {
                 "${players[0].name} wins ${potSize()} chips${if (bestHand != null) " with " + bestHand.type else ""}!"

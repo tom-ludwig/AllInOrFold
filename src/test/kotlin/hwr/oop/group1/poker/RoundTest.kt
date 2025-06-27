@@ -47,6 +47,15 @@ class RoundTest : AnnotationSpec() {
                 dealerPosition = 5
             )
         }.hasMessageContaining("The dealer position must be a valid player position")
+        assertThatThrownBy {
+            Round.create(
+                players,
+                5,
+                10,
+                dealerPosition = 3
+            )
+        }.hasMessageContaining("The dealer position must be a valid player position")
+
     }
 
     @Test
@@ -106,6 +115,11 @@ class RoundTest : AnnotationSpec() {
             round.doAction(Action.RAISE, 5) // Bob tries invalid raise
         }.isInstanceOf(NotEnoughToRaiseException::class.java)
             .hasMessageContaining("not enough")
+        assertThatThrownBy {
+            round.doAction(Action.RAISE, 15) // raise to 20
+        }.isInstanceOf(NotEnoughToRaiseException::class.java)
+            .hasMessageContaining("not enough")
+
     }
 
     @Test
@@ -238,6 +252,7 @@ class RoundTest : AnnotationSpec() {
         assertThat(players[0].getMoney()).isEqualTo(995 + 7)
         assertThat(players[1].getMoney()).isEqualTo(995 + 8)
         assertThat(players[2].getMoney()).isEqualTo(995)
+        assertThat(round.lastWinnerAnnouncements[0]).contains(listOf("Alice", "Bob", "7 each"))
     }
 
     @Test

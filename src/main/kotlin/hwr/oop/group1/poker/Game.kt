@@ -26,16 +26,14 @@ class Game {
     fun setSmallBlind(amount: Int) {
         require(amount > 0) { "Small blind must be greater than 0" }
         if (bigBlindAmount > 0) {
-            require(amount <= bigBlindAmount) { "Small blind must be less than big blind" }
+            require(amount < bigBlindAmount) { "Small blind must be less than big blind" }
         }
         smallBlindAmount = amount
     }
 
     fun setBigBlind(amount: Int) {
         require(amount > 0) { "Big blind must be greater than 0" }
-        if (smallBlindAmount > 0) {
-            require(amount >= smallBlindAmount) { "Big blind must be greater than small blind" }
-        }
+        require(amount > smallBlindAmount) { "Big blind must be greater than small blind" }
         bigBlindAmount = amount
     }
 
