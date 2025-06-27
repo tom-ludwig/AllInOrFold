@@ -1,4 +1,4 @@
-package hwr.oop.group1.poker.handEvaluation.detectionStrategie
+package hwr.oop.group1.poker.handEvaluation.HandDetectors
 
 import hwr.oop.group1.poker.Card
 import hwr.oop.group1.poker.handEvaluation.HandRank

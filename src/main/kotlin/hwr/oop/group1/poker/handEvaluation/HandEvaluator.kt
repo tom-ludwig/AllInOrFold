@@ -1,7 +1,7 @@
 package hwr.oop.group1.poker.handEvaluation
 
 import hwr.oop.group1.poker.Card
-import hwr.oop.group1.poker.handEvaluation.detectionStrategie.*
+import hwr.oop.group1.poker.handEvaluation.HandDetectors.*
 
 object HandEvaluator {
     private val strategies = listOf(
