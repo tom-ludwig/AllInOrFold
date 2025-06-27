@@ -71,7 +71,7 @@ private constructor(
 
     private fun setup() {
         require(players.size >= 2) { "Need at least 2 players to start a round" }
-        require(dealerPosition <= players.size - 1) {
+        require(dealerPosition < players.size) {
             "The dealer position must be a valid player position"
         }
 

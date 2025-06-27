@@ -17,7 +17,7 @@ class AddPlayerCommand : GameDependentCommand() {
         try {
             game.addPlayer(Player(playerName, money ?: 1000))
             println("Player $playerName was added")
-        } catch (e: DuplicatePlayerException) {
+        } catch (_: DuplicatePlayerException) {
             println("A player with the name '$playerName' already exists in the game.")
         }
     }

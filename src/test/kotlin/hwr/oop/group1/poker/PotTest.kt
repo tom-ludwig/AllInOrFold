@@ -130,9 +130,21 @@ class PotTest : AnnotationSpec() {
     }
 
     @Test
+    fun `empty pot when player exactly has enough`() {
+        pot.raise(alice, 200)
+        pot.call(bob)
+
+        val secondPot = pot.nextPot()
+
+        assertThat(secondPot).isNotNull()
+        assertThat(secondPot!!.potSize()).isEqualTo(0)
+        assertThat(secondPot.players()).isEmpty()
+    }
+
+    @Test
     fun `correct side pots for re-raise`() {
         alice = Player("Alice", 300)
-        bob = Player("Bob", 100)
+        bob = Player("Bob", 250)
         caroline = Player("Caroline", 400)
 
         val playerD = Player("D", 200)
@@ -148,10 +160,10 @@ class PotTest : AnnotationSpec() {
         val thirdPot = secondPot.nextPot()!!
         val fourthPot = thirdPot.nextPot()!!
 
-        assertThat(pot.potSize()).isEqualTo(4 * 100)
-        assertThat(secondPot.potSize()).isEqualTo(3 * 100)
-        assertThat(secondPot.players()).containsOnly(alice, caroline, playerD)
-        assertThat(thirdPot.potSize()).isEqualTo(2 * 100)
+        assertThat(pot.potSize()).isEqualTo(4 * 200)
+        assertThat(secondPot.potSize()).isEqualTo(3 * 50)
+        assertThat(secondPot.players()).containsOnly(alice, bob, caroline)
+        assertThat(thirdPot.potSize()).isEqualTo(2 * 50)
         assertThat(thirdPot.players()).containsOnly(alice, caroline)
         assertThat(fourthPot.potSize()).isEqualTo(50)
         assertThat(fourthPot.players()).containsOnly(caroline)
