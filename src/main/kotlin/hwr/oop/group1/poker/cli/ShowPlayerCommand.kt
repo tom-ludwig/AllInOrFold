@@ -18,13 +18,13 @@ class ShowPlayerCommand : GameDependentCommand() {
         when (action) {
             "cards" -> {
                 println("The hole cards of ${currentPlayer.name} are:")
-                currentPlayer.getHole().forEach {
+                currentPlayer.hole().forEach {
                     println("   $it")
                 }
             }
 
             "money" -> {
-                println("The current money of ${currentPlayer.name} is ${currentPlayer.getMoney()}")
+                println("The current money of ${currentPlayer.name} is ${currentPlayer.money()}")
             }
 
             "name" -> {

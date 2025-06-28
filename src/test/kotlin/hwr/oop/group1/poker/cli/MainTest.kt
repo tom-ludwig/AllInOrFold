@@ -34,7 +34,7 @@ class MainTest : AnnotationSpec() {
         val game = persistence.loadGame()
 
         assertThat(game).isNotNull
-        assertThat(game.getPlayers().map { it.name }).containsExactly(
+        assertThat(game.players().map { it.name }).containsExactly(
             "Alice",
             "Bob"
         )

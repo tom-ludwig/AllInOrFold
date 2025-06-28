@@ -46,7 +46,7 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("Alice", "was added")
         assertThat(
-            persistence.loadGame().getPlayers().first().name
+            persistence.loadGame().players().first().name
         ).isEqualTo("Alice")
     }
 
@@ -66,7 +66,7 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("A player with the name 'Alice' already exists in the game")
         assertThat(
-            persistence.loadGame().getPlayers().first().name
+            persistence.loadGame().players().first().name
         ).isEqualTo("Alice")
     }
 
@@ -85,10 +85,10 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("Alice", "was added")
         assertThat(
-            persistence.loadGame().getPlayers().first().name
+            persistence.loadGame().players().first().name
         ).isEqualTo("Alice")
         assertThat(
-            persistence.loadGame().getPlayers().first().getMoney()
+            persistence.loadGame().players().first().money()
         ).isEqualTo(
             100
         )
@@ -111,8 +111,8 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("Alice", "was removed successfully")
         val game = persistence.loadGame()
-        assertThat(game.getPlayers()).hasSize(1)
-        assertThat(game.getPlayers().first().name).isEqualTo("Bob")
+        assertThat(game.players()).hasSize(1)
+        assertThat(game.players().first().name).isEqualTo("Bob")
     }
 
     @Test
@@ -131,8 +131,8 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("A player with the name 'Bob' was not found in the game")
         val game = persistence.loadGame()
-        assertThat(game.getPlayers()).hasSize(1)
-        assertThat(game.getPlayers().first().name).isEqualTo("Alice")
+        assertThat(game.players()).hasSize(1)
+        assertThat(game.players().first().name).isEqualTo("Alice")
     }
 
     @Test
@@ -321,7 +321,6 @@ class CliTest : AnnotationSpec() {
                 cli.handle(it)
             }
         }
-        val game = persistence.loadGame()
 
         assertThat(output).contains("Caroline wins 30 chips")
     }
@@ -345,7 +344,7 @@ class CliTest : AnnotationSpec() {
         val game = persistence.loadGame()
         val round = game.round!!
         val currentPlayer = round.getCurrentPlayer()
-        val holeCards = currentPlayer.getHole()
+        val holeCards = currentPlayer.hole()
 
         assertThat(output)
             .contains("The hole cards of Alice are")
@@ -400,7 +399,7 @@ class CliTest : AnnotationSpec() {
         val game = persistence.loadGame()
         val round = game.round!!
         val currentPlayer = round.getCurrentPlayer()
-        val money = currentPlayer.getMoney()
+        val money = currentPlayer.money()
         assertThat(output).contains(
             "The current money of ${currentPlayer.name}",
             money.toString()
@@ -519,7 +518,7 @@ class CliTest : AnnotationSpec() {
         }
 
         val game = persistence.loadGame(1)
-        assertThat(game.getPlayers()).hasSize(3)
+        assertThat(game.players()).hasSize(3)
         assertThat(output)
             .contains("Game was created with ID: 0")
             .contains("Game was created with ID: 1")
@@ -583,14 +582,14 @@ class TestPersistence : GameLoader, GameSaver {
     override fun saveGame(game: Game, id: Int): Int {
         if (games.size <= id) {
             games.add(game)
-        }else{
+        } else {
             games[id] = game
         }
         return id
     }
 
     override fun loadGame(id: Int): Game {
-        if(games.size <= id) throw GameDoesNotExistException(id)
+        if (games.size <= id) throw GameDoesNotExistException(id)
         return games[id]
     }
 

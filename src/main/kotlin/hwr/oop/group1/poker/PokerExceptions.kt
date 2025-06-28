@@ -4,7 +4,7 @@ class NotEnoughMoneyException(
     player: Player,
     amount: Int,
 ) : RuntimeException(
-    "player ${player.name} wants to raise $amount but only has ${player.getMoney()}"
+    "player ${player.name} wants to raise $amount but only has ${player.money()}"
 )
 
 class CanNotCheckException(

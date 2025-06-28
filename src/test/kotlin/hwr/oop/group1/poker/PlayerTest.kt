@@ -23,7 +23,7 @@ class PlayerTest : AnnotationSpec() {
 
         player.addCard(card)
 
-        assertThat(player.getHole()).contains(card)
+        assertThat(player.hole()).contains(card)
     }
 
     @Test
@@ -55,7 +55,7 @@ class PlayerTest : AnnotationSpec() {
 
         player.clearHole()
 
-        assertThat(player.getHole()).isEmpty()
+        assertThat(player.hole()).isEmpty()
     }
 
     @Test
@@ -63,7 +63,7 @@ class PlayerTest : AnnotationSpec() {
         val player = Player("Max", 1000)
 
         player.addMoney(10)
-        val playerMoney = player.getMoney()
+        val playerMoney = player.money()
 
         assertThat(playerMoney).isEqualTo(1010)
     }
@@ -85,7 +85,7 @@ class PlayerTest : AnnotationSpec() {
         player.addCard(Card(CardRank.KING, CardSuit.HEARTS))
         player.fold()
         assertThat(player.hasFolded).isTrue()
-        assertThat(player.getHole()).isEmpty()
+        assertThat(player.hole()).isEmpty()
     }
 
     @Test

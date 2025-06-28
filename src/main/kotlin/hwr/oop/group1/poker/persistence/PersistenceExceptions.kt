@@ -4,6 +4,6 @@ class GameFileDoesNotExistException : RuntimeException(
     "Game file does not exist."
 )
 
-class GameDoesNotExistException(id: Int): RuntimeException(
+class GameDoesNotExistException(id: Int) : RuntimeException(
     "Game with id $id does not exist."
 )

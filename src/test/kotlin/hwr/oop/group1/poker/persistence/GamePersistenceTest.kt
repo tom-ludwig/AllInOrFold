@@ -1,11 +1,8 @@
-package hwr.oop.group1.poker.persitence
+package hwr.oop.group1.poker.persistence
 
 import hwr.oop.group1.poker.Action
 import hwr.oop.group1.poker.Game
 import hwr.oop.group1.poker.Player
-import hwr.oop.group1.poker.persistence.FileSystemGamePersistence
-import hwr.oop.group1.poker.persistence.GameDoesNotExistException
-import hwr.oop.group1.poker.persistence.GameFileDoesNotExistException
 import io.kotest.core.spec.style.AnnotationSpec
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

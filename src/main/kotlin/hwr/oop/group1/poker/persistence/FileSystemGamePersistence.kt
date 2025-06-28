@@ -12,7 +12,7 @@ class FileSystemGamePersistence(private val file: File) : GameLoader,
         val gamesMap: MutableMap<Int, Game> =
             if (file.exists()) {
                 Json.decodeFromString<MutableMap<Int, Game>>(file.readText())
-            }else mutableMapOf()
+            } else mutableMapOf()
         gamesMap[id] = game
         file.writeText(Json.encodeToString(gamesMap))
         return id

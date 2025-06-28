@@ -7,10 +7,9 @@ class Game {
     var round: Round? = null
         private set
 
-    // Make Private; use separate get method
     private val players = mutableListOf<Player>()
 
-    fun getPlayers(): List<Player> {
+    fun players(): List<Player> {
         return players.toList()
     }
 

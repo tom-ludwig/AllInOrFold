@@ -28,8 +28,8 @@ class RoundTest : AnnotationSpec() {
     @Test
     fun `blinds are paid on round init`() {
         assertThat(round.potSize()).isEqualTo(15)
-        assertThat(players[1].getMoney()).isEqualTo(995) // small blind
-        assertThat(players[2].getMoney()).isEqualTo(990) // big blind
+        assertThat(players[1].money()).isEqualTo(995) // small blind
+        assertThat(players[2].money()).isEqualTo(990) // big blind
     }
 
     @Test
@@ -152,7 +152,7 @@ class RoundTest : AnnotationSpec() {
     fun `raise updates current bet and last raise position`() {
         round.doAction(Action.RAISE, 20)
         assertThat(round.currentBet).isEqualTo(20)
-        assertThat(round.players[0].getMoney()).isEqualTo(980)
+        assertThat(round.players[0].money()).isEqualTo(980)
     }
 
     @Test
@@ -162,7 +162,7 @@ class RoundTest : AnnotationSpec() {
 
         assertThat(round.isRoundComplete).isTrue()
         assertThat(round.lastWinnerAnnouncements.first()).contains("Caroline")
-        assertThat(players.first { player -> player.name == "Caroline" }.getMoney())
+        assertThat(players.first { player -> player.name == "Caroline" }.money())
             .isEqualTo(1005) // Caroline gets the pot
     }
 
@@ -189,7 +189,7 @@ class RoundTest : AnnotationSpec() {
 
         assertThat(round.isRoundComplete).isTrue()
         assertThat(round.potSize()).isEqualTo(0)
-        assertThat(players.sumOf { it.getMoney() }).isEqualTo(3000)
+        assertThat(players.sumOf { it.money() }).isEqualTo(3000)
     }
 
     @Test
@@ -249,9 +249,9 @@ class RoundTest : AnnotationSpec() {
             round.doAction(Action.CHECK)
         }
 
-        assertThat(players[0].getMoney()).isEqualTo(995 + 7)
-        assertThat(players[1].getMoney()).isEqualTo(995 + 8)
-        assertThat(players[2].getMoney()).isEqualTo(995)
+        assertThat(players[0].money()).isEqualTo(995 + 7)
+        assertThat(players[1].money()).isEqualTo(995 + 8)
+        assertThat(players[2].money()).isEqualTo(995)
         assertThat(round.lastWinnerAnnouncements[0]).contains(listOf("Alice", "Bob", "7 each"))
     }
 
@@ -289,11 +289,11 @@ class RoundTest : AnnotationSpec() {
         round.doAction(Action.CALL)
         round.doAction(Action.CALL)
 
-        assertThat(players[0].getMoney()).isEqualTo(200 + 100)
+        assertThat(players[0].money()).isEqualTo(200 + 100)
         assertThat(round.lastWinnerAnnouncements[2]).contains("Alice wins 100")
-        assertThat(players[1].getMoney()).isEqualTo(400)
+        assertThat(players[1].money()).isEqualTo(400)
         assertThat(round.lastWinnerAnnouncements[1]).contains("Bob wins 400")
-        assertThat(players[2].getMoney()).isEqualTo(1500)
+        assertThat(players[2].money()).isEqualTo(1500)
         assertThat(round.lastWinnerAnnouncements[0]).contains("Caroline wins 1500")
     }
 

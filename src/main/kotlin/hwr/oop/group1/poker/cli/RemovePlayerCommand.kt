@@ -1,8 +1,7 @@
 package hwr.oop.group1.poker.cli
 
-import hwr.oop.group1.poker.PlayerNotFoundException
 import hwr.oop.group1.poker.Game
-import hwr.oop.group1.poker.Player
+import hwr.oop.group1.poker.PlayerNotFoundException
 
 class RemovePlayerCommand : GameDependentCommand() {
     override fun matches(args: List<String>): Boolean {
