@@ -21,8 +21,8 @@ class Pot(
         require(player.currentBet < totalBet) { "Player can not Call" }
 
         val toCall = currentBet - alreadyBetAmount(player)
-        if (player.getMoney() <= toCall) {
-            val betSize = player.getMoney() + alreadyBetAmount(player)
+        if (player.money() <= toCall) {
+            val betSize = player.money() + alreadyBetAmount(player)
             val remainingBetSize = currentBet - betSize
 
             val remainingPlayers = mutableListOf<Player>()
@@ -46,7 +46,7 @@ class Pot(
     }
 
     fun raise(player: Player, amount: Int) {
-        if (player.getMoney() < amount) throw NotEnoughMoneyException(
+        if (player.money() < amount) throw NotEnoughMoneyException(
             player,
             amount
         )
@@ -100,7 +100,7 @@ class Pot(
 
     fun determineWinner(communityCards: MutableList<Card>) {
         val activePlayers = players().filter { !it.hasFolded }
-        if(activePlayers.isEmpty()) return
+        if (activePlayers.isEmpty()) return
         if (activePlayers.size == 1) {
             // Only one player left, they win
             val winner = activePlayers[0]
@@ -125,7 +125,7 @@ class Pot(
         playerBets.clear()
     }
 
-    fun rewardWinners(players: List<Player>, bestHand: HandRank? = null){
+    fun rewardWinners(players: List<Player>, bestHand: HandRank? = null) {
         val splitAmount = potSize() / players.size
         val remainder = potSize() % players.size
 

@@ -76,7 +76,7 @@ class GameTest : AnnotationSpec() {
     fun `Remove player can be called after round ends`() {
         val game = Game()
         val player = Player("Alice", 1000)
-        
+
         game.addPlayer(player)
         game.addPlayer(Player("Bob", 1000))
         game.newRound()
@@ -231,7 +231,7 @@ class GameTest : AnnotationSpec() {
     }
 
     @Test
-    fun `correct reset when starting second round`(){
+    fun `correct reset when starting second round`() {
         val game = Game()
 
         val players = mutableListOf(Player("Player 1", 1000), Player("Player 2", 1000))
@@ -248,8 +248,8 @@ class GameTest : AnnotationSpec() {
         game.newRound()
 
         assertThat(round.getCurrentPlayer()).isEqualTo(players[1])
-        assertThat(players).allMatch { it.getHole().size == 2 }
-        assertThat(players[0].getMoney()).isEqualTo(1000 - 20 - 10)
-        assertThat(players[1].getMoney()).isEqualTo(1000 + 20 - 20)
+        assertThat(players).allMatch { it.hole().size == 2 }
+        assertThat(players[0].money()).isEqualTo(1000 - 20 - 10)
+        assertThat(players[1].money()).isEqualTo(1000 + 20 - 20)
     }
 }

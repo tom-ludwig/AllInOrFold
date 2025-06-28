@@ -1,10 +1,8 @@
-package hwr.oop.group1.poker.persitence
+package hwr.oop.group1.poker.persistence
 
 import hwr.oop.group1.poker.Action
 import hwr.oop.group1.poker.Game
 import hwr.oop.group1.poker.Player
-import hwr.oop.group1.poker.persistence.FileSystemGamePersistence
-import hwr.oop.group1.poker.persistence.GameFileDoesNotExist
 import io.kotest.core.spec.style.AnnotationSpec
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -36,9 +34,10 @@ class GamePersistenceTest : AnnotationSpec() {
         game.addPlayer(player1)
         game.addPlayer(player2)
 
-        adapter.saveGame(game)
+        val gameId = adapter.saveGame(game)
 
         val content = file.readText()
+        assertThat(gameId).isEqualTo(0)
         assertThat(content).contains("Max")
         assertThat(content).contains("Bob")
         assertThat(content).contains("1000")
@@ -57,6 +56,51 @@ class GamePersistenceTest : AnnotationSpec() {
         assertThat(loadedGame).isNotNull()
         assertThat(loadedGame).usingRecursiveComparison().isEqualTo(expectedGame)
     }
+
+    @Test
+    fun `loadGame should restore the game with correct id from file`() {
+        val firstGame = Game()
+        val player1 = Player("Alice", 1000)
+
+        val secondGame = Game()
+        val player2 = Player("Bob", 1000)
+
+        firstGame.addPlayer(player1)
+        secondGame.addPlayer(player2)
+        val firstGameId = adapter.saveGame(firstGame)
+        val secondGameId = adapter.saveGame(secondGame)
+
+        val loadedFirstGame = adapter.loadGame(0)
+        val loadedSecondGame = adapter.loadGame(1)
+
+        assertThat(firstGameId).isEqualTo(0)
+        assertThat(loadedFirstGame).isNotNull()
+        assertThat(loadedFirstGame).usingRecursiveComparison().isEqualTo(firstGame)
+
+        assertThat(secondGameId).isEqualTo(1)
+        assertThat(loadedSecondGame).isNotNull()
+        assertThat(loadedSecondGame).usingRecursiveComparison().isEqualTo(secondGame)
+    }
+
+    @Test
+    fun `loadGame should throw exception if id does not exist`() {
+        val firstGame = Game()
+        val player1 = Player("Alice", 1000)
+
+        val secondGame = Game()
+        val player2 = Player("Bob", 1000)
+
+        firstGame.addPlayer(player1)
+        secondGame.addPlayer(player2)
+        adapter.saveGame(firstGame)
+        adapter.saveGame(secondGame)
+
+        assertThatThrownBy {
+            adapter.loadGame(3)
+        }.isInstanceOf(GameDoesNotExistException::class.java)
+            .hasMessageContaining("Game with id 3 does not exist")
+    }
+
 
     @Test
     fun `loaded Game should not perform init`() {
@@ -80,7 +124,7 @@ class GamePersistenceTest : AnnotationSpec() {
     }
 
     @Test
-    fun `loadGame should return null if file does not exist`() {
+    fun `loadGame should throw exception if file does not exist`() {
         if (file.exists()) {
             file.delete()
         }
@@ -89,11 +133,11 @@ class GamePersistenceTest : AnnotationSpec() {
 
         assertThatThrownBy {
             adapter.loadGame()
-        }.isInstanceOf(GameFileDoesNotExist::class.java)
+        }.isInstanceOf(GameFileDoesNotExistException::class.java)
     }
 
     @Test
-    fun `loadGame should return null if JSON is invalid`() {
+    fun `loadGame should throw exception if JSON is invalid`() {
         file.writeText("not-a-valid-json")
 
         assertThatThrownBy {

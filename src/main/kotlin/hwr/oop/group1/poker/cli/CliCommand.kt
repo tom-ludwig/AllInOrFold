@@ -9,6 +9,7 @@ interface CliCommand {
     fun handle(
         gameLoader: GameLoader,
         gameSaver: GameSaver,
+        gameId: Int,
         commandArgs: List<String>,
     )
 }
@@ -19,11 +20,12 @@ abstract class GameDependentCommand : CliCommand {
     final override fun handle(
         gameLoader: GameLoader,
         gameSaver: GameSaver,
+        gameId: Int,
         commandArgs: List<String>,
     ) {
-        val game = gameLoader.loadGame()
+        val game = gameLoader.loadGame(gameId)
         handleWithGame(game, commandArgs)
-        gameSaver.saveGame(game)
+        gameSaver.saveGame(game, gameId)
     }
 }
 

@@ -21,9 +21,9 @@ class Player(
     var isAllIn = false
         private set
 
-    fun getMoney(): Int = money
+    fun money(): Int = money
 
-    fun getHole(): List<Card> = hole.toList()
+    fun hole(): List<Card> = hole.toList()
 
     fun clearHole() {
         hole.clear()
