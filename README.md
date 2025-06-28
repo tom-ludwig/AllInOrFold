@@ -7,11 +7,11 @@
 
 ## Abstract
 
-This repository contains the game logic for poker. It was made for educational purposes in the object oriented programming class at HWR Berlin (summer term 2025).
+This project contains the core logic for a simple Texas Hold’em poker game that runs in the terminal.
 
-⚠️ This code is for educational purposes only. Do not rely on it!
+It’s written in Kotlin and was built to showcase some key object-oriented programming principles, along with a few behavioral design patterns—most notably, the strategy pattern.
 
-
+The code is also very well tested, with both code coverage and mutation coverage consistently above 95%.
 ## Feature List
 ### Game Logic
 
@@ -19,7 +19,7 @@ This repository contains the game logic for poker. It was made for educational p
 |--------|--------------|------------------|-------|
 | 1      | &check;      | create game      | /     |
 | 2      | &check;      | add players      | /     |
-| 3      | &check;      | start game       | /     |
+| 3      | &check;      | remove players   | /     |
 | 4      | &check;      | start game       | /     |
 | 5      | &check;      | betting logic    | /     |
 | 6      | &check;      | state output     | /     |
@@ -39,6 +39,7 @@ This repository contains the game logic for poker. It was made for educational p
 - `new`
 - `start`
 - `addPlayer <name> <money>`
+- `removePlayer <name>`
 - `check`
 - `call`
 - `raise <amount>`
@@ -60,7 +61,6 @@ To build from your shell (without an additional local installation of Maven), en
 ~~~shell
 chmod +x ./mvnw
 ~~~
-I recommend not diving into details about Maven at the beginning. Instead, you can use just to build the project. It reads the repositories justfile which maps simplified commands to corresponding sensible Maven calls.
 
 With just installed, you can simply run this command to perform a build of this project and run all of its tests:
 ~~~shell
@@ -68,6 +68,6 @@ just build
 ~~~
 ## Additional Dependencies
 
-| Number | Dependency Name | Dependency Description | Why is it necessary? |
-|--------|-----------------|------------------------|----------------------|
-| 1      | kotlinx-serialization-json | A library for JSON serialization and deserialization in Kotlin.  | Used for handling JSON data in the project. |
+| Number | Dependency Name            | Dependency Description                                          | Why is it necessary?                        |
+|--------|----------------------------|-----------------------------------------------------------------|---------------------------------------------|
+| 1      | kotlinx-serialization-json | A library for JSON serialization and deserialization in Kotlin. | Used for handling JSON data in the project. |

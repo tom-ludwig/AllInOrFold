@@ -307,7 +307,7 @@ class HandRankTest : AnnotationSpec() {
             Card(CardRank.FIVE, CardSuit.CLUBS),
             Card(CardRank.SEVEN, CardSuit.DIAMONDS)
         )
-        
+
         // This should throw an exception because we can't form a 5-card hand from 3 cards
         assertThatThrownBy {
             HandEvaluator.evaluateBestHandFrom(cards)
