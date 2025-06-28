@@ -46,7 +46,7 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("Alice", "was added")
         assertThat(
-            persistence.loadGame().players().first().name
+            persistence.loadGame().getPlayers().first().name
         ).isEqualTo("Alice")
     }
 
@@ -66,7 +66,7 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("A player with the name 'Alice' already exists in the game")
         assertThat(
-            persistence.loadGame().players().first().name
+            persistence.loadGame().getPlayers().first().name
         ).isEqualTo("Alice")
     }
 
@@ -85,10 +85,10 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("Alice", "was added")
         assertThat(
-            persistence.loadGame().players().first().name
+            persistence.loadGame().getPlayers().first().name
         ).isEqualTo("Alice")
         assertThat(
-            persistence.loadGame().players().first().money()
+            persistence.loadGame().getPlayers().first().money()
         ).isEqualTo(
             100
         )
@@ -111,8 +111,8 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("Alice", "was removed successfully")
         val game = persistence.loadGame()
-        assertThat(game.players()).hasSize(1)
-        assertThat(game.players().first().name).isEqualTo("Bob")
+        assertThat(game.getPlayers()).hasSize(1)
+        assertThat(game.getPlayers().first().name).isEqualTo("Bob")
     }
 
     @Test
@@ -131,8 +131,8 @@ class CliTest : AnnotationSpec() {
 
         assertThat(output).contains("A player with the name 'Bob' was not found in the game")
         val game = persistence.loadGame()
-        assertThat(game.players()).hasSize(1)
-        assertThat(game.players().first().name).isEqualTo("Alice")
+        assertThat(game.getPlayers()).hasSize(1)
+        assertThat(game.getPlayers().first().name).isEqualTo("Alice")
     }
 
     @Test
@@ -518,7 +518,7 @@ class CliTest : AnnotationSpec() {
         }
 
         val game = persistence.loadGame(1)
-        assertThat(game.players()).hasSize(3)
+        assertThat(game.getPlayers()).hasSize(3)
         assertThat(output)
             .contains("Game was created with ID: 0")
             .contains("Game was created with ID: 1")

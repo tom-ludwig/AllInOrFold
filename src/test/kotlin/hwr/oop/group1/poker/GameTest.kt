@@ -12,7 +12,7 @@ class GameTest : AnnotationSpec() {
         val player = Player("Max", 1000)
 
         game.addPlayer(player)
-        val players = game.players()
+        val players = game.getPlayers()
 
         assertThat(players).contains(player)
     }
@@ -36,10 +36,10 @@ class GameTest : AnnotationSpec() {
         val player = Player("Max", 1000)
 
         game.addPlayer(player)
-        assertThat(game.players()).contains(player)
+        assertThat(game.getPlayers()).contains(player)
 
         game.removePlayer("Max")
-        assertThat(game.players()).doesNotContain(player)
+        assertThat(game.getPlayers()).doesNotContain(player)
     }
 
     @Test
@@ -83,7 +83,7 @@ class GameTest : AnnotationSpec() {
         game.round!!.doAction(Action.FOLD) // End the round
 
         game.removePlayer("Alice")
-        assertThat(game.players()).doesNotContain(player)
+        assertThat(game.getPlayers()).doesNotContain(player)
     }
 
     @Test
@@ -136,7 +136,7 @@ class GameTest : AnnotationSpec() {
         game.round!!.doAction(Action.FOLD)
 
         game.addPlayer(player)
-        assertThat(game.players()).contains(player)
+        assertThat(game.getPlayers()).contains(player)
     }
 
     @Test
@@ -197,7 +197,7 @@ class GameTest : AnnotationSpec() {
             game.addPlayer(Player("Player $i", 1000))
         }
 
-        assertThat(game.players().size).isEqualTo(20)
+        assertThat(game.getPlayers().size).isEqualTo(20)
 
         assertThatThrownBy {
             game.addPlayer(Player("Player 21", 1000))

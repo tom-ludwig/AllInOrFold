@@ -9,7 +9,7 @@ class Game {
 
     private val players = mutableListOf<Player>()
 
-    fun players(): List<Player> {
+    fun getPlayers(): List<Player> {
         return players.toList()
     }
 
