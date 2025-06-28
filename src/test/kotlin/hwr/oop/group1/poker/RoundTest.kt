@@ -64,7 +64,7 @@ class RoundTest : AnnotationSpec() {
             Player("Alice", 1000),
             Player("Bob", 1000),
         )
-        round = Round.create(players, 5, 10)
+        round = Round.create(players)
 
         assertThat(round.getCurrentPlayer().name).isEqualTo("Alice")
     }

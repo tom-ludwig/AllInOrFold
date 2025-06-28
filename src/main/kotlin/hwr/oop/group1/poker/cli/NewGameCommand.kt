@@ -12,10 +12,11 @@ class NewGameCommand : CliCommand {
     override fun handle(
         gameLoader: GameLoader,
         gameSaver: GameSaver,
+        gameId: Int,
         commandArgs: List<String>,
     ) {
         val game = Game()
-        gameSaver.saveGame(game)
-        println("Game was created")
+        val newGameId = gameSaver.saveGame(game)
+        println("Game was created with ID: $newGameId")
     }
 }

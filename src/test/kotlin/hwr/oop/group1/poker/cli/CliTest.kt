@@ -1,6 +1,7 @@
 package hwr.oop.group1.poker.cli
 
 import hwr.oop.group1.poker.Game
+import hwr.oop.group1.poker.persistence.GameDoesNotExistException
 import hwr.oop.group1.poker.persistence.GameLoader
 import hwr.oop.group1.poker.persistence.GameSaver
 import io.kotest.core.spec.style.AnnotationSpec
@@ -27,7 +28,7 @@ class CliTest : AnnotationSpec() {
         }
 
         assertThat(persistence.loadGame()).isNotNull
-        assertThat(output).contains("Game was created")
+        assertThat(output).contains("Game was created with ID: 0")
     }
 
     @Test
@@ -279,7 +280,7 @@ class CliTest : AnnotationSpec() {
     }
 
     @Test
-    fun `stage ended anouncement after stage ends`() {
+    fun `stage ended announcement after stage ends`() {
         val args = listOf(
             listOf("poker", "new"),
             listOf("poker", "addPlayer", "Alice"),
@@ -321,7 +322,6 @@ class CliTest : AnnotationSpec() {
             }
         }
         val game = persistence.loadGame()
-        val round = game.round!!
 
         assertThat(output).contains("Caroline wins 30 chips")
     }
@@ -503,6 +503,30 @@ class CliTest : AnnotationSpec() {
     }
 
     @Test
+    fun `commands work with id`() {
+        val args = listOf(
+            listOf("poker", "new"),
+            listOf("poker", "new"),
+            listOf("poker", "1", "addPlayer", "Alice"),
+            listOf("poker", "1", "addPlayer", "Bob"),
+            listOf("poker", "1", "addPlayer", "Caroline"),
+        )
+
+        val output = captureStandardOut {
+            args.forEach {
+                cli.handle(it)
+            }
+        }
+
+        val game = persistence.loadGame(1)
+        assertThat(game.getPlayers()).hasSize(3)
+        assertThat(output)
+            .contains("Game was created with ID: 0")
+            .contains("Game was created with ID: 1")
+    }
+
+
+    @Test
     fun `command has to start with poker`() {
         val args = listOf("start")
 
@@ -554,13 +578,23 @@ class CliTest : AnnotationSpec() {
 }
 
 class TestPersistence : GameLoader, GameSaver {
-    private var game: Game? = null
+    private var games: MutableList<Game> = mutableListOf()
 
-    override fun saveGame(game: Game) {
-        this.game = game
+    override fun saveGame(game: Game, id: Int): Int {
+        if (games.size <= id) {
+            games.add(game)
+        }else{
+            games[id] = game
+        }
+        return id
     }
 
-    override fun loadGame(): Game {
-        return game ?: Game()
+    override fun loadGame(id: Int): Game {
+        if(games.size <= id) throw GameDoesNotExistException(id)
+        return games[id]
+    }
+
+    override fun getNextGameId(): Int {
+        return games.size
     }
 }

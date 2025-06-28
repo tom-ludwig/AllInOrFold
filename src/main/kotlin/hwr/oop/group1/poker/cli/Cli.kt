@@ -23,13 +23,15 @@ class Cli(
             args.first()
         )
 
-        val commandArgs = args.takeLast(args.size - 1)
+        val commandArgs = if (args[1].toIntOrNull() == null) args.drop(1) else args.drop(2)
+
         val command = commands.find { it.matches(commandArgs) }
             ?: throw InvalidCommandException(commandArgs.first())
         command.handle(
             gameLoader = gameLoader,
             gameSaver = gameSaver,
-            commandArgs = commandArgs
+            commandArgs = commandArgs,
+            gameId = args[1].toIntOrNull() ?: 0
         )
     }
 }

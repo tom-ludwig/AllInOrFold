@@ -7,8 +7,8 @@ import kotlinx.serialization.Transient
 class Round
 private constructor(
     val players: List<Player>,
-    val smallBlindAmount: Int = 5,
-    val bigBlindAmount: Int = 10,
+    val smallBlindAmount: Int = 10,
+    val bigBlindAmount: Int = 20,
     private val dealerPosition: Int = 0,
     @Transient private val setupDeck: Deck? = null,
 ) {
