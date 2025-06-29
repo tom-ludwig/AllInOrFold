@@ -1,6 +1,5 @@
 # AllInOrFold
 
-[![Lint and Format](https://github.com/tom-ludwig/AllInOrFold/actions/workflows/check_lint_and_format.yaml/badge.svg)](https://github.com/tom-ludwig/AllInOrFold/actions/workflows/check_lint_and_format.yaml)
 [![Unit Tests and Build](https://github.com/tom-ludwig/AllInOrFold/actions/workflows/test-runner.yaml/badge.svg)](https://github.com/tom-ludwig/AllInOrFold/actions/workflows/test-runner.yaml)
 
 
@@ -15,27 +14,28 @@ The code is also very well tested, with both code coverage and mutation coverage
 ## Feature List
 ### Game Logic
 
-| Number | implemented? | Feature          | Tests |
-|--------|--------------|------------------|-------|
-| 1      | &check;      | create game      | /     |
-| 2      | &check;      | add players      | /     |
-| 3      | &check;      | remove players   | /     |
-| 4      | &check;      | start game       | /     |
-| 5      | &check;      | betting logic    | /     |
-| 6      | &check;      | state output     | /     |
-| 7      | &check;      | hand evaluations | /     |
-| 8      | &check;      | side pots        | /     |
+| Number | implemented? | Feature          | tested? |
+|--------|--------------|------------------|---------|
+| 1      | &check;      | create game      | &check; |
+| 2      | &check;      | add players      | &check; |
+| 3      | &check;      | remove players   | &check; |
+| 4      | &check;      | start game       | &check; |
+| 5      | &check;      | betting logic    | &check; |
+| 6      | &check;      | state output     | &check; |
+| 7      | &check;      | hand evaluations | &check; |
+| 8      | &check;      | side pots        | &check; |
 
 
 ### Persistence
 
-| Number | implemented? | Feature             | Tests |
-|--------|--------------|---------------------|-------|
-| 1      | &check;      | serialize game      | /     |
-| 2      | &check;      | save game to file   | /     |
-| 3      | &check;      | load game from file | /     |
+| Number | implemented? | Feature             | tested? |
+|--------|--------------|---------------------|---------|
+| 1      | &check;      | serialize game      | &check; |
+| 2      | &check;      | save game to file   | &check; |
+| 3      | &check;      | load game from file | &check; |
 
 ### User Interface
+`poker <gameId>` ...
 - `new`
 - `start`
 - `addPlayer <name> <money>`
